@@ -1,0 +1,5 @@
+Skip loading parameter 'heads.weight' to the model due to incompatible shapes: (487, 2048) in the checkpoint but (0, 2048) in the model! You might want to double check if this is expected.
+  MOT17-13-FRCNN           374 frames    18.0s    2745 rows  warp_fallback=5
+[R_oracle_rep] done -> /home/yifu/mot-cmc/04_experiments/trackers/MOT17-val-half/R_oracle_rep/data
+--- bit-identity check vs R_oracle ---
+BIT-IDENTICAL on all sequences

@@ -1,0 +1,6 @@
+oracle contrast over 4 sequences
+  MOT20-01                 428 frames    385.3s  ref_ok=1.000  disagree_med=0.409px
+  MOT20-02                2781 frames   2002.5s  ref_ok=1.000  disagree_med=0.745px
+  MOT20-03                2404 frames    539.1s  ref_ok=1.000  disagree_med=1.017px
+  MOT20-05                3314 frames   1695.0s  ref_ok=1.000  disagree_med=0.756px
+wrote 8927 rows -> /home/yifu/mot-cmc/04_experiments/mot20_oracle_analysis.csv

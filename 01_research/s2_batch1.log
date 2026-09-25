@@ -1,0 +1,5 @@
+[ 0] BoT-SORT robust associations multi-pedestrian tracking
+[ 0] camera motion compensation multi-object tracking
+[ 0] UCMCTrack multi-object tracking uniform camera motion compensation
+[ 8] Deep OC-SORT multi-pedestrian tracking adaptive re-identification
+[ 0] identity switch reduction occlusion multi-object tracking

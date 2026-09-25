@@ -1,0 +1,520 @@
+2026-09-20 09:14:11.961 | INFO     | __main__:main:227 - Args: Namespace(path='/home/yifu/mot-cmc/04_experiments/data/MOT17/train/MOT17-02-FRCNN/img1', benchmark='MOT17', split_to_eval='val', exp_file='./yolox/exps/example/mot/yolox_x_ablation.py', ckpt='./pretrained/bytetrack_ablation.pth.tar', experiment_name='N1_run2', default_parameters=True, save_frames=False, device=device(type='cuda'), conf=None, nms=None, tsize=None, fp16=True, fuse=True, track_high_thresh=0.6, track_low_thresh=0.1, new_track_thresh=0.7, track_buffer=30, match_thresh=0.8, aspect_ratio_thresh=1.6, min_box_area=10, cmc_method='file', with_reid=False, fast_reid_config='fast_reid/configs/MOT17/sbs_S50.yml', fast_reid_weights='pretrained/mot17_sbs_S50.pth', proximity_thresh=0.5, appearance_thresh=0.25, name='MOT17-02-FRCNN', ablation=True, mot20=False, fps=30, batch_size=1, trt=False)
+/home/yifu/mot-cmc/.venv/lib/python3.11/site-packages/torch/functional.py:504: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at /__w/pytorch/pytorch/aten/src/ATen/native/TensorShape.cpp:4221.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+2026-09-20 09:14:15.003 | INFO     | __main__:main:237 - Model Summary: Params: 99.00M, Gflops: 793.21
+2026-09-20 09:14:15.005 | INFO     | __main__:main:244 - loading checkpoint
+2026-09-20 09:14:15.763 | INFO     | __main__:main:249 - loaded checkpoint done.
+2026-09-20 09:14:15.763 | INFO     | __main__:main:252 - 	Fusing model...
+/home/yifu/mot-cmc/.venv/lib/python3.11/site-packages/torch/nn/modules/module.py:976: UserWarning: The .grad attribute of a Tensor that is not a leaf Tensor is being accessed. Its .grad attribute won't be populated during autograd.backward(). If you indeed want the .grad field to be populated for a non-leaf Tensor, use .retain_grad() on the non-leaf Tensor. If you access the non-leaf Tensor by mistake, make sure you access the leaf Tensor instead. See github.com/pytorch/pytorch/pull/30531 for more information. (Triggered internally at /__w/pytorch/pytorch/build/aten/src/ATen/core/TensorBody.h:488.)
+  param_grad = param.grad
+2026-09-20 09:14:19.447 | INFO     | __main__:image_track:206 - Processing frame 20/299 (17.13 fps)
+2026-09-20 09:14:21.902 | INFO     | __main__:image_track:206 - Processing frame 40/299 (22.05 fps)
+2026-09-20 09:14:24.393 | INFO     | __main__:image_track:206 - Processing frame 60/299 (24.03 fps)
+2026-09-20 09:14:26.766 | INFO     | __main__:image_track:206 - Processing frame 80/299 (25.84 fps)
+2026-09-20 09:14:29.172 | INFO     | __main__:image_track:206 - Processing frame 100/299 (26.86 fps)
+2026-09-20 09:14:31.664 | INFO     | __main__:image_track:206 - Processing frame 120/299 (27.11 fps)
+2026-09-20 09:14:34.071 | INFO     | __main__:image_track:206 - Processing frame 140/299 (27.65 fps)
+2026-09-20 09:14:36.507 | INFO     | __main__:image_track:206 - Processing frame 160/299 (27.99 fps)
+2026-09-20 09:14:38.949 | INFO     | __main__:image_track:206 - Processing frame 180/299 (28.09 fps)
+2026-09-20 09:14:41.371 | INFO     | __main__:image_track:206 - Processing frame 200/299 (28.10 fps)
+2026-09-20 09:14:43.833 | INFO     | __main__:image_track:206 - Processing frame 220/299 (28.08 fps)
+2026-09-20 09:14:46.201 | INFO     | __main__:image_track:206 - Processing frame 240/299 (28.37 fps)
+2026-09-20 09:14:48.692 | INFO     | __main__:image_track:206 - Processing frame 260/299 (28.28 fps)
+2026-09-20 09:14:51.083 | INFO     | __main__:image_track:206 - Processing frame 280/299 (28.34 fps)
+2026-09-20 09:14:53.305 | INFO     | __main__:image_track:212 - save results to ./YOLOX_outputs/N1_run2/track_results/MOT17-02-FRCNN.txt
+2026-09-20 09:14:53.310 | INFO     | __main__:main:227 - Args: Namespace(path='/home/yifu/mot-cmc/04_experiments/data/MOT17/train/MOT17-04-FRCNN/img1', benchmark='MOT17', split_to_eval='val', exp_file='./yolox/exps/example/mot/yolox_x_ablation.py', ckpt='./pretrained/bytetrack_ablation.pth.tar', experiment_name='N1_run2', default_parameters=True, save_frames=False, device=device(type='cuda'), conf=None, nms=None, tsize=None, fp16=True, fuse=True, track_high_thresh=0.6, track_low_thresh=0.1, new_track_thresh=0.7, track_buffer=30, match_thresh=0.8, aspect_ratio_thresh=1.6, min_box_area=10, cmc_method='file', with_reid=False, fast_reid_config='fast_reid/configs/MOT17/sbs_S50.yml', fast_reid_weights='pretrained/mot17_sbs_S50.pth', proximity_thresh=0.5, appearance_thresh=0.25, name='MOT17-04-FRCNN', ablation=True, mot20=False, fps=30, batch_size=1, trt=False)
+2026-09-20 09:14:54.600 | INFO     | __main__:main:237 - Model Summary: Params: 99.00M, Gflops: 793.21
+2026-09-20 09:14:54.602 | INFO     | __main__:main:244 - loading checkpoint
+2026-09-20 09:14:55.093 | INFO     | __main__:main:249 - loaded checkpoint done.
+2026-09-20 09:14:55.093 | INFO     | __main__:main:252 - 	Fusing model...
+2026-09-20 09:14:58.350 | INFO     | __main__:image_track:206 - Processing frame 20/524 (28.31 fps)
+2026-09-20 09:15:00.909 | INFO     | __main__:image_track:206 - Processing frame 40/524 (28.17 fps)
+2026-09-20 09:15:03.336 | INFO     | __main__:image_track:206 - Processing frame 60/524 (28.22 fps)
+2026-09-20 09:15:05.818 | INFO     | __main__:image_track:206 - Processing frame 80/524 (28.16 fps)
+2026-09-20 09:15:08.366 | INFO     | __main__:image_track:206 - Processing frame 100/524 (28.06 fps)
+2026-09-20 09:15:10.890 | INFO     | __main__:image_track:206 - Processing frame 120/524 (28.00 fps)
+2026-09-20 09:15:13.290 | INFO     | __main__:image_track:206 - Processing frame 140/524 (28.09 fps)
+2026-09-20 09:15:15.724 | INFO     | __main__:image_track:206 - Processing frame 160/524 (28.15 fps)
+2026-09-20 09:15:18.170 | INFO     | __main__:image_track:206 - Processing frame 180/524 (28.21 fps)
+2026-09-20 09:15:20.775 | INFO     | __main__:image_track:206 - Processing frame 200/524 (28.15 fps)
+2026-09-20 09:15:23.211 | INFO     | __main__:image_track:206 - Processing frame 220/524 (28.20 fps)
+2026-09-20 09:15:25.798 | INFO     | __main__:image_track:206 - Processing frame 240/524 (28.04 fps)
+2026-09-20 09:15:28.283 | INFO     | __main__:image_track:206 - Processing frame 260/524 (28.06 fps)
+2026-09-20 09:15:30.761 | INFO     | __main__:image_track:206 - Processing frame 280/524 (28.09 fps)
+2026-09-20 09:15:33.247 | INFO     | __main__:image_track:206 - Processing frame 300/524 (28.10 fps)
+2026-09-20 09:15:35.646 | INFO     | __main__:image_track:206 - Processing frame 320/524 (28.20 fps)
+2026-09-20 09:15:38.256 | INFO     | __main__:image_track:206 - Processing frame 340/524 (28.09 fps)
+2026-09-20 09:15:40.702 | INFO     | __main__:image_track:206 - Processing frame 360/524 (28.11 fps)
+2026-09-20 09:15:43.135 | INFO     | __main__:image_track:206 - Processing frame 380/524 (28.19 fps)
+2026-09-20 09:15:45.818 | INFO     | __main__:image_track:206 - Processing frame 400/524 (28.02 fps)
+2026-09-20 09:15:48.443 | INFO     | __main__:image_track:206 - Processing frame 420/524 (27.83 fps)
+2026-09-20 09:15:50.943 | INFO     | __main__:image_track:206 - Processing frame 440/524 (27.84 fps)
+2026-09-20 09:15:53.403 | INFO     | __main__:image_track:206 - Processing frame 460/524 (27.88 fps)
+2026-09-20 09:15:55.876 | INFO     | __main__:image_track:206 - Processing frame 480/524 (27.93 fps)
+2026-09-20 09:15:58.389 | INFO     | __main__:image_track:206 - Processing frame 500/524 (27.92 fps)
+2026-09-20 09:16:00.844 | INFO     | __main__:image_track:206 - Processing frame 520/524 (27.94 fps)
+2026-09-20 09:16:01.364 | INFO     | __main__:image_track:212 - save results to ./YOLOX_outputs/N1_run2/track_results/MOT17-04-FRCNN.txt
+2026-09-20 09:16:01.371 | INFO     | __main__:main:227 - Args: Namespace(path='/home/yifu/mot-cmc/04_experiments/data/MOT17/train/MOT17-05-FRCNN/img1', benchmark='MOT17', split_to_eval='val', exp_file='./yolox/exps/example/mot/yolox_x_ablation.py', ckpt='./pretrained/bytetrack_ablation.pth.tar', experiment_name='N1_run2', default_parameters=True, save_frames=False, device=device(type='cuda'), conf=None, nms=None, tsize=None, fp16=True, fuse=True, track_high_thresh=0.6, track_low_thresh=0.1, new_track_thresh=0.7, track_buffer=14, match_thresh=0.8, aspect_ratio_thresh=1.6, min_box_area=10, cmc_method='file', with_reid=False, fast_reid_config='fast_reid/configs/MOT17/sbs_S50.yml', fast_reid_weights='pretrained/mot17_sbs_S50.pth', proximity_thresh=0.5, appearance_thresh=0.25, name='MOT17-05-FRCNN', ablation=True, mot20=False, fps=30, batch_size=1, trt=False)
+2026-09-20 09:16:02.353 | INFO     | __main__:main:237 - Model Summary: Params: 99.00M, Gflops: 793.21
+2026-09-20 09:16:02.356 | INFO     | __main__:main:244 - loading checkpoint
+2026-09-20 09:16:02.951 | INFO     | __main__:main:249 - loaded checkpoint done.
+2026-09-20 09:16:02.952 | INFO     | __main__:main:252 - 	Fusing model...
+2026-09-20 09:16:05.781 | INFO     | __main__:image_track:206 - Processing frame 20/418 (27.90 fps)
+2026-09-20 09:16:07.967 | INFO     | __main__:image_track:206 - Processing frame 40/418 (27.80 fps)
+2026-09-20 09:16:09.983 | INFO     | __main__:image_track:206 - Processing frame 60/418 (27.87 fps)
+2026-09-20 09:16:12.046 | INFO     | __main__:image_track:206 - Processing frame 80/418 (27.90 fps)
+2026-09-20 09:16:14.021 | INFO     | __main__:image_track:206 - Processing frame 100/418 (28.03 fps)
+2026-09-20 09:16:16.013 | INFO     | __main__:image_track:206 - Processing frame 120/418 (28.09 fps)
+2026-09-20 09:16:17.922 | INFO     | __main__:image_track:206 - Processing frame 140/418 (28.19 fps)
+2026-09-20 09:16:19.885 | INFO     | __main__:image_track:206 - Processing frame 160/418 (28.26 fps)
+2026-09-20 09:16:21.982 | INFO     | __main__:image_track:206 - Processing frame 180/418 (28.22 fps)
+2026-09-20 09:16:23.881 | INFO     | __main__:image_track:206 - Processing frame 200/418 (28.30 fps)
+2026-09-20 09:16:25.818 | INFO     | __main__:image_track:206 - Processing frame 220/418 (28.33 fps)
+2026-09-20 09:16:27.767 | INFO     | __main__:image_track:206 - Processing frame 240/418 (28.36 fps)
+2026-09-20 09:16:29.757 | INFO     | __main__:image_track:206 - Processing frame 260/418 (28.37 fps)
+2026-09-20 09:16:31.765 | INFO     | __main__:image_track:206 - Processing frame 280/418 (28.35 fps)
+2026-09-20 09:16:33.806 | INFO     | __main__:image_track:206 - Processing frame 300/418 (28.33 fps)
+2026-09-20 09:16:35.665 | INFO     | __main__:image_track:206 - Processing frame 320/418 (28.41 fps)
+2026-09-20 09:16:37.504 | INFO     | __main__:image_track:206 - Processing frame 340/418 (28.49 fps)
+2026-09-20 09:16:39.372 | INFO     | __main__:image_track:206 - Processing frame 360/418 (28.56 fps)
+2026-09-20 09:16:41.170 | INFO     | __main__:image_track:206 - Processing frame 380/418 (28.67 fps)
+2026-09-20 09:16:42.936 | INFO     | __main__:image_track:206 - Processing frame 400/418 (28.75 fps)
+2026-09-20 09:16:44.606 | INFO     | __main__:image_track:212 - save results to ./YOLOX_outputs/N1_run2/track_results/MOT17-05-FRCNN.txt
+2026-09-20 09:16:44.611 | INFO     | __main__:main:227 - Args: Namespace(path='/home/yifu/mot-cmc/04_experiments/data/MOT17/train/MOT17-09-FRCNN/img1', benchmark='MOT17', split_to_eval='val', exp_file='./yolox/exps/example/mot/yolox_x_ablation.py', ckpt='./pretrained/bytetrack_ablation.pth.tar', experiment_name='N1_run2', default_parameters=True, save_frames=False, device=device(type='cuda'), conf=None, nms=None, tsize=None, fp16=True, fuse=True, track_high_thresh=0.6, track_low_thresh=0.1, new_track_thresh=0.7, track_buffer=30, match_thresh=0.8, aspect_ratio_thresh=1.6, min_box_area=10, cmc_method='file', with_reid=False, fast_reid_config='fast_reid/configs/MOT17/sbs_S50.yml', fast_reid_weights='pretrained/mot17_sbs_S50.pth', proximity_thresh=0.5, appearance_thresh=0.25, name='MOT17-09-FRCNN', ablation=True, mot20=False, fps=30, batch_size=1, trt=False)
+2026-09-20 09:16:45.517 | INFO     | __main__:main:237 - Model Summary: Params: 99.00M, Gflops: 793.21
+2026-09-20 09:16:45.519 | INFO     | __main__:main:244 - loading checkpoint
+2026-09-20 09:16:46.122 | INFO     | __main__:main:249 - loaded checkpoint done.
+2026-09-20 09:16:46.122 | INFO     | __main__:main:252 - 	Fusing model...
+2026-09-20 09:16:49.112 | INFO     | __main__:image_track:206 - Processing frame 20/262 (28.85 fps)
+2026-09-20 09:16:51.429 | INFO     | __main__:image_track:206 - Processing frame 40/262 (28.89 fps)
+2026-09-20 09:16:53.725 | INFO     | __main__:image_track:206 - Processing frame 60/262 (28.93 fps)
+2026-09-20 09:16:55.869 | INFO     | __main__:image_track:206 - Processing frame 80/262 (29.07 fps)
+2026-09-20 09:16:58.060 | INFO     | __main__:image_track:206 - Processing frame 100/262 (29.15 fps)
+2026-09-20 09:17:00.285 | INFO     | __main__:image_track:206 - Processing frame 120/262 (29.21 fps)
+2026-09-20 09:17:02.564 | INFO     | __main__:image_track:206 - Processing frame 140/262 (29.27 fps)
+2026-09-20 09:17:04.751 | INFO     | __main__:image_track:206 - Processing frame 160/262 (29.35 fps)
+2026-09-20 09:17:06.977 | INFO     | __main__:image_track:206 - Processing frame 180/262 (29.42 fps)
+2026-09-20 09:17:09.207 | INFO     | __main__:image_track:206 - Processing frame 200/262 (29.48 fps)
+2026-09-20 09:17:11.421 | INFO     | __main__:image_track:206 - Processing frame 220/262 (29.54 fps)
+2026-09-20 09:17:13.553 | INFO     | __main__:image_track:206 - Processing frame 240/262 (29.62 fps)
+2026-09-20 09:17:15.759 | INFO     | __main__:image_track:206 - Processing frame 260/262 (29.70 fps)
+2026-09-20 09:17:15.995 | INFO     | __main__:image_track:212 - save results to ./YOLOX_outputs/N1_run2/track_results/MOT17-09-FRCNN.txt
+2026-09-20 09:17:16.000 | INFO     | __main__:main:227 - Args: Namespace(path='/home/yifu/mot-cmc/04_experiments/data/MOT17/train/MOT17-10-FRCNN/img1', benchmark='MOT17', split_to_eval='val', exp_file='./yolox/exps/example/mot/yolox_x_ablation.py', ckpt='./pretrained/bytetrack_ablation.pth.tar', experiment_name='N1_run2', default_parameters=True, save_frames=False, device=device(type='cuda'), conf=None, nms=None, tsize=None, fp16=True, fuse=True, track_high_thresh=0.6, track_low_thresh=0.1, new_track_thresh=0.7, track_buffer=30, match_thresh=0.8, aspect_ratio_thresh=1.6, min_box_area=10, cmc_method='file', with_reid=False, fast_reid_config='fast_reid/configs/MOT17/sbs_S50.yml', fast_reid_weights='pretrained/mot17_sbs_S50.pth', proximity_thresh=0.5, appearance_thresh=0.25, name='MOT17-10-FRCNN', ablation=True, mot20=False, fps=30, batch_size=1, trt=False)
+2026-09-20 09:17:16.872 | INFO     | __main__:main:237 - Model Summary: Params: 99.00M, Gflops: 793.21
+2026-09-20 09:17:16.874 | INFO     | __main__:main:244 - loading checkpoint
+2026-09-20 09:17:17.865 | INFO     | __main__:main:249 - loaded checkpoint done.
+2026-09-20 09:17:17.865 | INFO     | __main__:main:252 - 	Fusing model...
+2026-09-20 09:17:20.519 | INFO     | __main__:image_track:206 - Processing frame 20/326 (29.77 fps)
+2026-09-20 09:17:22.487 | INFO     | __main__:image_track:206 - Processing frame 40/326 (29.83 fps)
+2026-09-20 09:17:24.497 | INFO     | __main__:image_track:206 - Processing frame 60/326 (29.88 fps)
+2026-09-20 09:17:26.476 | INFO     | __main__:image_track:206 - Processing frame 80/326 (29.95 fps)
+2026-09-20 09:17:28.483 | INFO     | __main__:image_track:206 - Processing frame 100/326 (30.02 fps)
+2026-09-20 09:17:30.501 | INFO     | __main__:image_track:206 - Processing frame 120/326 (30.07 fps)
+2026-09-20 09:17:32.604 | INFO     | __main__:image_track:206 - Processing frame 140/326 (30.12 fps)
+2026-09-20 09:17:34.595 | INFO     | __main__:image_track:206 - Processing frame 160/326 (30.18 fps)
+2026-09-20 09:17:36.572 | INFO     | __main__:image_track:206 - Processing frame 180/326 (30.23 fps)
+2026-09-20 09:17:38.581 | INFO     | __main__:image_track:206 - Processing frame 200/326 (30.28 fps)
+2026-09-20 09:17:40.604 | INFO     | __main__:image_track:206 - Processing frame 220/326 (30.34 fps)
+2026-09-20 09:17:42.579 | INFO     | __main__:image_track:206 - Processing frame 240/326 (30.40 fps)
+2026-09-20 09:17:44.587 | INFO     | __main__:image_track:206 - Processing frame 260/326 (30.44 fps)
+2026-09-20 09:17:46.568 | INFO     | __main__:image_track:206 - Processing frame 280/326 (30.50 fps)
+2026-09-20 09:17:48.550 | INFO     | __main__:image_track:206 - Processing frame 300/326 (30.55 fps)
+2026-09-20 09:17:50.490 | INFO     | __main__:image_track:206 - Processing frame 320/326 (30.60 fps)
+2026-09-20 09:17:51.072 | INFO     | __main__:image_track:212 - save results to ./YOLOX_outputs/N1_run2/track_results/MOT17-10-FRCNN.txt
+2026-09-20 09:17:51.079 | INFO     | __main__:main:227 - Args: Namespace(path='/home/yifu/mot-cmc/04_experiments/data/MOT17/train/MOT17-11-FRCNN/img1', benchmark='MOT17', split_to_eval='val', exp_file='./yolox/exps/example/mot/yolox_x_ablation.py', ckpt='./pretrained/bytetrack_ablation.pth.tar', experiment_name='N1_run2', default_parameters=True, save_frames=False, device=device(type='cuda'), conf=None, nms=None, tsize=None, fp16=True, fuse=True, track_high_thresh=0.6, track_low_thresh=0.1, new_track_thresh=0.7, track_buffer=30, match_thresh=0.8, aspect_ratio_thresh=1.6, min_box_area=10, cmc_method='file', with_reid=False, fast_reid_config='fast_reid/configs/MOT17/sbs_S50.yml', fast_reid_weights='pretrained/mot17_sbs_S50.pth', proximity_thresh=0.5, appearance_thresh=0.25, name='MOT17-11-FRCNN', ablation=True, mot20=False, fps=30, batch_size=1, trt=False)
+2026-09-20 09:17:51.908 | INFO     | __main__:main:237 - Model Summary: Params: 99.00M, Gflops: 793.21
+2026-09-20 09:17:51.910 | INFO     | __main__:main:244 - loading checkpoint
+2026-09-20 09:17:52.352 | INFO     | __main__:main:249 - loaded checkpoint done.
+2026-09-20 09:17:52.352 | INFO     | __main__:main:252 - 	Fusing model...
+2026-09-20 09:17:55.073 | INFO     | __main__:image_track:206 - Processing frame 20/449 (30.64 fps)
+2026-09-20 09:17:57.096 | INFO     | __main__:image_track:206 - Processing frame 40/449 (30.69 fps)
+2026-09-20 09:17:59.121 | INFO     | __main__:image_track:206 - Processing frame 60/449 (30.72 fps)
+2026-09-20 09:18:01.115 | INFO     | __main__:image_track:206 - Processing frame 80/449 (30.77 fps)
+2026-09-20 09:18:03.157 | INFO     | __main__:image_track:206 - Processing frame 100/449 (30.83 fps)
+2026-09-20 09:18:05.142 | INFO     | __main__:image_track:206 - Processing frame 120/449 (30.88 fps)
+2026-09-20 09:18:07.139 | INFO     | __main__:image_track:206 - Processing frame 140/449 (30.93 fps)
+2026-09-20 09:18:09.219 | INFO     | __main__:image_track:206 - Processing frame 160/449 (30.94 fps)
+2026-09-20 09:18:11.189 | INFO     | __main__:image_track:206 - Processing frame 180/449 (31.00 fps)
+2026-09-20 09:18:13.146 | INFO     | __main__:image_track:206 - Processing frame 200/449 (31.05 fps)
+2026-09-20 09:18:15.159 | INFO     | __main__:image_track:206 - Processing frame 220/449 (31.11 fps)
+2026-09-20 09:18:17.150 | INFO     | __main__:image_track:206 - Processing frame 240/449 (31.16 fps)
+2026-09-20 09:18:19.129 | INFO     | __main__:image_track:206 - Processing frame 260/449 (31.21 fps)
+2026-09-20 09:18:21.167 | INFO     | __main__:image_track:206 - Processing frame 280/449 (31.23 fps)
+2026-09-20 09:18:23.097 | INFO     | __main__:image_track:206 - Processing frame 300/449 (31.28 fps)
+2026-09-20 09:18:25.088 | INFO     | __main__:image_track:206 - Processing frame 320/449 (31.33 fps)
+2026-09-20 09:18:27.077 | INFO     | __main__:image_track:206 - Processing frame 340/449 (31.35 fps)
+2026-09-20 09:18:29.047 | INFO     | __main__:image_track:206 - Processing frame 360/449 (31.38 fps)
+2026-09-20 09:18:31.029 | INFO     | __main__:image_track:206 - Processing frame 380/449 (31.42 fps)
+2026-09-20 09:18:33.021 | INFO     | __main__:image_track:206 - Processing frame 400/449 (31.46 fps)
+2026-09-20 09:18:35.001 | INFO     | __main__:image_track:206 - Processing frame 420/449 (31.51 fps)
+2026-09-20 09:18:36.964 | INFO     | __main__:image_track:206 - Processing frame 440/449 (31.56 fps)
+2026-09-20 09:18:37.832 | INFO     | __main__:image_track:212 - save results to ./YOLOX_outputs/N1_run2/track_results/MOT17-11-FRCNN.txt
+2026-09-20 09:18:37.839 | INFO     | __main__:main:227 - Args: Namespace(path='/home/yifu/mot-cmc/04_experiments/data/MOT17/train/MOT17-13-FRCNN/img1', benchmark='MOT17', split_to_eval='val', exp_file='./yolox/exps/example/mot/yolox_x_ablation.py', ckpt='./pretrained/bytetrack_ablation.pth.tar', experiment_name='N1_run2', default_parameters=True, save_frames=False, device=device(type='cuda'), conf=None, nms=None, tsize=None, fp16=True, fuse=True, track_high_thresh=0.6, track_low_thresh=0.1, new_track_thresh=0.7, track_buffer=25, match_thresh=0.8, aspect_ratio_thresh=1.6, min_box_area=10, cmc_method='file', with_reid=False, fast_reid_config='fast_reid/configs/MOT17/sbs_S50.yml', fast_reid_weights='pretrained/mot17_sbs_S50.pth', proximity_thresh=0.5, appearance_thresh=0.25, name='MOT17-13-FRCNN', ablation=True, mot20=False, fps=30, batch_size=1, trt=False)
+2026-09-20 09:18:38.688 | INFO     | __main__:main:237 - Model Summary: Params: 99.00M, Gflops: 793.21
+2026-09-20 09:18:38.690 | INFO     | __main__:main:244 - loading checkpoint
+2026-09-20 09:18:39.127 | INFO     | __main__:main:249 - loaded checkpoint done.
+2026-09-20 09:18:39.127 | INFO     | __main__:main:252 - 	Fusing model...
+2026-09-20 09:18:41.896 | INFO     | __main__:image_track:206 - Processing frame 20/374 (31.60 fps)
+2026-09-20 09:18:43.975 | INFO     | __main__:image_track:206 - Processing frame 40/374 (31.63 fps)
+2026-09-20 09:18:46.036 | INFO     | __main__:image_track:206 - Processing frame 60/374 (31.65 fps)
+2026-09-20 09:18:48.081 | INFO     | __main__:image_track:206 - Processing frame 80/374 (31.69 fps)
+2026-09-20 09:18:50.126 | INFO     | __main__:image_track:206 - Processing frame 100/374 (31.71 fps)
+2026-09-20 09:18:52.095 | INFO     | __main__:image_track:206 - Processing frame 120/374 (31.75 fps)
+2026-09-20 09:18:53.976 | INFO     | __main__:image_track:206 - Processing frame 140/374 (31.80 fps)
+2026-09-20 09:18:55.866 | INFO     | __main__:image_track:206 - Processing frame 160/374 (31.85 fps)
+2026-09-20 09:18:57.762 | INFO     | __main__:image_track:206 - Processing frame 180/374 (31.90 fps)
+2026-09-20 09:18:59.687 | INFO     | __main__:image_track:206 - Processing frame 200/374 (31.94 fps)
+2026-09-20 09:19:01.580 | INFO     | __main__:image_track:206 - Processing frame 220/374 (31.99 fps)
+2026-09-20 09:19:03.475 | INFO     | __main__:image_track:206 - Processing frame 240/374 (32.04 fps)
+2026-09-20 09:19:05.346 | INFO     | __main__:image_track:206 - Processing frame 260/374 (32.09 fps)
+2026-09-20 09:19:07.354 | INFO     | __main__:image_track:206 - Processing frame 280/374 (32.10 fps)
+2026-09-20 09:19:09.270 | INFO     | __main__:image_track:206 - Processing frame 300/374 (32.13 fps)
+2026-09-20 09:19:11.191 | INFO     | __main__:image_track:206 - Processing frame 320/374 (32.17 fps)
+2026-09-20 09:19:13.093 | INFO     | __main__:image_track:206 - Processing frame 340/374 (32.20 fps)
+2026-09-20 09:19:14.962 | INFO     | __main__:image_track:206 - Processing frame 360/374 (32.25 fps)
+2026-09-20 09:19:16.259 | INFO     | __main__:image_track:212 - save results to ./YOLOX_outputs/N1_run2/track_results/MOT17-13-FRCNN.txt
+2026-09-20 09:19:16.265 | INFO     | __main__:main:227 - Args: Namespace(path='/home/yifu/mot-cmc/04_experiments/data/MOT17/train/MOT17-02-DPM/img1', benchmark='MOT17', split_to_eval='val', exp_file='./yolox/exps/example/mot/yolox_x_ablation.py', ckpt='./pretrained/bytetrack_ablation.pth.tar', experiment_name='N1_run2', default_parameters=True, save_frames=False, device=device(type='cuda'), conf=None, nms=None, tsize=None, fp16=True, fuse=True, track_high_thresh=0.6, track_low_thresh=0.1, new_track_thresh=0.7, track_buffer=30, match_thresh=0.8, aspect_ratio_thresh=1.6, min_box_area=10, cmc_method='file', with_reid=False, fast_reid_config='fast_reid/configs/MOT17/sbs_S50.yml', fast_reid_weights='pretrained/mot17_sbs_S50.pth', proximity_thresh=0.5, appearance_thresh=0.25, name='MOT17-02-DPM', ablation=True, mot20=False, fps=30, batch_size=1, trt=False)
+2026-09-20 09:19:17.024 | INFO     | __main__:main:237 - Model Summary: Params: 99.00M, Gflops: 793.21
+2026-09-20 09:19:17.026 | INFO     | __main__:main:244 - loading checkpoint
+2026-09-20 09:19:17.441 | INFO     | __main__:main:249 - loaded checkpoint done.
+2026-09-20 09:19:17.441 | INFO     | __main__:main:252 - 	Fusing model...
+2026-09-20 09:19:19.895 | INFO     | __main__:image_track:206 - Processing frame 20/299 (32.30 fps)
+2026-09-20 09:19:21.788 | INFO     | __main__:image_track:206 - Processing frame 40/299 (32.32 fps)
+2026-09-20 09:19:23.689 | INFO     | __main__:image_track:206 - Processing frame 60/299 (32.34 fps)
+2026-09-20 09:19:25.591 | INFO     | __main__:image_track:206 - Processing frame 80/299 (32.36 fps)
+2026-09-20 09:19:27.462 | INFO     | __main__:image_track:206 - Processing frame 100/299 (32.39 fps)
+2026-09-20 09:19:30.082 | INFO     | __main__:image_track:206 - Processing frame 120/299 (32.25 fps)
+2026-09-20 09:19:33.161 | INFO     | __main__:image_track:206 - Processing frame 140/299 (32.08 fps)
+2026-09-20 09:19:36.156 | INFO     | __main__:image_track:206 - Processing frame 160/299 (31.93 fps)
+2026-09-20 09:19:39.038 | INFO     | __main__:image_track:206 - Processing frame 180/299 (31.83 fps)
+2026-09-20 09:19:42.161 | INFO     | __main__:image_track:206 - Processing frame 200/299 (31.70 fps)
+2026-09-20 09:19:45.157 | INFO     | __main__:image_track:206 - Processing frame 220/299 (31.56 fps)
+2026-09-20 09:19:48.063 | INFO     | __main__:image_track:206 - Processing frame 240/299 (31.47 fps)
+2026-09-20 09:19:51.077 | INFO     | __main__:image_track:206 - Processing frame 260/299 (31.37 fps)
+2026-09-20 09:19:54.286 | INFO     | __main__:image_track:206 - Processing frame 280/299 (31.23 fps)
+2026-09-20 09:19:57.162 | INFO     | __main__:image_track:212 - save results to ./YOLOX_outputs/N1_run2/track_results/MOT17-02-DPM.txt
+2026-09-20 09:19:57.171 | INFO     | __main__:main:227 - Args: Namespace(path='/home/yifu/mot-cmc/04_experiments/data/MOT17/train/MOT17-04-DPM/img1', benchmark='MOT17', split_to_eval='val', exp_file='./yolox/exps/example/mot/yolox_x_ablation.py', ckpt='./pretrained/bytetrack_ablation.pth.tar', experiment_name='N1_run2', default_parameters=True, save_frames=False, device=device(type='cuda'), conf=None, nms=None, tsize=None, fp16=True, fuse=True, track_high_thresh=0.6, track_low_thresh=0.1, new_track_thresh=0.7, track_buffer=30, match_thresh=0.8, aspect_ratio_thresh=1.6, min_box_area=10, cmc_method='file', with_reid=False, fast_reid_config='fast_reid/configs/MOT17/sbs_S50.yml', fast_reid_weights='pretrained/mot17_sbs_S50.pth', proximity_thresh=0.5, appearance_thresh=0.25, name='MOT17-04-DPM', ablation=True, mot20=False, fps=30, batch_size=1, trt=False)
+2026-09-20 09:19:58.768 | INFO     | __main__:main:237 - Model Summary: Params: 99.00M, Gflops: 793.21
+2026-09-20 09:19:58.771 | INFO     | __main__:main:244 - loading checkpoint
+2026-09-20 09:19:59.411 | INFO     | __main__:main:249 - loaded checkpoint done.
+2026-09-20 09:19:59.411 | INFO     | __main__:main:252 - 	Fusing model...
+2026-09-20 09:20:03.800 | INFO     | __main__:image_track:206 - Processing frame 20/524 (30.92 fps)
+2026-09-20 09:20:06.983 | INFO     | __main__:image_track:206 - Processing frame 40/524 (30.78 fps)
+2026-09-20 09:20:10.077 | INFO     | __main__:image_track:206 - Processing frame 60/524 (30.66 fps)
+2026-09-20 09:20:13.008 | INFO     | __main__:image_track:206 - Processing frame 80/524 (30.55 fps)
+2026-09-20 09:20:16.295 | INFO     | __main__:image_track:206 - Processing frame 100/524 (30.40 fps)
+2026-09-20 09:20:19.250 | INFO     | __main__:image_track:206 - Processing frame 120/524 (30.30 fps)
+2026-09-20 09:20:22.464 | INFO     | __main__:image_track:206 - Processing frame 140/524 (30.12 fps)
+2026-09-20 09:20:25.772 | INFO     | __main__:image_track:206 - Processing frame 160/524 (29.94 fps)
+2026-09-20 09:20:29.047 | INFO     | __main__:image_track:206 - Processing frame 180/524 (29.79 fps)
+2026-09-20 09:20:32.263 | INFO     | __main__:image_track:206 - Processing frame 200/524 (29.65 fps)
+2026-09-20 09:20:35.660 | INFO     | __main__:image_track:206 - Processing frame 220/524 (29.47 fps)
+2026-09-20 09:20:39.064 | INFO     | __main__:image_track:206 - Processing frame 240/524 (29.27 fps)
+2026-09-20 09:20:42.282 | INFO     | __main__:image_track:206 - Processing frame 260/524 (29.12 fps)
+2026-09-20 09:20:45.330 | INFO     | __main__:image_track:206 - Processing frame 280/524 (29.04 fps)
+2026-09-20 09:20:48.333 | INFO     | __main__:image_track:206 - Processing frame 300/524 (28.97 fps)
+2026-09-20 09:20:51.552 | INFO     | __main__:image_track:206 - Processing frame 320/524 (28.85 fps)
+2026-09-20 09:20:54.697 | INFO     | __main__:image_track:206 - Processing frame 340/524 (28.74 fps)
+2026-09-20 09:20:57.863 | INFO     | __main__:image_track:206 - Processing frame 360/524 (28.65 fps)
+2026-09-20 09:21:00.973 | INFO     | __main__:image_track:206 - Processing frame 380/524 (28.53 fps)
+2026-09-20 09:21:04.020 | INFO     | __main__:image_track:206 - Processing frame 400/524 (28.42 fps)
+2026-09-20 09:21:06.920 | INFO     | __main__:image_track:206 - Processing frame 420/524 (28.33 fps)
+2026-09-20 09:21:10.008 | INFO     | __main__:image_track:206 - Processing frame 440/524 (28.23 fps)
+2026-09-20 09:21:13.086 | INFO     | __main__:image_track:206 - Processing frame 460/524 (28.13 fps)
+2026-09-20 09:21:16.049 | INFO     | __main__:image_track:206 - Processing frame 480/524 (28.08 fps)
+2026-09-20 09:21:19.372 | INFO     | __main__:image_track:206 - Processing frame 500/524 (27.97 fps)
+2026-09-20 09:21:23.332 | INFO     | __main__:image_track:206 - Processing frame 520/524 (27.73 fps)
+2026-09-20 09:21:24.125 | INFO     | __main__:image_track:212 - save results to ./YOLOX_outputs/N1_run2/track_results/MOT17-04-DPM.txt
+2026-09-20 09:21:24.135 | INFO     | __main__:main:227 - Args: Namespace(path='/home/yifu/mot-cmc/04_experiments/data/MOT17/train/MOT17-05-DPM/img1', benchmark='MOT17', split_to_eval='val', exp_file='./yolox/exps/example/mot/yolox_x_ablation.py', ckpt='./pretrained/bytetrack_ablation.pth.tar', experiment_name='N1_run2', default_parameters=True, save_frames=False, device=device(type='cuda'), conf=None, nms=None, tsize=None, fp16=True, fuse=True, track_high_thresh=0.6, track_low_thresh=0.1, new_track_thresh=0.7, track_buffer=30, match_thresh=0.8, aspect_ratio_thresh=1.6, min_box_area=10, cmc_method='file', with_reid=False, fast_reid_config='fast_reid/configs/MOT17/sbs_S50.yml', fast_reid_weights='pretrained/mot17_sbs_S50.pth', proximity_thresh=0.5, appearance_thresh=0.25, name='MOT17-05-DPM', ablation=True, mot20=False, fps=30, batch_size=1, trt=False)
+2026-09-20 09:21:25.680 | INFO     | __main__:main:237 - Model Summary: Params: 99.00M, Gflops: 793.21
+2026-09-20 09:21:25.685 | INFO     | __main__:main:244 - loading checkpoint
+2026-09-20 09:21:26.497 | INFO     | __main__:main:249 - loaded checkpoint done.
+2026-09-20 09:21:26.497 | INFO     | __main__:main:252 - 	Fusing model...
+2026-09-20 09:21:31.117 | INFO     | __main__:image_track:206 - Processing frame 20/418 (27.50 fps)
+2026-09-20 09:21:34.705 | INFO     | __main__:image_track:206 - Processing frame 40/418 (27.29 fps)
+2026-09-20 09:21:38.587 | INFO     | __main__:image_track:206 - Processing frame 60/418 (27.06 fps)
+2026-09-20 09:21:42.338 | INFO     | __main__:image_track:206 - Processing frame 80/418 (26.84 fps)
+2026-09-20 09:21:46.515 | INFO     | __main__:image_track:206 - Processing frame 100/418 (26.56 fps)
+2026-09-20 09:21:50.464 | INFO     | __main__:image_track:206 - Processing frame 120/418 (26.35 fps)
+2026-09-20 09:21:54.363 | INFO     | __main__:image_track:206 - Processing frame 140/418 (26.13 fps)
+2026-09-20 09:21:58.360 | INFO     | __main__:image_track:206 - Processing frame 160/418 (25.92 fps)
+2026-09-20 09:22:02.331 | INFO     | __main__:image_track:206 - Processing frame 180/418 (25.71 fps)
+2026-09-20 09:22:06.084 | INFO     | __main__:image_track:206 - Processing frame 200/418 (25.53 fps)
+2026-09-20 09:22:09.272 | INFO     | __main__:image_track:206 - Processing frame 220/418 (25.44 fps)
+2026-09-20 09:22:12.074 | INFO     | __main__:image_track:206 - Processing frame 240/418 (25.40 fps)
+2026-09-20 09:22:15.275 | INFO     | __main__:image_track:206 - Processing frame 260/418 (25.30 fps)
+2026-09-20 09:22:18.447 | INFO     | __main__:image_track:206 - Processing frame 280/418 (25.24 fps)
+2026-09-20 09:22:21.570 | INFO     | __main__:image_track:206 - Processing frame 300/418 (25.16 fps)
+2026-09-20 09:22:24.283 | INFO     | __main__:image_track:206 - Processing frame 320/418 (25.14 fps)
+2026-09-20 09:22:27.303 | INFO     | __main__:image_track:206 - Processing frame 340/418 (25.08 fps)
+2026-09-20 09:22:30.260 | INFO     | __main__:image_track:206 - Processing frame 360/418 (25.02 fps)
+2026-09-20 09:22:32.708 | INFO     | __main__:image_track:206 - Processing frame 380/418 (25.02 fps)
+2026-09-20 09:22:35.095 | INFO     | __main__:image_track:206 - Processing frame 400/418 (25.02 fps)
+2026-09-20 09:22:37.125 | INFO     | __main__:image_track:212 - save results to ./YOLOX_outputs/N1_run2/track_results/MOT17-05-DPM.txt
+2026-09-20 09:22:37.131 | INFO     | __main__:main:227 - Args: Namespace(path='/home/yifu/mot-cmc/04_experiments/data/MOT17/train/MOT17-09-DPM/img1', benchmark='MOT17', split_to_eval='val', exp_file='./yolox/exps/example/mot/yolox_x_ablation.py', ckpt='./pretrained/bytetrack_ablation.pth.tar', experiment_name='N1_run2', default_parameters=True, save_frames=False, device=device(type='cuda'), conf=None, nms=None, tsize=None, fp16=True, fuse=True, track_high_thresh=0.6, track_low_thresh=0.1, new_track_thresh=0.7, track_buffer=30, match_thresh=0.8, aspect_ratio_thresh=1.6, min_box_area=10, cmc_method='file', with_reid=False, fast_reid_config='fast_reid/configs/MOT17/sbs_S50.yml', fast_reid_weights='pretrained/mot17_sbs_S50.pth', proximity_thresh=0.5, appearance_thresh=0.25, name='MOT17-09-DPM', ablation=True, mot20=False, fps=30, batch_size=1, trt=False)
+2026-09-20 09:22:38.228 | INFO     | __main__:main:237 - Model Summary: Params: 99.00M, Gflops: 793.21
+2026-09-20 09:22:38.231 | INFO     | __main__:main:244 - loading checkpoint
+2026-09-20 09:22:38.940 | INFO     | __main__:main:249 - loaded checkpoint done.
+2026-09-20 09:22:38.940 | INFO     | __main__:main:252 - 	Fusing model...
+2026-09-20 09:22:42.336 | INFO     | __main__:image_track:206 - Processing frame 20/262 (25.02 fps)
+2026-09-20 09:22:45.035 | INFO     | __main__:image_track:206 - Processing frame 40/262 (25.01 fps)
+2026-09-20 09:22:47.765 | INFO     | __main__:image_track:206 - Processing frame 60/262 (25.00 fps)
+2026-09-20 09:22:50.417 | INFO     | __main__:image_track:206 - Processing frame 80/262 (25.00 fps)
+2026-09-20 09:22:53.038 | INFO     | __main__:image_track:206 - Processing frame 100/262 (25.01 fps)
+2026-09-20 09:22:55.790 | INFO     | __main__:image_track:206 - Processing frame 120/262 (24.99 fps)
+2026-09-20 09:22:58.463 | INFO     | __main__:image_track:206 - Processing frame 140/262 (25.00 fps)
+2026-09-20 09:23:01.467 | INFO     | __main__:image_track:206 - Processing frame 160/262 (24.98 fps)
+2026-09-20 09:23:04.220 | INFO     | __main__:image_track:206 - Processing frame 180/262 (24.98 fps)
+2026-09-20 09:23:07.214 | INFO     | __main__:image_track:206 - Processing frame 200/262 (24.96 fps)
+2026-09-20 09:23:10.070 | INFO     | __main__:image_track:206 - Processing frame 220/262 (24.94 fps)
+2026-09-20 09:23:12.989 | INFO     | __main__:image_track:206 - Processing frame 240/262 (24.92 fps)
+2026-09-20 09:23:15.748 | INFO     | __main__:image_track:206 - Processing frame 260/262 (24.90 fps)
+2026-09-20 09:23:16.073 | INFO     | __main__:image_track:212 - save results to ./YOLOX_outputs/N1_run2/track_results/MOT17-09-DPM.txt
+2026-09-20 09:23:16.078 | INFO     | __main__:main:227 - Args: Namespace(path='/home/yifu/mot-cmc/04_experiments/data/MOT17/train/MOT17-10-DPM/img1', benchmark='MOT17', split_to_eval='val', exp_file='./yolox/exps/example/mot/yolox_x_ablation.py', ckpt='./pretrained/bytetrack_ablation.pth.tar', experiment_name='N1_run2', default_parameters=True, save_frames=False, device=device(type='cuda'), conf=None, nms=None, tsize=None, fp16=True, fuse=True, track_high_thresh=0.6, track_low_thresh=0.1, new_track_thresh=0.7, track_buffer=30, match_thresh=0.8, aspect_ratio_thresh=1.6, min_box_area=10, cmc_method='file', with_reid=False, fast_reid_config='fast_reid/configs/MOT17/sbs_S50.yml', fast_reid_weights='pretrained/mot17_sbs_S50.pth', proximity_thresh=0.5, appearance_thresh=0.25, name='MOT17-10-DPM', ablation=True, mot20=False, fps=30, batch_size=1, trt=False)
+2026-09-20 09:23:17.201 | INFO     | __main__:main:237 - Model Summary: Params: 99.00M, Gflops: 793.21
+2026-09-20 09:23:17.204 | INFO     | __main__:main:244 - loading checkpoint
+2026-09-20 09:23:17.807 | INFO     | __main__:main:249 - loaded checkpoint done.
+2026-09-20 09:23:17.807 | INFO     | __main__:main:252 - 	Fusing model...
+2026-09-20 09:23:21.561 | INFO     | __main__:image_track:206 - Processing frame 20/326 (24.88 fps)
+2026-09-20 09:23:24.308 | INFO     | __main__:image_track:206 - Processing frame 40/326 (24.85 fps)
+2026-09-20 09:23:26.970 | INFO     | __main__:image_track:206 - Processing frame 60/326 (24.84 fps)
+2026-09-20 09:23:29.755 | INFO     | __main__:image_track:206 - Processing frame 80/326 (24.81 fps)
+2026-09-20 09:23:32.589 | INFO     | __main__:image_track:206 - Processing frame 100/326 (24.78 fps)
+2026-09-20 09:23:35.411 | INFO     | __main__:image_track:206 - Processing frame 120/326 (24.75 fps)
+2026-09-20 09:23:38.180 | INFO     | __main__:image_track:206 - Processing frame 140/326 (24.73 fps)
+2026-09-20 09:23:40.882 | INFO     | __main__:image_track:206 - Processing frame 160/326 (24.70 fps)
+2026-09-20 09:23:43.540 | INFO     | __main__:image_track:206 - Processing frame 180/326 (24.69 fps)
+2026-09-20 09:23:46.325 | INFO     | __main__:image_track:206 - Processing frame 200/326 (24.66 fps)
+2026-09-20 09:23:49.128 | INFO     | __main__:image_track:206 - Processing frame 220/326 (24.63 fps)
+2026-09-20 09:23:51.903 | INFO     | __main__:image_track:206 - Processing frame 240/326 (24.62 fps)
+2026-09-20 09:23:54.817 | INFO     | __main__:image_track:206 - Processing frame 260/326 (24.58 fps)
+2026-09-20 09:23:57.781 | INFO     | __main__:image_track:206 - Processing frame 280/326 (24.54 fps)
+2026-09-20 09:24:00.695 | INFO     | __main__:image_track:206 - Processing frame 300/326 (24.51 fps)
+2026-09-20 09:24:03.670 | INFO     | __main__:image_track:206 - Processing frame 320/326 (24.49 fps)
+2026-09-20 09:24:04.567 | INFO     | __main__:image_track:212 - save results to ./YOLOX_outputs/N1_run2/track_results/MOT17-10-DPM.txt
+2026-09-20 09:24:04.573 | INFO     | __main__:main:227 - Args: Namespace(path='/home/yifu/mot-cmc/04_experiments/data/MOT17/train/MOT17-11-DPM/img1', benchmark='MOT17', split_to_eval='val', exp_file='./yolox/exps/example/mot/yolox_x_ablation.py', ckpt='./pretrained/bytetrack_ablation.pth.tar', experiment_name='N1_run2', default_parameters=True, save_frames=False, device=device(type='cuda'), conf=None, nms=None, tsize=None, fp16=True, fuse=True, track_high_thresh=0.6, track_low_thresh=0.1, new_track_thresh=0.7, track_buffer=30, match_thresh=0.8, aspect_ratio_thresh=1.6, min_box_area=10, cmc_method='file', with_reid=False, fast_reid_config='fast_reid/configs/MOT17/sbs_S50.yml', fast_reid_weights='pretrained/mot17_sbs_S50.pth', proximity_thresh=0.5, appearance_thresh=0.25, name='MOT17-11-DPM', ablation=True, mot20=False, fps=30, batch_size=1, trt=False)
+2026-09-20 09:24:06.051 | INFO     | __main__:main:237 - Model Summary: Params: 99.00M, Gflops: 793.21
+2026-09-20 09:24:06.054 | INFO     | __main__:main:244 - loading checkpoint
+2026-09-20 09:24:06.756 | INFO     | __main__:main:249 - loaded checkpoint done.
+2026-09-20 09:24:06.756 | INFO     | __main__:main:252 - 	Fusing model...
+2026-09-20 09:24:10.471 | INFO     | __main__:image_track:206 - Processing frame 20/449 (24.45 fps)
+2026-09-20 09:24:13.322 | INFO     | __main__:image_track:206 - Processing frame 40/449 (24.43 fps)
+2026-09-20 09:24:16.027 | INFO     | __main__:image_track:206 - Processing frame 60/449 (24.43 fps)
+2026-09-20 09:24:18.838 | INFO     | __main__:image_track:206 - Processing frame 80/449 (24.42 fps)
+2026-09-20 09:24:21.655 | INFO     | __main__:image_track:206 - Processing frame 100/449 (24.40 fps)
+2026-09-20 09:24:24.206 | INFO     | __main__:image_track:206 - Processing frame 120/449 (24.41 fps)
+2026-09-20 09:24:26.883 | INFO     | __main__:image_track:206 - Processing frame 140/449 (24.41 fps)
+2026-09-20 09:24:29.529 | INFO     | __main__:image_track:206 - Processing frame 160/449 (24.41 fps)
+2026-09-20 09:24:32.491 | INFO     | __main__:image_track:206 - Processing frame 180/449 (24.40 fps)
+2026-09-20 09:24:35.175 | INFO     | __main__:image_track:206 - Processing frame 200/449 (24.40 fps)
+2026-09-20 09:24:37.906 | INFO     | __main__:image_track:206 - Processing frame 220/449 (24.39 fps)
+2026-09-20 09:24:40.556 | INFO     | __main__:image_track:206 - Processing frame 240/449 (24.40 fps)
+2026-09-20 09:24:43.215 | INFO     | __main__:image_track:206 - Processing frame 260/449 (24.39 fps)
+2026-09-20 09:24:46.051 | INFO     | __main__:image_track:206 - Processing frame 280/449 (24.37 fps)
+2026-09-20 09:24:48.796 | INFO     | __main__:image_track:206 - Processing frame 300/449 (24.37 fps)
+2026-09-20 09:24:51.551 | INFO     | __main__:image_track:206 - Processing frame 320/449 (24.35 fps)
+2026-09-20 09:24:54.322 | INFO     | __main__:image_track:206 - Processing frame 340/449 (24.35 fps)
+2026-09-20 09:24:57.098 | INFO     | __main__:image_track:206 - Processing frame 360/449 (24.34 fps)
+2026-09-20 09:24:59.905 | INFO     | __main__:image_track:206 - Processing frame 380/449 (24.33 fps)
+2026-09-20 09:25:02.688 | INFO     | __main__:image_track:206 - Processing frame 400/449 (24.31 fps)
+2026-09-20 09:25:05.462 | INFO     | __main__:image_track:206 - Processing frame 420/449 (24.30 fps)
+2026-09-20 09:25:08.142 | INFO     | __main__:image_track:206 - Processing frame 440/449 (24.29 fps)
+2026-09-20 09:25:09.277 | INFO     | __main__:image_track:212 - save results to ./YOLOX_outputs/N1_run2/track_results/MOT17-11-DPM.txt
+2026-09-20 09:25:09.284 | INFO     | __main__:main:227 - Args: Namespace(path='/home/yifu/mot-cmc/04_experiments/data/MOT17/train/MOT17-13-DPM/img1', benchmark='MOT17', split_to_eval='val', exp_file='./yolox/exps/example/mot/yolox_x_ablation.py', ckpt='./pretrained/bytetrack_ablation.pth.tar', experiment_name='N1_run2', default_parameters=True, save_frames=False, device=device(type='cuda'), conf=None, nms=None, tsize=None, fp16=True, fuse=True, track_high_thresh=0.6, track_low_thresh=0.1, new_track_thresh=0.7, track_buffer=30, match_thresh=0.8, aspect_ratio_thresh=1.6, min_box_area=10, cmc_method='file', with_reid=False, fast_reid_config='fast_reid/configs/MOT17/sbs_S50.yml', fast_reid_weights='pretrained/mot17_sbs_S50.pth', proximity_thresh=0.5, appearance_thresh=0.25, name='MOT17-13-DPM', ablation=True, mot20=False, fps=30, batch_size=1, trt=False)
+2026-09-20 09:25:10.360 | INFO     | __main__:main:237 - Model Summary: Params: 99.00M, Gflops: 793.21
+2026-09-20 09:25:10.362 | INFO     | __main__:main:244 - loading checkpoint
+2026-09-20 09:25:10.882 | INFO     | __main__:main:249 - loaded checkpoint done.
+2026-09-20 09:25:10.883 | INFO     | __main__:main:252 - 	Fusing model...
+2026-09-20 09:25:14.403 | INFO     | __main__:image_track:206 - Processing frame 20/374 (24.27 fps)
+2026-09-20 09:25:16.974 | INFO     | __main__:image_track:206 - Processing frame 40/374 (24.28 fps)
+2026-09-20 09:25:19.691 | INFO     | __main__:image_track:206 - Processing frame 60/374 (24.27 fps)
+2026-09-20 09:25:22.454 | INFO     | __main__:image_track:206 - Processing frame 80/374 (24.25 fps)
+2026-09-20 09:25:25.219 | INFO     | __main__:image_track:206 - Processing frame 100/374 (24.24 fps)
+2026-09-20 09:25:28.102 | INFO     | __main__:image_track:206 - Processing frame 120/374 (24.21 fps)
+2026-09-20 09:25:30.958 | INFO     | __main__:image_track:206 - Processing frame 140/374 (24.21 fps)
+2026-09-20 09:25:33.633 | INFO     | __main__:image_track:206 - Processing frame 160/374 (24.21 fps)
+2026-09-20 09:25:36.365 | INFO     | __main__:image_track:206 - Processing frame 180/374 (24.21 fps)
+2026-09-20 09:25:38.988 | INFO     | __main__:image_track:206 - Processing frame 200/374 (24.22 fps)
+2026-09-20 09:25:41.636 | INFO     | __main__:image_track:206 - Processing frame 220/374 (24.21 fps)
+2026-09-20 09:25:44.341 | INFO     | __main__:image_track:206 - Processing frame 240/374 (24.21 fps)
+2026-09-20 09:25:47.295 | INFO     | __main__:image_track:206 - Processing frame 260/374 (24.18 fps)
+2026-09-20 09:25:50.113 | INFO     | __main__:image_track:206 - Processing frame 280/374 (24.16 fps)
+2026-09-20 09:25:52.791 | INFO     | __main__:image_track:206 - Processing frame 300/374 (24.15 fps)
+2026-09-20 09:25:55.479 | INFO     | __main__:image_track:206 - Processing frame 320/374 (24.15 fps)
+2026-09-20 09:25:58.324 | INFO     | __main__:image_track:206 - Processing frame 340/374 (24.14 fps)
+2026-09-20 09:26:01.021 | INFO     | __main__:image_track:206 - Processing frame 360/374 (24.14 fps)
+2026-09-20 09:26:02.848 | INFO     | __main__:image_track:212 - save results to ./YOLOX_outputs/N1_run2/track_results/MOT17-13-DPM.txt
+2026-09-20 09:26:02.852 | INFO     | __main__:main:227 - Args: Namespace(path='/home/yifu/mot-cmc/04_experiments/data/MOT17/train/MOT17-02-SDP/img1', benchmark='MOT17', split_to_eval='val', exp_file='./yolox/exps/example/mot/yolox_x_ablation.py', ckpt='./pretrained/bytetrack_ablation.pth.tar', experiment_name='N1_run2', default_parameters=True, save_frames=False, device=device(type='cuda'), conf=None, nms=None, tsize=None, fp16=True, fuse=True, track_high_thresh=0.6, track_low_thresh=0.1, new_track_thresh=0.7, track_buffer=30, match_thresh=0.8, aspect_ratio_thresh=1.6, min_box_area=10, cmc_method='file', with_reid=False, fast_reid_config='fast_reid/configs/MOT17/sbs_S50.yml', fast_reid_weights='pretrained/mot17_sbs_S50.pth', proximity_thresh=0.5, appearance_thresh=0.25, name='MOT17-02-SDP', ablation=True, mot20=False, fps=30, batch_size=1, trt=False)
+2026-09-20 09:26:03.749 | INFO     | __main__:main:237 - Model Summary: Params: 99.00M, Gflops: 793.21
+2026-09-20 09:26:03.751 | INFO     | __main__:main:244 - loading checkpoint
+2026-09-20 09:26:04.243 | INFO     | __main__:main:249 - loaded checkpoint done.
+2026-09-20 09:26:04.243 | INFO     | __main__:main:252 - 	Fusing model...
+2026-09-20 09:26:07.796 | INFO     | __main__:image_track:206 - Processing frame 20/299 (24.11 fps)
+2026-09-20 09:26:10.547 | INFO     | __main__:image_track:206 - Processing frame 40/299 (24.10 fps)
+2026-09-20 09:26:13.248 | INFO     | __main__:image_track:206 - Processing frame 60/299 (24.09 fps)
+2026-09-20 09:26:15.885 | INFO     | __main__:image_track:206 - Processing frame 80/299 (24.08 fps)
+2026-09-20 09:26:18.783 | INFO     | __main__:image_track:206 - Processing frame 100/299 (24.06 fps)
+2026-09-20 09:26:21.436 | INFO     | __main__:image_track:206 - Processing frame 120/299 (24.06 fps)
+2026-09-20 09:26:24.263 | INFO     | __main__:image_track:206 - Processing frame 140/299 (24.04 fps)
+2026-09-20 09:26:27.061 | INFO     | __main__:image_track:206 - Processing frame 160/299 (24.04 fps)
+2026-09-20 09:26:29.778 | INFO     | __main__:image_track:206 - Processing frame 180/299 (24.04 fps)
+2026-09-20 09:26:32.402 | INFO     | __main__:image_track:206 - Processing frame 200/299 (24.04 fps)
+2026-09-20 09:26:34.996 | INFO     | __main__:image_track:206 - Processing frame 220/299 (24.04 fps)
+2026-09-20 09:26:37.509 | INFO     | __main__:image_track:206 - Processing frame 240/299 (24.05 fps)
+2026-09-20 09:26:40.189 | INFO     | __main__:image_track:206 - Processing frame 260/299 (24.04 fps)
+2026-09-20 09:26:42.853 | INFO     | __main__:image_track:206 - Processing frame 280/299 (24.04 fps)
+2026-09-20 09:26:45.319 | INFO     | __main__:image_track:212 - save results to ./YOLOX_outputs/N1_run2/track_results/MOT17-02-SDP.txt
+2026-09-20 09:26:45.323 | INFO     | __main__:main:227 - Args: Namespace(path='/home/yifu/mot-cmc/04_experiments/data/MOT17/train/MOT17-04-SDP/img1', benchmark='MOT17', split_to_eval='val', exp_file='./yolox/exps/example/mot/yolox_x_ablation.py', ckpt='./pretrained/bytetrack_ablation.pth.tar', experiment_name='N1_run2', default_parameters=True, save_frames=False, device=device(type='cuda'), conf=None, nms=None, tsize=None, fp16=True, fuse=True, track_high_thresh=0.6, track_low_thresh=0.1, new_track_thresh=0.7, track_buffer=30, match_thresh=0.8, aspect_ratio_thresh=1.6, min_box_area=10, cmc_method='file', with_reid=False, fast_reid_config='fast_reid/configs/MOT17/sbs_S50.yml', fast_reid_weights='pretrained/mot17_sbs_S50.pth', proximity_thresh=0.5, appearance_thresh=0.25, name='MOT17-04-SDP', ablation=True, mot20=False, fps=30, batch_size=1, trt=False)
+2026-09-20 09:26:46.270 | INFO     | __main__:main:237 - Model Summary: Params: 99.00M, Gflops: 793.21
+2026-09-20 09:26:46.272 | INFO     | __main__:main:244 - loading checkpoint
+2026-09-20 09:26:46.795 | INFO     | __main__:main:249 - loaded checkpoint done.
+2026-09-20 09:26:46.796 | INFO     | __main__:main:252 - 	Fusing model...
+2026-09-20 09:26:50.215 | INFO     | __main__:image_track:206 - Processing frame 20/524 (24.03 fps)
+2026-09-20 09:26:53.115 | INFO     | __main__:image_track:206 - Processing frame 40/524 (24.01 fps)
+2026-09-20 09:26:55.867 | INFO     | __main__:image_track:206 - Processing frame 60/524 (24.00 fps)
+2026-09-20 09:26:58.483 | INFO     | __main__:image_track:206 - Processing frame 80/524 (24.00 fps)
+2026-09-20 09:27:01.229 | INFO     | __main__:image_track:206 - Processing frame 100/524 (24.00 fps)
+2026-09-20 09:27:03.964 | INFO     | __main__:image_track:206 - Processing frame 120/524 (23.99 fps)
+2026-09-20 09:27:06.765 | INFO     | __main__:image_track:206 - Processing frame 140/524 (23.98 fps)
+2026-09-20 09:27:09.389 | INFO     | __main__:image_track:206 - Processing frame 160/524 (23.98 fps)
+2026-09-20 09:27:12.019 | INFO     | __main__:image_track:206 - Processing frame 180/524 (23.98 fps)
+2026-09-20 09:27:14.607 | INFO     | __main__:image_track:206 - Processing frame 200/524 (23.98 fps)
+2026-09-20 09:27:17.187 | INFO     | __main__:image_track:206 - Processing frame 220/524 (23.99 fps)
+2026-09-20 09:27:19.646 | INFO     | __main__:image_track:206 - Processing frame 240/524 (23.99 fps)
+2026-09-20 09:27:22.371 | INFO     | __main__:image_track:206 - Processing frame 260/524 (23.99 fps)
+2026-09-20 09:27:25.041 | INFO     | __main__:image_track:206 - Processing frame 280/524 (23.99 fps)
+2026-09-20 09:27:27.681 | INFO     | __main__:image_track:206 - Processing frame 300/524 (23.99 fps)
+2026-09-20 09:27:30.346 | INFO     | __main__:image_track:206 - Processing frame 320/524 (23.99 fps)
+2026-09-20 09:27:32.937 | INFO     | __main__:image_track:206 - Processing frame 340/524 (23.99 fps)
+2026-09-20 09:27:35.589 | INFO     | __main__:image_track:206 - Processing frame 360/524 (23.99 fps)
+2026-09-20 09:27:38.169 | INFO     | __main__:image_track:206 - Processing frame 380/524 (23.99 fps)
+2026-09-20 09:27:40.820 | INFO     | __main__:image_track:206 - Processing frame 400/524 (23.98 fps)
+2026-09-20 09:27:43.579 | INFO     | __main__:image_track:206 - Processing frame 420/524 (23.97 fps)
+2026-09-20 09:27:46.181 | INFO     | __main__:image_track:206 - Processing frame 440/524 (23.97 fps)
+2026-09-20 09:27:48.840 | INFO     | __main__:image_track:206 - Processing frame 460/524 (23.97 fps)
+2026-09-20 09:27:51.391 | INFO     | __main__:image_track:206 - Processing frame 480/524 (23.98 fps)
+2026-09-20 09:27:53.930 | INFO     | __main__:image_track:206 - Processing frame 500/524 (23.97 fps)
+2026-09-20 09:27:56.436 | INFO     | __main__:image_track:206 - Processing frame 520/524 (23.98 fps)
+2026-09-20 09:27:56.932 | INFO     | __main__:image_track:212 - save results to ./YOLOX_outputs/N1_run2/track_results/MOT17-04-SDP.txt
+2026-09-20 09:27:56.943 | INFO     | __main__:main:227 - Args: Namespace(path='/home/yifu/mot-cmc/04_experiments/data/MOT17/train/MOT17-05-SDP/img1', benchmark='MOT17', split_to_eval='val', exp_file='./yolox/exps/example/mot/yolox_x_ablation.py', ckpt='./pretrained/bytetrack_ablation.pth.tar', experiment_name='N1_run2', default_parameters=True, save_frames=False, device=device(type='cuda'), conf=None, nms=None, tsize=None, fp16=True, fuse=True, track_high_thresh=0.6, track_low_thresh=0.1, new_track_thresh=0.7, track_buffer=30, match_thresh=0.8, aspect_ratio_thresh=1.6, min_box_area=10, cmc_method='file', with_reid=False, fast_reid_config='fast_reid/configs/MOT17/sbs_S50.yml', fast_reid_weights='pretrained/mot17_sbs_S50.pth', proximity_thresh=0.5, appearance_thresh=0.25, name='MOT17-05-SDP', ablation=True, mot20=False, fps=30, batch_size=1, trt=False)
+2026-09-20 09:27:58.248 | INFO     | __main__:main:237 - Model Summary: Params: 99.00M, Gflops: 793.21
+2026-09-20 09:27:58.251 | INFO     | __main__:main:244 - loading checkpoint
+2026-09-20 09:27:58.762 | INFO     | __main__:main:249 - loaded checkpoint done.
+2026-09-20 09:27:58.763 | INFO     | __main__:main:252 - 	Fusing model...
+2026-09-20 09:28:01.681 | INFO     | __main__:image_track:206 - Processing frame 20/418 (23.99 fps)
+2026-09-20 09:28:03.805 | INFO     | __main__:image_track:206 - Processing frame 40/418 (24.01 fps)
+2026-09-20 09:28:05.917 | INFO     | __main__:image_track:206 - Processing frame 60/418 (24.02 fps)
+2026-09-20 09:28:07.999 | INFO     | __main__:image_track:206 - Processing frame 80/418 (24.03 fps)
+2026-09-20 09:28:09.928 | INFO     | __main__:image_track:206 - Processing frame 100/418 (24.05 fps)
+2026-09-20 09:28:11.847 | INFO     | __main__:image_track:206 - Processing frame 120/418 (24.07 fps)
+2026-09-20 09:28:13.674 | INFO     | __main__:image_track:206 - Processing frame 140/418 (24.09 fps)
+2026-09-20 09:28:15.614 | INFO     | __main__:image_track:206 - Processing frame 160/418 (24.10 fps)
+2026-09-20 09:28:17.542 | INFO     | __main__:image_track:206 - Processing frame 180/418 (24.12 fps)
+2026-09-20 09:28:19.365 | INFO     | __main__:image_track:206 - Processing frame 200/418 (24.15 fps)
+2026-09-20 09:28:21.209 | INFO     | __main__:image_track:206 - Processing frame 220/418 (24.17 fps)
+2026-09-20 09:28:23.046 | INFO     | __main__:image_track:206 - Processing frame 240/418 (24.20 fps)
+2026-09-20 09:28:24.917 | INFO     | __main__:image_track:206 - Processing frame 260/418 (24.22 fps)
+2026-09-20 09:28:26.761 | INFO     | __main__:image_track:206 - Processing frame 280/418 (24.24 fps)
+2026-09-20 09:28:28.679 | INFO     | __main__:image_track:206 - Processing frame 300/418 (24.27 fps)
+2026-09-20 09:28:30.585 | INFO     | __main__:image_track:206 - Processing frame 320/418 (24.29 fps)
+2026-09-20 09:28:32.479 | INFO     | __main__:image_track:206 - Processing frame 340/418 (24.31 fps)
+2026-09-20 09:28:34.341 | INFO     | __main__:image_track:206 - Processing frame 360/418 (24.33 fps)
+2026-09-20 09:28:36.267 | INFO     | __main__:image_track:206 - Processing frame 380/418 (24.35 fps)
+2026-09-20 09:28:38.180 | INFO     | __main__:image_track:206 - Processing frame 400/418 (24.36 fps)
+2026-09-20 09:28:39.838 | INFO     | __main__:image_track:212 - save results to ./YOLOX_outputs/N1_run2/track_results/MOT17-05-SDP.txt
+2026-09-20 09:28:39.849 | INFO     | __main__:main:227 - Args: Namespace(path='/home/yifu/mot-cmc/04_experiments/data/MOT17/train/MOT17-09-SDP/img1', benchmark='MOT17', split_to_eval='val', exp_file='./yolox/exps/example/mot/yolox_x_ablation.py', ckpt='./pretrained/bytetrack_ablation.pth.tar', experiment_name='N1_run2', default_parameters=True, save_frames=False, device=device(type='cuda'), conf=None, nms=None, tsize=None, fp16=True, fuse=True, track_high_thresh=0.6, track_low_thresh=0.1, new_track_thresh=0.7, track_buffer=30, match_thresh=0.8, aspect_ratio_thresh=1.6, min_box_area=10, cmc_method='file', with_reid=False, fast_reid_config='fast_reid/configs/MOT17/sbs_S50.yml', fast_reid_weights='pretrained/mot17_sbs_S50.pth', proximity_thresh=0.5, appearance_thresh=0.25, name='MOT17-09-SDP', ablation=True, mot20=False, fps=30, batch_size=1, trt=False)
+2026-09-20 09:28:40.673 | INFO     | __main__:main:237 - Model Summary: Params: 99.00M, Gflops: 793.21
+2026-09-20 09:28:40.675 | INFO     | __main__:main:244 - loading checkpoint
+2026-09-20 09:28:41.105 | INFO     | __main__:main:249 - loaded checkpoint done.
+2026-09-20 09:28:41.105 | INFO     | __main__:main:252 - 	Fusing model...
+2026-09-20 09:28:43.909 | INFO     | __main__:image_track:206 - Processing frame 20/262 (24.39 fps)
+2026-09-20 09:28:45.985 | INFO     | __main__:image_track:206 - Processing frame 40/262 (24.41 fps)
+2026-09-20 09:28:48.082 | INFO     | __main__:image_track:206 - Processing frame 60/262 (24.43 fps)
+2026-09-20 09:28:50.200 | INFO     | __main__:image_track:206 - Processing frame 80/262 (24.45 fps)
+2026-09-20 09:28:52.203 | INFO     | __main__:image_track:206 - Processing frame 100/262 (24.47 fps)
+2026-09-20 09:28:54.263 | INFO     | __main__:image_track:206 - Processing frame 120/262 (24.49 fps)
+2026-09-20 09:28:56.331 | INFO     | __main__:image_track:206 - Processing frame 140/262 (24.51 fps)
+2026-09-20 09:28:58.383 | INFO     | __main__:image_track:206 - Processing frame 160/262 (24.53 fps)
+2026-09-20 09:29:00.591 | INFO     | __main__:image_track:206 - Processing frame 180/262 (24.54 fps)
+2026-09-20 09:29:02.773 | INFO     | __main__:image_track:206 - Processing frame 200/262 (24.56 fps)
+2026-09-20 09:29:04.880 | INFO     | __main__:image_track:206 - Processing frame 220/262 (24.57 fps)
+2026-09-20 09:29:07.059 | INFO     | __main__:image_track:206 - Processing frame 240/262 (24.59 fps)
+2026-09-20 09:29:09.266 | INFO     | __main__:image_track:206 - Processing frame 260/262 (24.61 fps)
+2026-09-20 09:29:09.476 | INFO     | __main__:image_track:212 - save results to ./YOLOX_outputs/N1_run2/track_results/MOT17-09-SDP.txt
+2026-09-20 09:29:09.481 | INFO     | __main__:main:227 - Args: Namespace(path='/home/yifu/mot-cmc/04_experiments/data/MOT17/train/MOT17-10-SDP/img1', benchmark='MOT17', split_to_eval='val', exp_file='./yolox/exps/example/mot/yolox_x_ablation.py', ckpt='./pretrained/bytetrack_ablation.pth.tar', experiment_name='N1_run2', default_parameters=True, save_frames=False, device=device(type='cuda'), conf=None, nms=None, tsize=None, fp16=True, fuse=True, track_high_thresh=0.6, track_low_thresh=0.1, new_track_thresh=0.7, track_buffer=30, match_thresh=0.8, aspect_ratio_thresh=1.6, min_box_area=10, cmc_method='file', with_reid=False, fast_reid_config='fast_reid/configs/MOT17/sbs_S50.yml', fast_reid_weights='pretrained/mot17_sbs_S50.pth', proximity_thresh=0.5, appearance_thresh=0.25, name='MOT17-10-SDP', ablation=True, mot20=False, fps=30, batch_size=1, trt=False)
+2026-09-20 09:29:10.389 | INFO     | __main__:main:237 - Model Summary: Params: 99.00M, Gflops: 793.21
+2026-09-20 09:29:10.392 | INFO     | __main__:main:244 - loading checkpoint
+2026-09-20 09:29:10.917 | INFO     | __main__:main:249 - loaded checkpoint done.
+2026-09-20 09:29:10.917 | INFO     | __main__:main:252 - 	Fusing model...
+2026-09-20 09:29:13.778 | INFO     | __main__:image_track:206 - Processing frame 20/326 (24.62 fps)
+2026-09-20 09:29:15.980 | INFO     | __main__:image_track:206 - Processing frame 40/326 (24.63 fps)
+2026-09-20 09:29:17.960 | INFO     | __main__:image_track:206 - Processing frame 60/326 (24.65 fps)
+2026-09-20 09:29:19.964 | INFO     | __main__:image_track:206 - Processing frame 80/326 (24.68 fps)
+2026-09-20 09:29:22.035 | INFO     | __main__:image_track:206 - Processing frame 100/326 (24.69 fps)
+2026-09-20 09:29:24.016 | INFO     | __main__:image_track:206 - Processing frame 120/326 (24.71 fps)
+2026-09-20 09:29:26.002 | INFO     | __main__:image_track:206 - Processing frame 140/326 (24.73 fps)
+2026-09-20 09:29:27.963 | INFO     | __main__:image_track:206 - Processing frame 160/326 (24.75 fps)
+2026-09-20 09:29:29.981 | INFO     | __main__:image_track:206 - Processing frame 180/326 (24.77 fps)
+2026-09-20 09:29:31.989 | INFO     | __main__:image_track:206 - Processing frame 200/326 (24.79 fps)
+2026-09-20 09:29:33.988 | INFO     | __main__:image_track:206 - Processing frame 220/326 (24.81 fps)
+2026-09-20 09:29:35.983 | INFO     | __main__:image_track:206 - Processing frame 240/326 (24.83 fps)
+2026-09-20 09:29:38.009 | INFO     | __main__:image_track:206 - Processing frame 260/326 (24.85 fps)
+2026-09-20 09:29:40.114 | INFO     | __main__:image_track:206 - Processing frame 280/326 (24.86 fps)
+2026-09-20 09:29:42.206 | INFO     | __main__:image_track:206 - Processing frame 300/326 (24.88 fps)
+2026-09-20 09:29:44.220 | INFO     | __main__:image_track:206 - Processing frame 320/326 (24.90 fps)
+2026-09-20 09:29:44.814 | INFO     | __main__:image_track:212 - save results to ./YOLOX_outputs/N1_run2/track_results/MOT17-10-SDP.txt
+2026-09-20 09:29:44.821 | INFO     | __main__:main:227 - Args: Namespace(path='/home/yifu/mot-cmc/04_experiments/data/MOT17/train/MOT17-11-SDP/img1', benchmark='MOT17', split_to_eval='val', exp_file='./yolox/exps/example/mot/yolox_x_ablation.py', ckpt='./pretrained/bytetrack_ablation.pth.tar', experiment_name='N1_run2', default_parameters=True, save_frames=False, device=device(type='cuda'), conf=None, nms=None, tsize=None, fp16=True, fuse=True, track_high_thresh=0.6, track_low_thresh=0.1, new_track_thresh=0.7, track_buffer=30, match_thresh=0.8, aspect_ratio_thresh=1.6, min_box_area=10, cmc_method='file', with_reid=False, fast_reid_config='fast_reid/configs/MOT17/sbs_S50.yml', fast_reid_weights='pretrained/mot17_sbs_S50.pth', proximity_thresh=0.5, appearance_thresh=0.25, name='MOT17-11-SDP', ablation=True, mot20=False, fps=30, batch_size=1, trt=False)
+2026-09-20 09:29:45.557 | INFO     | __main__:main:237 - Model Summary: Params: 99.00M, Gflops: 793.21
+2026-09-20 09:29:45.559 | INFO     | __main__:main:244 - loading checkpoint
+2026-09-20 09:29:45.948 | INFO     | __main__:main:249 - loaded checkpoint done.
+2026-09-20 09:29:45.948 | INFO     | __main__:main:252 - 	Fusing model...
+2026-09-20 09:29:48.529 | INFO     | __main__:image_track:206 - Processing frame 20/449 (24.93 fps)
+2026-09-20 09:29:50.500 | INFO     | __main__:image_track:206 - Processing frame 40/449 (24.95 fps)
+2026-09-20 09:29:52.493 | INFO     | __main__:image_track:206 - Processing frame 60/449 (24.97 fps)
+2026-09-20 09:29:54.567 | INFO     | __main__:image_track:206 - Processing frame 80/449 (24.99 fps)
+2026-09-20 09:29:56.642 | INFO     | __main__:image_track:206 - Processing frame 100/449 (25.02 fps)
+2026-09-20 09:29:58.742 | INFO     | __main__:image_track:206 - Processing frame 120/449 (25.03 fps)
+2026-09-20 09:30:00.808 | INFO     | __main__:image_track:206 - Processing frame 140/449 (25.06 fps)
+2026-09-20 09:30:02.823 | INFO     | __main__:image_track:206 - Processing frame 160/449 (25.08 fps)
+2026-09-20 09:30:04.839 | INFO     | __main__:image_track:206 - Processing frame 180/449 (25.10 fps)
+2026-09-20 09:30:06.873 | INFO     | __main__:image_track:206 - Processing frame 200/449 (25.12 fps)
+2026-09-20 09:30:08.873 | INFO     | __main__:image_track:206 - Processing frame 220/449 (25.14 fps)
+2026-09-20 09:30:10.931 | INFO     | __main__:image_track:206 - Processing frame 240/449 (25.16 fps)
+2026-09-20 09:30:12.927 | INFO     | __main__:image_track:206 - Processing frame 260/449 (25.18 fps)
+2026-09-20 09:30:14.984 | INFO     | __main__:image_track:206 - Processing frame 280/449 (25.19 fps)
+2026-09-20 09:30:16.997 | INFO     | __main__:image_track:206 - Processing frame 300/449 (25.22 fps)
+2026-09-20 09:30:18.980 | INFO     | __main__:image_track:206 - Processing frame 320/449 (25.24 fps)
+2026-09-20 09:30:21.034 | INFO     | __main__:image_track:206 - Processing frame 340/449 (25.26 fps)
+2026-09-20 09:30:22.998 | INFO     | __main__:image_track:206 - Processing frame 360/449 (25.28 fps)
+2026-09-20 09:30:24.973 | INFO     | __main__:image_track:206 - Processing frame 380/449 (25.30 fps)
+2026-09-20 09:30:27.004 | INFO     | __main__:image_track:206 - Processing frame 400/449 (25.32 fps)
+2026-09-20 09:30:28.980 | INFO     | __main__:image_track:206 - Processing frame 420/449 (25.34 fps)
+2026-09-20 09:30:30.946 | INFO     | __main__:image_track:206 - Processing frame 440/449 (25.36 fps)
+2026-09-20 09:30:31.783 | INFO     | __main__:image_track:212 - save results to ./YOLOX_outputs/N1_run2/track_results/MOT17-11-SDP.txt
+2026-09-20 09:30:31.786 | INFO     | __main__:main:227 - Args: Namespace(path='/home/yifu/mot-cmc/04_experiments/data/MOT17/train/MOT17-13-SDP/img1', benchmark='MOT17', split_to_eval='val', exp_file='./yolox/exps/example/mot/yolox_x_ablation.py', ckpt='./pretrained/bytetrack_ablation.pth.tar', experiment_name='N1_run2', default_parameters=True, save_frames=False, device=device(type='cuda'), conf=None, nms=None, tsize=None, fp16=True, fuse=True, track_high_thresh=0.6, track_low_thresh=0.1, new_track_thresh=0.7, track_buffer=30, match_thresh=0.8, aspect_ratio_thresh=1.6, min_box_area=10, cmc_method='file', with_reid=False, fast_reid_config='fast_reid/configs/MOT17/sbs_S50.yml', fast_reid_weights='pretrained/mot17_sbs_S50.pth', proximity_thresh=0.5, appearance_thresh=0.25, name='MOT17-13-SDP', ablation=True, mot20=False, fps=30, batch_size=1, trt=False)
+2026-09-20 09:30:32.769 | INFO     | __main__:main:237 - Model Summary: Params: 99.00M, Gflops: 793.21
+2026-09-20 09:30:32.771 | INFO     | __main__:main:244 - loading checkpoint
+2026-09-20 09:30:33.150 | INFO     | __main__:main:249 - loaded checkpoint done.
+2026-09-20 09:30:33.150 | INFO     | __main__:main:252 - 	Fusing model...
+2026-09-20 09:30:35.649 | INFO     | __main__:image_track:206 - Processing frame 20/374 (25.39 fps)
+2026-09-20 09:30:37.572 | INFO     | __main__:image_track:206 - Processing frame 40/374 (25.41 fps)
+2026-09-20 09:30:39.467 | INFO     | __main__:image_track:206 - Processing frame 60/374 (25.43 fps)
+2026-09-20 09:30:41.393 | INFO     | __main__:image_track:206 - Processing frame 80/374 (25.45 fps)
+2026-09-20 09:30:43.378 | INFO     | __main__:image_track:206 - Processing frame 100/374 (25.47 fps)
+2026-09-20 09:30:45.261 | INFO     | __main__:image_track:206 - Processing frame 120/374 (25.49 fps)
+2026-09-20 09:30:47.208 | INFO     | __main__:image_track:206 - Processing frame 140/374 (25.51 fps)
+2026-09-20 09:30:49.087 | INFO     | __main__:image_track:206 - Processing frame 160/374 (25.53 fps)
+2026-09-20 09:30:50.935 | INFO     | __main__:image_track:206 - Processing frame 180/374 (25.55 fps)
+2026-09-20 09:30:52.843 | INFO     | __main__:image_track:206 - Processing frame 200/374 (25.57 fps)
+2026-09-20 09:30:54.758 | INFO     | __main__:image_track:206 - Processing frame 220/374 (25.59 fps)
+2026-09-20 09:30:56.602 | INFO     | __main__:image_track:206 - Processing frame 240/374 (25.62 fps)
+2026-09-20 09:30:58.494 | INFO     | __main__:image_track:206 - Processing frame 260/374 (25.64 fps)
+2026-09-20 09:31:00.497 | INFO     | __main__:image_track:206 - Processing frame 280/374 (25.66 fps)
+2026-09-20 09:31:02.350 | INFO     | __main__:image_track:206 - Processing frame 300/374 (25.68 fps)
+2026-09-20 09:31:04.209 | INFO     | __main__:image_track:206 - Processing frame 320/374 (25.70 fps)
+2026-09-20 09:31:06.107 | INFO     | __main__:image_track:206 - Processing frame 340/374 (25.72 fps)
+2026-09-20 09:31:07.983 | INFO     | __main__:image_track:206 - Processing frame 360/374 (25.74 fps)
+2026-09-20 09:31:09.262 | INFO     | __main__:image_track:212 - save results to ./YOLOX_outputs/N1_run2/track_results/MOT17-13-SDP.txt
+TOTAL TIME END-to-END (with loading networks and images):  1017.3050997257233
+TOTAL TIME (Detector + Tracker): 308.8869876861572, FPS: 25.75699306596769
+TOTAL TIME (Tracker only): 30.877559661865234, FPS: 257.66284923824185

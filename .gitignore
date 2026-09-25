@@ -1,0 +1,59 @@
+# ---- environment -----------------------------------------------------------
+.venv/
+__pycache__/
+*.pyc
+
+# ---- third-party source, vendored for the experiments ----------------------
+# These are other people's repositories, patched only for modern NumPy/PyTorch.
+# The patches are described in 99_artifacts/RELEASE/DATA.md; clone upstream and
+# apply them rather than redistributing the trees here.
+03_code/BoT-SORT/
+03_code/ByteTrack/
+03_code/TrackEval/
+03_code/Depth-Anything-V2/
+
+# ---- model weights (2.4 GB) ------------------------------------------------
+# Public at their own addresses; SHA-256 of the ones that affect a number in the
+# paper are recorded in 99_artifacts/RELEASE/DATA.md.
+04_experiments/weights/
+03_code/*.pt
+
+# ---- benchmark data (64 GB) ------------------------------------------------
+# MOT17, MOT20, UAVDT and KITTI are public and are not redistributed.
+04_experiments/data/
+
+# ---- large intermediates, regenerable from the scripts ---------------------
+04_experiments/kitti_warps*/
+04_experiments/ref_warps*/
+04_experiments/detections/*/*.npz
+04_experiments/eval/
+04_experiments/rac_logs/
+04_experiments/oracle/
+
+# raw per-frame tracker output; the TrackEval summaries and detailed CSVs that
+# every number in the paper is computed from ARE tracked.
+04_experiments/trackers/*/*/data/
+04_experiments/trackers/*/*/*/data/
+
+# ---- build products --------------------------------------------------------
+02_paper/latex/*.pdf
+02_paper/latex/*.aux
+02_paper/latex/*.log
+02_paper/latex/*.out
+02_paper/latex/manuscript.tex
+02_paper/latex/figs/
+02_paper/template/
+02_paper/sn-template.zip
+99_artifacts/SUBMISSION/
+
+# ---- scratch ---------------------------------------------------------------
+*.tar
+*.tgz
+
+# ---- third-party publications, not ours to redistribute --------------------
+# Downloaded papers and scraped pages used for the citation and quotation
+# checks. Every one is cited by DOI or arXiv id in the manuscript; fetch them
+# from the publisher rather than from here.
+01_research/pdfs/
+01_research/*.html
+01_research/*.json

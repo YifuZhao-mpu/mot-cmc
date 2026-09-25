@@ -1,0 +1,94 @@
+xFormers not available
+xFormers not available
+    MOT17/MOT17-02-FRCNN: 60 frames
+    MOT17/MOT17-04-FRCNN: 105 frames
+    MOT17/MOT17-05-FRCNN: 79 frames
+    MOT17/MOT17-09-FRCNN: 53 frames
+    MOT17/MOT17-10-FRCNN: 66 frames
+    MOT17/MOT17-11-FRCNN: 90 frames
+    MOT17/MOT17-13-FRCNN: 73 frames
+    MOT20/MOT20-01: 43 frames
+    MOT20/MOT20-02: 279 frames
+    MOT20/MOT20-03: 241 frames
+    MOT20/MOT20-05: 332 frames
+    UAVDT/M0101: 7 frames
+    UAVDT/M0201: 18 frames
+    UAVDT/M0202: 5 frames
+    UAVDT/M0203: 14 frames
+    UAVDT/M0204: 6 frames
+    UAVDT/M0205: 11 frames
+    UAVDT/M0206: 10 frames
+    UAVDT/M0207: 3 frames
+    UAVDT/M0208: 3 frames
+    UAVDT/M0209: 27 frames
+    UAVDT/M0210: 10 frames
+    UAVDT/M0301: 6 frames
+    UAVDT/M0401: 11 frames
+    UAVDT/M0402: 7 frames
+    UAVDT/M0403: 9 frames
+    UAVDT/M0501: 6 frames
+    UAVDT/M0601: 7 frames
+    UAVDT/M0602: 8 frames
+    UAVDT/M0603: 34 frames
+    UAVDT/M0604: 18 frames
+    UAVDT/M0605: 14 frames
+    UAVDT/M0606: 23 frames
+    UAVDT/M0701: 22 frames
+    UAVDT/M0702: 13 frames
+    UAVDT/M0703: 12 frames
+    UAVDT/M0704: 14 frames
+    UAVDT/M0801: 5 frames
+    UAVDT/M0802: 19 frames
+    UAVDT/M0901: 30 frames
+    UAVDT/M0902: 7 frames
+    UAVDT/M1001: 31 frames
+    UAVDT/M1002: 11 frames
+    UAVDT/M1003: 23 frames
+    UAVDT/M1004: 5 frames
+    UAVDT/M1005: 9 frames
+    UAVDT/M1006: 12 frames
+    UAVDT/M1007: 10 frames
+    UAVDT/M1008: 10 frames
+    UAVDT/M1009: 11 frames
+    UAVDT/M1101: 14 frames
+    UAVDT/M1102: 17 frames
+    UAVDT/M1201: 20 frames
+    UAVDT/M1202: 8 frames
+    UAVDT/M1301: 20 frames
+    UAVDT/M1302: 12 frames
+    UAVDT/M1303: 8 frames
+    UAVDT/M1304: 26 frames
+    UAVDT/M1305: 10 frames
+    UAVDT/M1306: 20 frames
+    UAVDT/M1401: 18 frames
+    KITTI/0000: 10 frames
+    KITTI/0001: 36 frames
+    KITTI/0002: 18 frames
+    KITTI/0003: 3 frames
+    KITTI/0004: 21 frames
+    KITTI/0005: 27 frames
+    KITTI/0006: 9 frames
+    KITTI/0007: 33 frames
+    KITTI/0008: 18 frames
+    KITTI/0009: 35 frames
+    KITTI/0010: 17 frames
+    KITTI/0011: 34 frames
+    KITTI/0012: 6 frames
+    KITTI/0013: 21 frames
+    KITTI/0014: 10 frames
+    KITTI/0015: 26 frames
+    KITTI/0016: 21 frames
+    KITTI/0017: 15 frames
+    KITTI/0018: 27 frames
+    KITTI/0019: 90 frames
+    KITTI/0020: 68 frames
+
+within-frame target depth ratio (monocular estimate at the contact point)
+
+dataset     frames    median      p75      p90    >1.5x      >2x      >3x
+MOT17          526      5.60     6.92     9.17    99.2%    97.3%    87.1%
+MOT20          895      6.51     7.33     8.15   100.0%   100.0%   100.0%
+UAVDT          674      3.94     5.66     8.06    91.1%    81.9%    64.5%
+KITTI          545      3.57     5.19     7.25    92.8%    82.9%    61.1%
+
+-> /home/yifu/mot-cmc/04_experiments/depth_ratio.csv

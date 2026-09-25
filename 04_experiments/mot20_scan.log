@@ -1,0 +1,7 @@
+scanning 4 sequences from /home/yifu/mot-cmc/04_experiments/data/MOT20/train
+  MOT20-01                 429 frames    12.6s  cam=static
+  MOT20-03                2405 frames    45.4s  cam=static
+  MOT20-02                2782 frames    80.2s  cam=static
+  MOT20-05                3315 frames    88.6s  cam=static
+
+wrote 8931 rows -> /home/yifu/mot-cmc/04_experiments/mot20_gmc_scan.csv

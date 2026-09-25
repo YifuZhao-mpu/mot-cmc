@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/home/yifu/mot-cmc/03_code/TrackEval/scripts/run_kitti.py", line 80, in <module>
+    dataset_list = [trackeval.datasets.Kitti2DBox(dataset_config)]
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/yifu/mot-cmc/03_code/TrackEval/trackeval/datasets/kitti_2d_box.py", line 113, in __init__
+    raise TrackEvalException(
+trackeval.utils.TrackEvalException: Tracker file not found: dep_global_oracle/data/0000.txt

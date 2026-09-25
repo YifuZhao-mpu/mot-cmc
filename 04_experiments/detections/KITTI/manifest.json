@@ -1,0 +1,145 @@
+{
+ "created": "2026-09-21",
+ "detector": "yolo11x.pt",
+ "source": "COCO-pretrained, never trained on KITTI",
+ "conf": 0.1,
+ "iou": 0.7,
+ "imgsz": 1280,
+ "coco_car_classes": [
+  2,
+  5,
+  7
+ ],
+ "coco_person_classes": [
+  0
+ ],
+ "torch": "2.14.0+cu130",
+ "sequences": {
+  "0000": {
+   "n_frames": 154,
+   "n_detections": 2086,
+   "sha256": "714103eb874e5582b6212d23754113649abb1b5b428dc0a4f5aa7c84c7e6927f",
+   "seconds": 6.2
+  },
+  "0001": {
+   "n_frames": 447,
+   "n_detections": 6208,
+   "sha256": "51a23337a1b2499c17c0cb8d0d5aae0db71b891dbc9f4abef43d7d82a8e29b84",
+   "seconds": 11.2
+  },
+  "0002": {
+   "n_frames": 233,
+   "n_detections": 2792,
+   "sha256": "761278a4ee63232495b8f604cc16ddd537c7f4212642a85fc2de6fc9d863fab2",
+   "seconds": 5.8
+  },
+  "0003": {
+   "n_frames": 144,
+   "n_detections": 860,
+   "sha256": "00bc719e133eacbad977da02cee35d138dfacd494ba4e2c63b0a0d6317f8d998",
+   "seconds": 3.6
+  },
+  "0004": {
+   "n_frames": 314,
+   "n_detections": 2325,
+   "sha256": "9d3b07f727fdbf077b12c7b38b2d983a3c58019ce8c2c10819391d59c272fc4b",
+   "seconds": 7.8
+  },
+  "0005": {
+   "n_frames": 297,
+   "n_detections": 2916,
+   "sha256": "68fa7e61cc7ca230b1b6b9260d0a36307b7fa517c127cd6e422a1625cae620a6",
+   "seconds": 7.4
+  },
+  "0006": {
+   "n_frames": 270,
+   "n_detections": 1329,
+   "sha256": "359e6dbd1849235cd050452ce1de318dda4e57916e497e96e4e9f9434475cbf2",
+   "seconds": 6.8
+  },
+  "0007": {
+   "n_frames": 800,
+   "n_detections": 5123,
+   "sha256": "720370a05a4186f561b82507b84c737893066619bc45e362e2966fbd680cb09c",
+   "seconds": 20.1
+  },
+  "0008": {
+   "n_frames": 390,
+   "n_detections": 2845,
+   "sha256": "dd3ce425940fc9c83528d9a19a655df5522d4a94bc9aba32c4978417be0d47f0",
+   "seconds": 9.5
+  },
+  "0009": {
+   "n_frames": 803,
+   "n_detections": 7015,
+   "sha256": "a311836a6af4999a6364433251c779f1d3bfa4300c44cb5808118e04dbb14392",
+   "seconds": 20.5
+  },
+  "0010": {
+   "n_frames": 294,
+   "n_detections": 1357,
+   "sha256": "8d5574a4a026d8b96936c4e4a611222c6200dacc6227af33e68ab28f745e2bc5",
+   "seconds": 7.6
+  },
+  "0011": {
+   "n_frames": 373,
+   "n_detections": 5040,
+   "sha256": "b598fa3f1f54f97385317b12f75d9e6fe6781673d7c70e240d5b82c7f11118cb",
+   "seconds": 9.7
+  },
+  "0012": {
+   "n_frames": 78,
+   "n_detections": 564,
+   "sha256": "e4056c8aec388116943f431dfb8964b07946ba9f773a4d873a7d67a71479475d",
+   "seconds": 2.0
+  },
+  "0013": {
+   "n_frames": 340,
+   "n_detections": 4759,
+   "sha256": "bf238410543c1925a1f1f029b68cc05f3b4a1a2b54d6ec02b12a5a0bdfa435e7",
+   "seconds": 8.9
+  },
+  "0014": {
+   "n_frames": 106,
+   "n_detections": 983,
+   "sha256": "4685825b49d60cb0d9a7b35791a1f678098d1340616b89d0de92b80acb9a27da",
+   "seconds": 2.7
+  },
+  "0015": {
+   "n_frames": 376,
+   "n_detections": 3948,
+   "sha256": "40066b941a22711fe929b9323341d667ba78783bec923603fc6a812a56dc7d83",
+   "seconds": 9.6
+  },
+  "0016": {
+   "n_frames": 209,
+   "n_detections": 4284,
+   "sha256": "936780b477eef788bb9022df00eea1477b640c6916f3decf0903e30c8ddbbe32",
+   "seconds": 5.4
+  },
+  "0017": {
+   "n_frames": 145,
+   "n_detections": 1884,
+   "sha256": "ae52995dc9ba6596c91816430a0bbdecc37234559678457a0fd0afd2a5d670c5",
+   "seconds": 3.7
+  },
+  "0018": {
+   "n_frames": 339,
+   "n_detections": 3107,
+   "sha256": "c9a26e7109fbd8c5308cb20989d3c1b806ab0474c41a993892bacd03b9f085ab",
+   "seconds": 8.8
+  },
+  "0019": {
+   "n_frames": 1059,
+   "n_detections": 16790,
+   "sha256": "accfdc89027575b02dbec540135c63f6e19878d8139bebf3d8cf33493b29fba2",
+   "seconds": 27.6
+  },
+  "0020": {
+   "n_frames": 837,
+   "n_detections": 11124,
+   "sha256": "d3147756defc07a3d319872714ff1dd4cf751aab647c3d53e9c14615e0992fbc",
+   "seconds": 21.2
+  }
+ }
+}

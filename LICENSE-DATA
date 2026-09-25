@@ -1,0 +1,14 @@
+The measurement data in this repository — everything under `04_experiments/`
+that is tracked by git, `05_figures/`, and the release manifests under
+`99_artifacts/RELEASE/` — is released under
+
+    Creative Commons Attribution 4.0 International (CC BY 4.0)
+    https://creativecommons.org/licenses/by/4.0/
+
+Attribute to the paper. The benchmarks these measurements were computed from
+(MOT17, MOT20, UAVDT, KITTI) carry their own licences and are not redistributed
+here; see 99_artifacts/RELEASE/DATA.md for where to obtain each.
+
+Third-party source trees that the experiments import (BoT-SORT, ByteTrack,
+TrackEval, Depth-Anything-V2) are not redistributed either and keep their own
+licences.

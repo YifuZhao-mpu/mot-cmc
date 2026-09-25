@@ -1,0 +1,22 @@
+  0000    154 frames  per-object rows    699  |camera-induced shift| med  10.92 px  p95   48.84
+  0001    447 frames  per-object rows   3006  |camera-induced shift| med  11.05 px  p95  133.82
+  0002    233 frames  per-object rows   1475  |camera-induced shift| med   0.67 px  p95    9.55
+  0003    144 frames  per-object rows    387  |camera-induced shift| med   8.53 px  p95   94.78
+  0004    314 frames  per-object rows   1060  |camera-induced shift| med   9.40 px  p95   74.79
+  0005    297 frames  per-object rows   1475  |camera-induced shift| med   5.36 px  p95   32.53
+  0006    270 frames  per-object rows    761  |camera-induced shift| med   0.08 px  p95   17.24
+  0007    800 frames  per-object rows   2607  |camera-induced shift| med   8.66 px  p95  193.97
+  0008    390 frames  per-object rows   1363  |camera-induced shift| med   3.25 px  p95   51.77
+  0009    803 frames  per-object rows   3766  |camera-induced shift| med   7.96 px  p95   83.86
+  0010    294 frames  per-object rows    741  |camera-induced shift| med   5.38 px  p95   54.65
+  0011    373 frames  per-object rows   3787  |camera-induced shift| med   2.96 px  p95   39.28
+  0012     78 frames  per-object rows    248  |camera-induced shift| med   0.06 px  p95    0.13
+  0013    340 frames  per-object rows   1284  |camera-induced shift| med  10.82 px  p95   72.47
+  0014    106 frames  per-object rows    642  |camera-induced shift| med   8.24 px  p95   66.48
+  0015    376 frames  per-object rows   2185  |camera-induced shift| med   0.31 px  p95   12.97
+  0016    209 frames  per-object rows   3125  |camera-induced shift| med   0.07 px  p95    0.18
+  0017    145 frames  per-object rows    881  |camera-induced shift| med   0.14 px  p95    0.51
+  0018    339 frames  per-object rows   1409  |camera-induced shift| med   2.02 px  p95   67.87
+  0019   1059 frames  per-object rows   7796  |camera-induced shift| med   3.45 px  p95   26.42
+  0020    837 frames  per-object rows   6391  |camera-induced shift| med   4.60 px  p95   65.99
+wrote 21 sequences -> /home/yifu/mot-cmc/04_experiments/kitti_warps_v2

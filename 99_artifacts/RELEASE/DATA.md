@@ -1,0 +1,46 @@
+# Obtaining the data this release does not redistribute
+
+Benchmark images, annotations and model weights are public at their own addresses
+and are large. This file records exactly which artefact each result depends on, and
+the SHA-256 of the ones whose identity affects a number in the paper.
+
+## Benchmarks
+
+| Benchmark | Source | Used for |
+|---|---|---|
+| MOT17 | `motchallenge.net/data/MOT17.zip` — the dataset archives remain downloadable although the evaluation server is offline (HTTP 410 on the site root, notice last modified 2026-09-08) | §4, §5 |
+| MOT20 | `motchallenge.net/data/MOT20.zip`, same status | §4 |
+| UAVDT | UAVDT benchmark release, incl. `UAV-benchmark-MOTD_v1.0/RES_DET/det_FRCNN` | §4, §5.6 |
+| KITTI tracking | `cvlibs.net/datasets/kitti/eval_tracking.php` — needs `image_02`, `label_02`, `calib`, and **`oxts`** (the GPS/IMU stream; it is a separate download and the paper depends on it) | §6, §7 |
+
+**The MOTChallenge evaluation server is offline field-wide.** No contemporary submission
+can report new MOT17/MOT20 *test* numbers. Every MOT17 figure in the paper is on the
+standard validation-half protocol (second half of each training sequence).
+
+## Model weights
+
+| Weight | SHA-256 | Used for |
+|---|---|---|
+| ByteTrack YOLOX-X ablation (`bytetrack_ablation.pth.tar`) | `26cb8d2808664e5068a4c812d53becbc948b47fd6eacf2b45db049ab40c48b1a` | the frozen MOT17 detections; this hash is recorded in the detection manifest |
+| FastReID SBS-S50 MOT17 (`mot17_sbs_S50.pth`) | see `04_experiments/detections/*/manifest.json` | the appearance channel in §5.4 |
+| Depth-Anything-V2 Metric, VKITTI outdoor (ViT-L) | — | the estimated depth in §7.3 |
+| YOLO11x, COCO-pretrained | — | the KITTI detections; **never trained on KITTI**, which is why no split was needed |
+
+## Third-party code
+
+| Repository | Why |
+|---|---|
+| BoT-SORT | the tracker under study; `tracker/` and `fast_reid/` are imported directly. Patched for modern NumPy/PyTorch (`np.float`, `np.bool`, `torch._six`); the patches do not touch tracking logic |
+| TrackEval | all evaluation. Same class of compatibility patches |
+| Depth-Anything-V2 | `metric_depth/` imported for §7.3 |
+
+## What determinism was verified
+
+| Pipeline | Runs | Result |
+|---|---|---|
+| MOT17 motion-only | 5 | bit-identical on all 7 sequences |
+| MOT17 with appearance | 2 | bit-identical on all 7 sequences |
+| KITTI | 2 | bit-identical on all 21 sequences |
+
+A zero run-to-run noise floor does **not** license calling small differences significant;
+the paper reports percentile bootstrap intervals over sequences for that purpose.

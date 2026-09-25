@@ -1,0 +1,14 @@
+[14:03:33] === global_anchored_ped ===
+  0020     6566 rows
+[anch_ped] warps rejected by the plausibility guard: 0
+[anch_ped] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/anch_ped/data
+[14:03:43] === global_anchored_car ===
+  0020     6563 rows
+[anch_car] warps rejected by the plausibility guard: 13
+[anch_car] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/anch_car/data
+[14:03:53] tracking done; evaluating
+0020                               2         0         1         0         
+COMBINED                           10994     11109     352       167       
+0020                               2         0         1         0         
+COMBINED                           10950     11109     384       167       
+[14:03:57] ALL DONE

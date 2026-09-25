@@ -1,0 +1,90 @@
+{
+ "name": "R_oracle_strict",
+ "config": {
+  "p1_shrinkage": false,
+  "p2_inflation": false,
+  "p3_association": false,
+  "per_target": true,
+  "signals": [
+   "rho",
+   "n",
+   "eps",
+   "tau",
+   "kappa",
+   "phi"
+  ],
+  "force_r": null,
+  "shuffle_placebo": false,
+  "n0": 300.0,
+  "eps0": 1.0,
+  "tau0": 5.0,
+  "s0": 0.05,
+  "theta0": 2.0,
+  "support_dilate": 1.5,
+  "s_min": 0.3,
+  "support_k0": 12.0,
+  "theta_iou_max": 0.8,
+  "beta": 0.0,
+  "sigma_scale": 1.0,
+  "warp_source": "reference_strict"
+ },
+ "with_reid": true,
+ "sequences": [
+  {
+   "sequence": "MOT17-02-FRCNN",
+   "n_frames": 299,
+   "n_rows": 7359,
+   "seconds": 27.1,
+   "warp_fallback": 0,
+   "warp_lowq": 0
+  },
+  {
+   "sequence": "MOT17-04-FRCNN",
+   "n_frames": 524,
+   "n_rows": 23932,
+   "seconds": 72.5,
+   "warp_fallback": 0,
+   "warp_lowq": 0
+  },
+  {
+   "sequence": "MOT17-05-FRCNN",
+   "n_frames": 418,
+   "n_rows": 2965,
+   "seconds": 13.0,
+   "warp_fallback": 0,
+   "warp_lowq": 76
+  },
+  {
+   "sequence": "MOT17-09-FRCNN",
+   "n_frames": 262,
+   "n_rows": 2452,
+   "seconds": 14.9,
+   "warp_fallback": 0,
+   "warp_lowq": 0
+  },
+  {
+   "sequence": "MOT17-10-FRCNN",
+   "n_frames": 326,
+   "n_rows": 4871,
+   "seconds": 20.4,
+   "warp_fallback": 0,
+   "warp_lowq": 3
+  },
+  {
+   "sequence": "MOT17-11-FRCNN",
+   "n_frames": 449,
+   "n_rows": 4288,
+   "seconds": 26.3,
+   "warp_fallback": 0,
+   "warp_lowq": 2
+  },
+  {
+   "sequence": "MOT17-13-FRCNN",
+   "n_frames": 374,
+   "n_rows": 2745,
+   "seconds": 18.2,
+   "warp_fallback": 0,
+   "warp_lowq": 5
+  }
+ ]
+}

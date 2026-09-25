@@ -1,0 +1,49 @@
+{
+ "n1_runs": [
+  "N1_run1",
+  "N1_run2",
+  "N1_run3",
+  "N1_run4",
+  "N1_run5"
+ ],
+ "baseline": "A0_frozen",
+ "oracle": "N2_oracle_warp",
+ "threshold": 3.0,
+ "deterministic": true,
+ "n1_std": {
+  "HOTA": 0.0,
+  "DetA": 0.0,
+  "AssA": 0.0,
+  "MOTA": 0.0,
+  "IDF1": 0.0,
+  "IDSW": 0.0,
+  "Frag": 0.0
+ },
+ "n1_spread": {
+  "HOTA": 0.0,
+  "DetA": 0.0,
+  "AssA": 0.0,
+  "MOTA": 0.0,
+  "IDF1": 0.0,
+  "IDSW": 0.0,
+  "Frag": 0.0
+ },
+ "headroom": {
+  "HOTA": 0.09900000000000375,
+  "DetA": 0.0030000000000001137,
+  "AssA": 0.1950000000000074,
+  "MOTA": 0.04200000000000159,
+  "IDF1": 0.14499999999999602,
+  "IDSW": 5.0,
+  "Frag": 0.0
+ },
+ "ratio": {
+  "HOTA": null,
+  "DetA": null,
+  "AssA": null,
+  "MOTA": null,
+  "IDF1": null,
+  "IDSW": null,
+  "Frag": NaN
+ }
+}

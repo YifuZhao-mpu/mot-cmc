@@ -1,0 +1,60 @@
+{
+ "experiment": "synthetic_gmc_failure_study",
+ "date": "2026-09-20",
+ "n_frames_with_estimate": 212,
+ "n_total": 234,
+ "normalisation_constants_fixed_a_priori": {
+  "n0": 300,
+  "eps0": 1.0,
+  "tau0": 5.0,
+  "s0": 0.05,
+  "theta0": 2.0
+ },
+ "spearman_r_vs_actual_error": {
+  "rho_n": -0.5646056137346086,
+  "n_n": -0.7333754212826101,
+  "eps_n": -0.7197204509359654,
+  "tau_n": -0.710272017248504,
+  "kappa_n": -0.5756436139865214,
+  "r_geo": -0.8208586221792887
+ },
+ "per_mode_median": {
+  "blur": {
+   "r_geo": 0.9455920845581828,
+   "corner_err_px": 0.0555635020795008,
+   "n": 39
+  },
+  "clean": {
+   "r_geo": 0.9478671438951176,
+   "corner_err_px": 0.0133050576863696,
+   "n": 39
+  },
+  "foreground": {
+   "r_geo": 0.4038289939349996,
+   "corner_err_px": 1.4233437042298407,
+   "n": 39
+  },
+  "low_texture": {
+   "r_geo": 0.0016292405672811712,
+   "corner_err_px": 105.18768342940815,
+   "n": 17
+  },
+  "lowlight": {
+   "r_geo": 0.7940999878343888,
+   "corner_err_px": 0.139800173212727,
+   "n": 39
+  },
+  "repetitive": {
+   "r_geo": 0.9043634460226804,
+   "corner_err_px": 0.075665167315385,
+   "n": 39
+  }
+ },
+ "caveats": [
+  "synthetic textures, not real video",
+  "blur and repetitive-pattern modes did NOT degrade the estimate materially",
+  "rho alone produces false alarms on repetitive patterns (rho=0.77, error=0.076px)",
+  "kappa is weak for small errors (AUC 0.77@0.25px) but best for catastrophic ones (0.99@5px)",
+  "low_texture triggers identity fallback in 56% of frames: GMC silently gives up"
+ ]
+}

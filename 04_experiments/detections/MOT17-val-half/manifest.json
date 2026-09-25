@@ -1,0 +1,77 @@
+{
+ "created": "2026-09-20",
+ "exp_file": "/home/yifu/mot-cmc/03_code/BoT-SORT/yolox/exps/example/mot/yolox_x_ablation.py",
+ "ckpt": "/home/yifu/mot-cmc/04_experiments/weights/bytetrack_ablation.pth.tar",
+ "ckpt_sha256": "26cb8d2808664e5068a4c812d53becbc948b47fd6eacf2b45db049ab40c48b1a",
+ "test_size": [
+  800,
+  1440
+ ],
+ "test_conf": 0.09000000000000001,
+ "nmsthre": 0.7,
+ "num_classes": 1,
+ "fp16": true,
+ "fuse": true,
+ "ablation": true,
+ "torch": "2.14.0+cu130",
+ "cuda": "13.0",
+ "gpu": "NVIDIA A800-SXM4-80GB",
+ "sequences": {
+  "MOT17-02-FRCNN": {
+   "n_frames": 299,
+   "n_detections": 14327,
+   "sha256": "38f605833ddf6418f3dcabb9e16b408e149287727ed312de4daea522609cd2f9",
+   "seconds": 27.5,
+   "track_high_thresh": 0.6,
+   "track_buffer": 30
+  },
+  "MOT17-04-FRCNN": {
+   "n_frames": 524,
+   "n_detections": 25483,
+   "sha256": "761a803e1877bd9344ccbbcd1fa2c7ee606c840eb32c80a2d7a06fcf5de0015a",
+   "seconds": 47.3,
+   "track_high_thresh": 0.6,
+   "track_buffer": 30
+  },
+  "MOT17-05-FRCNN": {
+   "n_frames": 418,
+   "n_detections": 3711,
+   "sha256": "5579fda206bbe24139117cddaa081abcb7421ea6780fb6fbcff7499710f43c20",
+   "seconds": 35.0,
+   "track_high_thresh": 0.6,
+   "track_buffer": 14
+  },
+  "MOT17-09-FRCNN": {
+   "n_frames": 262,
+   "n_detections": 2635,
+   "sha256": "4b88e3e627a4da096bc4480545f6acd97cbf05829bb3bb88a3ff8ae17b81bfc2",
+   "seconds": 23.5,
+   "track_high_thresh": 0.6,
+   "track_buffer": 30
+  },
+  "MOT17-10-FRCNN": {
+   "n_frames": 326,
+   "n_detections": 7301,
+   "sha256": "ade37de9db1c81198e2dea77ad60b8097037255882af2d981e13c2211c18d962",
+   "seconds": 29.8,
+   "track_high_thresh": 0.6,
+   "track_buffer": 30
+  },
+  "MOT17-11-FRCNN": {
+   "n_frames": 449,
+   "n_detections": 5503,
+   "sha256": "e89c4678f68ed85ee967d06c09eea8abc2f61429619edcd12cacf8aa4e67370c",
+   "seconds": 40.7,
+   "track_high_thresh": 0.6,
+   "track_buffer": 30
+  },
+  "MOT17-13-FRCNN": {
+   "n_frames": 374,
+   "n_detections": 3438,
+   "sha256": "169e3bd81c6cb5239d61262c6c3c74a08bdfb5bcd385745477a7118bbf8d959a",
+   "seconds": 33.5,
+   "track_high_thresh": 0.6,
+   "track_buffer": 25
+  }
+ }
+}

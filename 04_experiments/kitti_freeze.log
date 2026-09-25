@@ -1,0 +1,23 @@
+  0000    154 frames     2086 dets     6.2s
+  0001    447 frames     6208 dets    11.2s
+  0002    233 frames     2792 dets     5.8s
+  0003    144 frames      860 dets     3.6s
+  0004    314 frames     2325 dets     7.8s
+  0005    297 frames     2916 dets     7.4s
+  0006    270 frames     1329 dets     6.8s
+  0007    800 frames     5123 dets    20.1s
+  0008    390 frames     2845 dets     9.5s
+  0009    803 frames     7015 dets    20.5s
+  0010    294 frames     1357 dets     7.6s
+  0011    373 frames     5040 dets     9.7s
+  0012     78 frames      564 dets     2.0s
+  0013    340 frames     4759 dets     8.9s
+  0014    106 frames      983 dets     2.7s
+  0015    376 frames     3948 dets     9.6s
+  0016    209 frames     4284 dets     5.4s
+  0017    145 frames     1884 dets     3.7s
+  0018    339 frames     3107 dets     8.8s
+  0019   1059 frames    16790 dets    27.6s
+  0020    837 frames    11124 dets    21.2s
+
+total 87339 detections -> /home/yifu/mot-cmc/04_experiments/detections/KITTI/manifest.json

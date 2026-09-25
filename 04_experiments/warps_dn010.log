@@ -1,0 +1,22 @@
+  0000    154 frames  objs    699  local scale med 1.0289 p95 1.1007  |shift| med  20.04 px
+  0001    447 frames  objs   3006  local scale med 1.0415 p95 1.2148  |shift| med  27.52 px
+  0002    233 frames  objs   1475  local scale med 1.0038 p95 1.0390  |shift| med   2.56 px
+  0003    144 frames  objs    387  local scale med 1.0439 p95 1.2290  |shift| med  26.83 px
+  0004    314 frames  objs   1060  local scale med 1.0346 p95 1.1573  |shift| med  24.87 px
+  0005    297 frames  objs   1475  local scale med 1.0318 p95 1.0845  |shift| med  19.92 px
+  0006    270 frames  objs    761  local scale med 1.0000 p95 1.0128  |shift| med   0.07 px
+  0007    800 frames  objs   2607  local scale med 1.0395 p95 1.2723  |shift| med  27.32 px
+  0008    390 frames  objs   1363  local scale med 1.0327 p95 1.1307  |shift| med  20.46 px
+  0009    803 frames  objs   3766  local scale med 1.0289 p95 1.1489  |shift| med  20.52 px
+  0010    294 frames  objs    741  local scale med 1.0593 p95 1.1196  |shift| med  37.85 px
+  0011    373 frames  objs   3787  local scale med 1.0188 p95 1.0860  |shift| med  12.07 px
+  0012     78 frames  objs    248  local scale med 1.0000 p95 1.0001  |shift| med   0.05 px
+  0013    340 frames  objs   1284  local scale med 1.0433 p95 1.1429  |shift| med  27.98 px
+  0014    106 frames  objs    642  local scale med 1.0156 p95 1.1047  |shift| med  19.43 px
+  0015    376 frames  objs   2185  local scale med 1.0002 p95 1.0381  |shift| med   0.32 px
+  0016    209 frames  objs   3125  local scale med 1.0000 p95 1.0001  |shift| med   0.07 px
+  0017    145 frames  objs    881  local scale med 1.0000 p95 1.0001  |shift| med   0.15 px
+  0018    339 frames  objs   1409  local scale med 1.0236 p95 1.1181  |shift| med  15.25 px
+  0019   1059 frames  objs   7796  local scale med 1.0127 p95 1.0552  |shift| med   8.36 px
+  0020    837 frames  objs   6391  local scale med 1.0293 p95 1.1272  |shift| med  18.38 px
+wrote 21 sequences -> /home/yifu/mot-cmc/04_experiments/kitti_warps_dn010

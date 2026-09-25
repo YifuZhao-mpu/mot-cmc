@@ -1,0 +1,8 @@
+xFormers not available
+xFormers not available
+  0002    233 frames  depth (233, 46, 155)  median 26.6 m
+  0006    270 frames  depth (270, 46, 155)  median 29.3 m
+  0010    294 frames  depth (294, 46, 155)  median 21.9 m
+  0014    106 frames  depth (106, 46, 153)  median 22.6 m
+  0018    339 frames  depth (339, 46, 154)  median 18.5 m
+wrote 5 sequences -> /home/yifu/mot-cmc/04_experiments/kitti_warps_depth

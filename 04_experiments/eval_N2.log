@@ -1,0 +1,58 @@
+
+CLEAR Config:
+METRICS              : ['HOTA', 'CLEAR', 'Identity'] 
+THRESHOLD            : 0.5                           
+PRINT_CONFIG         : True                          
+
+Identity Config:
+METRICS              : ['HOTA', 'CLEAR', 'Identity'] 
+THRESHOLD            : 0.5                           
+PRINT_CONFIG         : True                          
+
+Evaluating 1 tracker(s) on 7 sequence(s) for 1 class(es) on MotChallenge2DBox dataset using the following metrics: HOTA, CLEAR, Identity, Count
+
+
+Evaluating N2_oracle_warp
+
+
+All sequences for N2_oracle_warp finished in 0.95 seconds
+
+HOTA: N2_oracle_warp-pedestrian    HOTA      DetA      AssA      DetRe     DetPr     AssRe     AssPr     LocA      OWTA      HOTA(0)   LocA(0)   HOTALocA(0)
+MOT17-02-FRCNN                     47.571    49.246    46.557    54.859    74.863    52.007    70.653    83.694    50.403    59.256    77.532    45.942    
+MOT17-04-FRCNN                     79.364    78.223    80.866    83.853    86.151    84.977    87.841    88.652    82.308    90.52     87.018    78.768    
+MOT17-05-FRCNN                     63.604    65.36     62.094    70.768    80.151    72.229    75.038    84.675    66.285    77.295    81.629    63.095    
+MOT17-09-FRCNN                     68.072    70.656    65.64     73.503    86.692    72.596    78.459    86.902    69.451    80.303    85.02     68.274    
+MOT17-10-FRCNN                     58.06     57.807    58.671    62.116    76.792    63.42     75.764    81.383    60.337    75.39     77.203    58.203    
+MOT17-11-FRCNN                     67.951    64.138    72.116    73.981    78.481    77.334    85.733    88.989    73.038    77.25     87.247    67.398    
+MOT17-13-FRCNN                     70.485    66.792    74.533    70.878    81.609    79.609    83.338    84.073    72.667    87.611    80.905    70.881    
+COMBINED                           69.105    67.249    71.528    73.193    82.229    76.627    83.279    86.67     72.284    81.257    83.828    68.116    
+
+CLEAR: N2_oracle_warp-pedestrian   MOTA      MOTP      MODA      CLR_Re    CLR_Pr    MTR       PTR       MLR       sMOTA     CLR_TP    CLR_FN    CLR_FP    IDSW      MT        PT        ML        Frag      
+MOT17-02-FRCNN                     55.243    81.96     55.931    64.605    88.163    30.189    50.943    18.868    43.588    6383      3497      857       68        16        27        10        155       
+MOT17-04-FRCNN                     89.726    87.165    89.805    93.569    96.133    89.855    7.2464    2.8986    77.717    22623     1555      910       19        62        5         2         93        
+MOT17-05-FRCNN                     78.731    82.509    79.237    83.765    94.872    57.746    32.394    9.8592    64.08     2812      545       152       17        41        23        7         48        
+MOT17-09-FRCNN                     83.64     84.924    84.022    84.404    99.549    72.727    22.727    4.5455    70.915    2430      449       11        11        16        5         1         23        
+MOT17-10-FRCNN                     73.696    78.246    74        77.444    95.742    44.444    50        5.5556    56.849    4587      1336      204       18        16        18        2         75        
+MOT17-11-FRCNN                     69.648    87.782    69.825    82.046    87.036    50        25        25        59.623    3706      811       552       8         22        11        11        32        
+MOT17-13-FRCNN                     81.939    81.57     82.034    84.442    97.227    70.455    18.182    11.364    66.377    2665      491       76        3         31        8         5         17        
+COMBINED                           78.493    84.836    78.76     83.886    94.242    60.177    28.614    11.209    65.773    45206     8684      2762      144       204       97        38        443       
+
+Identity: N2_oracle_warp-pedestrianIDF1      IDR       IDP       IDTP      IDFN      IDFP      
+MOT17-02-FRCNN                     56.799    49.211    67.155    4862      5018      2378      
+MOT17-04-FRCNN                     90.914    89.701    92.16     21688     2490      1845      
+MOT17-05-FRCNN                     79.101    74.471    84.345    2500      857       464       
+MOT17-09-FRCNN                     81.805    75.582    89.144    2176      703       265       
+MOT17-10-FRCNN                     77.506    70.1      86.662    4152      1771      639       
+MOT17-11-FRCNN                     79.088    76.821    81.494    3470      1047      788       
+MOT17-13-FRCNN                     90.012    84.094    96.826    2654      502       87        
+COMBINED                           81.49     77.012    86.52     41502     12388     6466      
+
+Count: N2_oracle_warp-pedestrian   Dets      GT_Dets   IDs       GT_IDs    
+MOT17-02-FRCNN                     7240      9880      92        53        
+MOT17-04-FRCNN                     23533     24178     94        69        
+MOT17-05-FRCNN                     2964      3357      71        71        
+MOT17-09-FRCNN                     2441      2879      21        22        
+MOT17-10-FRCNN                     4791      5923      48        36        
+MOT17-11-FRCNN                     4258      4517      69        44        
+MOT17-13-FRCNN                     2741      3156      46        44        
+COMBINED                           47968     53890     441       339       

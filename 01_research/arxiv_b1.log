@@ -1,0 +1,3 @@
+[ 0] all:"camera motion compensation" AND all:"multi-object tracking"
+[ 0] all:"multi-object tracking" AND all:"identity switch" AND all:occlusion
+[ 0] abs:"global motion compensation" AND abs:tracking

@@ -1,0 +1,84 @@
+[09:36:11] detections already frozen, reusing
+[09:36:11] A0_frozen: BoT-SORT behaviour on frozen detections
+[A0_frozen] cfg=RACConfig(p1_shrinkage=False, p2_inflation=False, p3_association=False, per_target=True, signals=('rho', 'n', 'eps', 'tau', 'kappa', 'phi'), force_r=None, shuffle_placebo=False, n0=300.0, eps0=1.0, tau0=5.0, s0=0.05, theta0=2.0, support_dilate=1.5, s_min=0.3, support_k0=12.0, theta_iou_max=0.8, beta=0.0, sigma_scale=1.0, warp_source='online')
+  MOT17-02-FRCNN           299 frames     7.2s    7410 rows
+  MOT17-04-FRCNN           524 frames    14.3s   23952 rows
+  MOT17-05-FRCNN           418 frames     3.1s    2965 rows
+  MOT17-09-FRCNN           262 frames     5.9s    2441 rows
+  MOT17-10-FRCNN           326 frames     7.2s    4888 rows
+  MOT17-11-FRCNN           449 frames     9.6s    4290 rows
+  MOT17-13-FRCNN           374 frames     8.3s    2744 rows
+[A0_frozen] done -> /home/yifu/mot-cmc/04_experiments/trackers/MOT17-val-half/A0_frozen/data
+[09:37:12] N2_oracle_warp: identical config, offline reference warp substituted
+[N2_oracle_warp] cfg=RACConfig(p1_shrinkage=False, p2_inflation=False, p3_association=False, per_target=True, signals=('rho', 'n', 'eps', 'tau', 'kappa', 'phi'), force_r=None, shuffle_placebo=False, n0=300.0, eps0=1.0, tau0=5.0, s0=0.05, theta0=2.0, support_dilate=1.5, s_min=0.3, support_k0=12.0, theta_iou_max=0.8, beta=0.0, sigma_scale=1.0, warp_source='reference')
+  MOT17-02-FRCNN           299 frames     7.2s    7434 rows  warp_fallback=0
+  MOT17-04-FRCNN           524 frames    14.3s   23952 rows  warp_fallback=0
+  MOT17-05-FRCNN           418 frames     3.2s    2965 rows  warp_fallback=76
+  MOT17-09-FRCNN           262 frames     5.9s    2441 rows  warp_fallback=0
+  MOT17-10-FRCNN           326 frames     7.3s    4887 rows  warp_fallback=3
+  MOT17-11-FRCNN           449 frames     9.7s    4288 rows  warp_fallback=2
+  MOT17-13-FRCNN           374 frames     8.3s    2741 rows  warp_fallback=5
+[N2_oracle_warp] done -> /home/yifu/mot-cmc/04_experiments/trackers/MOT17-val-half/N2_oracle_warp/data
+[09:38:13] A_noCMC: compensation disabled -- locates the baseline on the CMC value axis
+[A_noCMC] cfg=RACConfig(p1_shrinkage=False, p2_inflation=False, p3_association=False, per_target=True, signals=('rho', 'n', 'eps', 'tau', 'kappa', 'phi'), force_r=None, shuffle_placebo=False, n0=300.0, eps0=1.0, tau0=5.0, s0=0.05, theta0=2.0, support_dilate=1.5, s_min=0.3, support_k0=12.0, theta_iou_max=0.8, beta=0.0, sigma_scale=1.0, warp_source='none')
+  MOT17-02-FRCNN           299 frames     7.1s    7432 rows
+  MOT17-04-FRCNN           524 frames    14.2s   23952 rows
+  MOT17-05-FRCNN           418 frames     3.1s    2946 rows
+  MOT17-09-FRCNN           262 frames     5.8s    2441 rows
+  MOT17-10-FRCNN           326 frames     7.2s    4780 rows
+  MOT17-11-FRCNN           449 frames     9.7s    4246 rows
+  MOT17-13-FRCNN           374 frames     8.5s    2671 rows
+[A_noCMC] done -> /home/yifu/mot-cmc/04_experiments/trackers/MOT17-val-half/A_noCMC/data
+[09:39:14] evaluating A_noCMC
+[09:39:16] staged N1_run2
+[09:39:17] staged N1_run3
+[09:39:19] staged N1_run4
+[09:39:20] staged N1_run5
+[09:39:23] staged N1_run1 from the original baseline
+[09:39:23] =========== POWER GATE ===========
+
+std:
+HOTA    0.0
+DetA    0.0
+AssA    0.0
+MOTA    0.0
+IDF1    0.0
+IDSW    0.0
+Frag    0.0
+
+max spread:
+HOTA    0.0
+DetA    0.0
+AssA    0.0
+MOTA    0.0
+IDF1    0.0
+IDSW    0.0
+Frag    0.0
+
+Pipeline is DETERMINISTIC: every repeat produced identical metrics.
+A zero noise floor does not license calling small gains significant;
+the practical noise scale is taken from hyperparameter perturbation instead.
+
+=== N2: headroom ceiling (N2_oracle_warp vs A0_frozen) ===
+metric  baseline  oracle  headroom  n1_std  n1_spread  ratio
+  HOTA    69.006  69.105     0.099     0.0        0.0    inf
+  DetA    67.246  67.249     0.003     0.0        0.0    inf
+  AssA    71.333  71.528     0.195     0.0        0.0    inf
+  MOTA    78.451  78.493     0.042     0.0        0.0    inf
+  IDF1    81.345  81.490     0.145     0.0        0.0    inf
+  IDSW   139.000 144.000     5.000     0.0        0.0    inf
+  Frag   443.000 443.000     0.000     0.0        0.0    NaN
+
+=== GATE  (N2 >= 3.0 x N1) ===
+N1 == 0 exactly, so the ratio test is vacuous. Reporting the raw headroom
+and deferring the gate decision to the perturbation-based noise scale.
+   HOTA: headroom +0.0990
+   DetA: headroom +0.0030
+   AssA: headroom +0.1950
+   MOTA: headroom +0.0420
+   IDF1: headroom +0.1450
+   IDSW: headroom +5.0000
+   Frag: headroom +0.0000
+
+saved -> /home/yifu/mot-cmc/99_artifacts/power_gate.json
+[09:39:23] done

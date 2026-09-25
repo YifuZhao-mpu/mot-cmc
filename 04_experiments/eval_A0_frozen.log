@@ -1,0 +1,58 @@
+
+CLEAR Config:
+METRICS              : ['HOTA', 'CLEAR', 'Identity'] 
+THRESHOLD            : 0.5                           
+PRINT_CONFIG         : True                          
+
+Identity Config:
+METRICS              : ['HOTA', 'CLEAR', 'Identity'] 
+THRESHOLD            : 0.5                           
+PRINT_CONFIG         : True                          
+
+Evaluating 1 tracker(s) on 7 sequence(s) for 1 class(es) on MotChallenge2DBox dataset using the following metrics: HOTA, CLEAR, Identity, Count
+
+
+Evaluating A0_frozen
+
+
+All sequences for A0_frozen finished in 0.94 seconds
+
+HOTA: A0_frozen-pedestrian         HOTA      DetA      AssA      DetRe     DetPr     AssRe     AssPr     LocA      OWTA      HOTA(0)   LocA(0)   HOTALocA(0)
+MOT17-02-FRCNN                     47.007    49.352    45.383    54.866    75.122    51.335    70.029    83.759    49.758    58.338    77.787    45.379    
+MOT17-04-FRCNN                     79.423    78.224    80.984    83.854    86.153    85.095    87.839    88.653    82.368    90.594    87.022    78.836    
+MOT17-05-FRCNN                     63.627    65.231    62.255    70.679    80.05     72.232    75.374    84.649    66.329    77.428    81.561    63.151    
+MOT17-09-FRCNN                     66.954    70.231    63.898    73.205    86.341    70.429    77.27     86.7      68.387    79.253    84.692    67.121    
+MOT17-10-FRCNN                     58.114    57.722    58.911    62.052    76.697    63.622    75.974    81.325    60.421    75.414    77.117    58.157    
+MOT17-11-FRCNN                     67.891    64.153    71.968    74.015    78.48     77.347    85.512    88.976    72.981    77.18     87.216    67.313    
+MOT17-13-FRCNN                     70.444    66.918    74.315    71.019    81.683    79.466    83.106    84.126    72.635    87.742    80.977    71.051    
+COMBINED                           69.006    67.246    71.333    73.177    82.243    76.483    83.127    86.665    72.177    81.131    83.842    68.022    
+
+CLEAR: A0_frozen-pedestrian        MOTA      MOTP      MODA      CLR_Re    CLR_Pr    MTR       PTR       MLR       sMOTA     CLR_TP    CLR_FN    CLR_FP    IDSW      MT        PT        ML        Frag      
+MOT17-02-FRCNN                     55.081    82.032    55.749    64.393    88.165    30.189    50.943    18.868    43.511    6362      3518      854       66        16        27        10        153       
+MOT17-04-FRCNN                     89.722    87.166    89.805    93.569    96.133    89.855    7.2464    2.8986    77.714    22623     1555      910       20        62        5         2         93        
+MOT17-05-FRCNN                     78.85     82.493    79.297    83.795    94.906    57.746    32.394    9.8592    64.18     2813      544       151       15        41        23        7         46        
+MOT17-09-FRCNN                     83.71     84.907    84.022    84.404    99.549    72.727    22.727    4.5455    70.97     2430      449       11        9         16        5         1         23        
+MOT17-10-FRCNN                     73.628    78.169    73.915    77.41     95.68     44.444    50        5.5556    56.729    4585      1338      207       17        16        18        2         78        
+MOT17-11-FRCNN                     69.648    87.769    69.825    82.068    87.019    50        25        25        59.611    3707      810       553       8         22        11        11        32        
+MOT17-13-FRCNN                     81.686    81.557    81.812    84.379    97.048    70.455    18.182    11.364    66.124    2663      493       81        4         31        8         5         18        
+COMBINED                           78.451    84.837    78.708    83.843    94.229    60.177    28.614    11.209    65.737    45183     8707      2767      139       204       97        38        443       
+
+Identity: A0_frozen-pedestrian     IDF1      IDR       IDP       IDTP      IDFN      IDFP      
+MOT17-02-FRCNN                     55.744    48.229    66.034    4765      5115      2451      
+MOT17-04-FRCNN                     91.119    89.904    92.368    21737     2441      1796      
+MOT17-05-FRCNN                     78.817    74.203    84.042    2491      866       473       
+MOT17-09-FRCNN                     81.09     74.922    88.365    2157      722       284       
+MOT17-10-FRCNN                     77.48     70.083    86.624    4151      1772      641       
+MOT17-11-FRCNN                     79.093    76.843    81.479    3471      1046      789       
+MOT17-13-FRCNN                     89.797    83.935    96.538    2649      507       95        
+COMBINED                           81.345    76.862    86.384    41421     12469     6529      
+
+Count: A0_frozen-pedestrian        Dets      GT_Dets   IDs       GT_IDs    
+MOT17-02-FRCNN                     7216      9880      94        53        
+MOT17-04-FRCNN                     23533     24178     94        69        
+MOT17-05-FRCNN                     2964      3357      69        71        
+MOT17-09-FRCNN                     2441      2879      21        22        
+MOT17-10-FRCNN                     4792      5923      48        36        
+MOT17-11-FRCNN                     4260      4517      68        44        
+MOT17-13-FRCNN                     2744      3156      46        44        
+COMBINED                           47950     53890     440       339       

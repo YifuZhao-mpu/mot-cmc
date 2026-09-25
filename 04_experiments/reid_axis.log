@@ -1,0 +1,16 @@
+[11:35:39] === R_none (warp=none, ReID on) ===
+  MOT17-11-FRCNN           449 frames    26.4s    4245 rows
+Skip loading parameter 'heads.weight' to the model due to incompatible shapes: (487, 2048) in the checkpoint but (0, 2048) in the model! You might want to double check if this is expected.
+  MOT17-13-FRCNN           374 frames    18.1s    2679 rows
+[R_none] done -> /home/yifu/mot-cmc/04_experiments/trackers/MOT17-val-half/R_none/data
+[11:39:01] === R_online (warp=online, ReID on) ===
+  MOT17-11-FRCNN           449 frames    26.1s    4290 rows
+Skip loading parameter 'heads.weight' to the model due to incompatible shapes: (487, 2048) in the checkpoint but (0, 2048) in the model! You might want to double check if this is expected.
+  MOT17-13-FRCNN           374 frames    18.1s    2748 rows
+[R_online] done -> /home/yifu/mot-cmc/04_experiments/trackers/MOT17-val-half/R_online/data
+[11:42:24] === R_oracle (warp=reference, ReID on) ===
+  MOT17-11-FRCNN           449 frames    26.5s    4288 rows  warp_fallback=2
+Skip loading parameter 'heads.weight' to the model due to incompatible shapes: (487, 2048) in the checkpoint but (0, 2048) in the model! You might want to double check if this is expected.
+  MOT17-13-FRCNN           374 frames    18.4s    2745 rows  warp_fallback=5
+[R_oracle] done -> /home/yifu/mot-cmc/04_experiments/trackers/MOT17-val-half/R_oracle/data
+[11:45:48] ALL RUNS DONE

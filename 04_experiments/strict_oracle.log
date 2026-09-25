@@ -1,0 +1,28 @@
+[14:17:03] === N2S_oracle_strict ===
+[N2S_oracle_strict] cfg=RACConfig(p1_shrinkage=False, p2_inflation=False, p3_association=False, per_target=True, signals=('rho', 'n', 'eps', 'tau', 'kappa', 'phi'), force_r=None, shuffle_placebo=False, n0=300.0, eps0=1.0, tau0=5.0, s0=0.05, theta0=2.0, support_dilate=1.5, s_min=0.3, support_k0=12.0, theta_iou_max=0.8, beta=0.0, sigma_scale=1.0, warp_source='reference_strict')
+  MOT17-02-FRCNN           299 frames     7.1s    7434 rows  warp_fallback=0  low_quality_used=0
+  MOT17-04-FRCNN           524 frames    14.2s   23952 rows  warp_fallback=0  low_quality_used=0
+  MOT17-05-FRCNN           418 frames     3.0s    2965 rows  warp_fallback=0  low_quality_used=76
+  MOT17-09-FRCNN           262 frames     5.7s    2441 rows  warp_fallback=0  low_quality_used=0
+  MOT17-10-FRCNN           326 frames     7.1s    4887 rows  warp_fallback=0  low_quality_used=3
+  MOT17-11-FRCNN           449 frames     9.5s    4288 rows  warp_fallback=0  low_quality_used=2
+  MOT17-13-FRCNN           374 frames     8.2s    2741 rows  warp_fallback=0  low_quality_used=5
+[N2S_oracle_strict] done -> /home/yifu/mot-cmc/04_experiments/trackers/MOT17-val-half/N2S_oracle_strict/data
+[14:18:04] === R_oracle_strict ===
+Skip loading parameter 'heads.weight' to the model due to incompatible shapes: (487, 2048) in the checkpoint but (0, 2048) in the model! You might want to double check if this is expected.
+  MOT17-09-FRCNN           262 frames    14.9s    2452 rows  warp_fallback=0  low_quality_used=0
+Skip loading parameter 'heads.weight' to the model due to incompatible shapes: (487, 2048) in the checkpoint but (0, 2048) in the model! You might want to double check if this is expected.
+  MOT17-10-FRCNN           326 frames    20.4s    4871 rows  warp_fallback=0  low_quality_used=3
+Skip loading parameter 'heads.weight' to the model due to incompatible shapes: (487, 2048) in the checkpoint but (0, 2048) in the model! You might want to double check if this is expected.
+  MOT17-11-FRCNN           449 frames    26.3s    4288 rows  warp_fallback=0  low_quality_used=2
+Skip loading parameter 'heads.weight' to the model due to incompatible shapes: (487, 2048) in the checkpoint but (0, 2048) in the model! You might want to double check if this is expected.
+  MOT17-13-FRCNN           374 frames    18.2s    2745 rows  warp_fallback=0  low_quality_used=5
+[R_oracle_strict] done -> /home/yifu/mot-cmc/04_experiments/trackers/MOT17-val-half/R_oracle_strict/data
+[14:21:27] evaluating
+== N2S_oracle_strict
+COMBINED                           69.093    67.245    71.51     73.19     82.226    76.613    83.259    86.666    72.273    81.245    83.823    68.102    
+COMBINED                           78.488    84.832    78.76     83.886    94.242    60.177    28.614    11.209    65.764    45206     8684      2762      147       204       97        38        443       
+== R_oracle_strict
+COMBINED                           69.35     67.257    72.025    73.132    82.32     76.749    84.268    86.679    72.505    81.559    83.891    68.421    
+COMBINED                           78.484    84.946    78.788    83.813    94.344    60.472    28.319    11.209    65.867    45167     8723      2708      164       205       96        38        457       
+[14:21:30] DONE

@@ -1,0 +1,4 @@
+[ 0] abs:"camera motion compensation" AND cat:cs.CV
+[ 0] abs:"multi-object tracking" AND abs:"camera motion"
+[ 0] abs:"multi-object tracking" AND abs:appearance AND abs:motion AND abs:adaptive
+[ 0] abs:tracking AND abs:"identity switches"

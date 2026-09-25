@@ -1,0 +1,12 @@
+[03:40:05] === global_homography -> planar_homography ===
+[planar_homography] warps rejected by the plausibility guard: 889
+[planar_homography] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/planar_homography/data
+[03:40:24] === global_oracle -> planar_oracle ===
+[planar_oracle] warps rejected by the plausibility guard: 0
+[planar_oracle] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/planar_oracle/data
+[03:40:34] evaluating
+planar_homography/pedestrian: HOTA 46.884 AssA 50.275 DetA 44.663 IDSW 115
+planar_homography/car: HOTA 66.129 AssA 71.802 DetA 61.67 IDSW 174
+planar_oracle/pedestrian: HOTA 46.515 AssA 49.179 DetA 44.83 IDSW 142
+planar_oracle/car: HOTA 62.347 AssA 65.232 DetA 60.422 IDSW 532
+[03:40:38] DONE
