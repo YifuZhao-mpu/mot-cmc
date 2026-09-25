@@ -54,6 +54,33 @@ FIGURES = [
      "Held-out AUC by reliability-signal subset size on real MOT17 data.", "fig:signals"),
 ]
 
+# Author block. `\author*` marks the corresponding author in sn-jnl; ORCIDs use
+# the class's own \orcid macro. Order follows the author-supplied list.
+_A = [
+    ("Yifu",     "Zhao", 1, "0009-0004-2363-9269", "p2523269@mpu.edu.mo", False),
+    ("Xiaofan",  "Zou",  2, "0009-0005-5995-3150", "xiaofanz@shu.edu.cn",  False),
+    ("Junhao",   "Wei",  1, "0009-0006-0553-2032", "p2312195@mpu.edu.mo",  False),
+    ("Yanxiao",  "Li",   1, "0009-0008-3389-1619", "p2525981@mpu.edu.mo",  False),
+    ("Haochen",  "Li",   1, "0009-0000-8213-5854", "p2523372@mpu.edu.mo",  False),
+    ("Sio-Kei",  "Im",   3, "0000-0002-5599-4300", "marcusim@mpu.edu.mo",  False),
+    ("Yapeng",   "Wang", 1, "0000-0002-1085-5091", "yapengwang@mpu.edu.mo", True),
+    ("Xu",       "Yang", 1, "0000-0002-7037-3609", "xuyang@mpu.edu.mo",    False),
+]
+AUTHORS = "\n".join(
+    f"\\author{'*' if corr else ''}[{inst}]{{\\fnm{{{fn}}}\\sur{{{sn}}}"
+    f"\\orcid{{https://orcid.org/{oid}}}}}\\email{{{mail}}}"
+    for fn, sn, inst, oid, mail, corr in _A)
+AFFILS = "\n".join([
+    r"\affil*[1]{\orgdiv{Faculty of Applied Sciences}, \orgname{Macao Polytechnic "
+    r"University}, \city{Macao}, \postcode{999078}, \country{China}}",
+    r"\affil[2]{\orgdiv{School of Mechanical and Electrical Engineering and "
+    r"Automation}, \orgname{Shanghai University}, \city{Shanghai}, "
+    r"\postcode{200444}, \country{China}}",
+    r"\affil[3]{\orgname{Macao Polytechnic University}, \city{Macao}, "
+    r"\postcode{999078}, \country{China}}",
+])
+
+
 PREAMBLE = r"""\documentclass[sn-basic,iicol]{sn-jnl}
 \usepackage{graphicx}
 \usepackage{multirow}
@@ -101,6 +128,11 @@ PREAMBLE = r"""\documentclass[sn-basic,iicol]{sn-jnl}
 % breakurl also replaces \url with a dvips-only implementation (\pdf@box);
 % hyperref's \nolinkurl typesets the same text and works under XeTeX.
 \AtBeginDocument{\let\url\nolinkurl}
+\makeatother
+% sn-jnl's \orcidlogo hard-codes Orcidlogo.eps, which XeTeX cannot read.
+% Point it at the PDF shipped alongside; the mark renders identically.
+\makeatletter
+\def\orcidlogo{\raisebox{-0.5pt}{\includegraphics[height=7.5pt]{Orcidlogo-eps-converted-to.pdf}}}
 \makeatother
 \theoremstyle{thmstyleone}
 \newtheorem{theorem}{Theorem}
@@ -250,8 +282,8 @@ def main() -> None:
         "\\title[Camera-Motion Compensation Is Not the Bottleneck]{Camera-Motion "
         "Compensation Is Not the Bottleneck: A Measurement Study of Shared Warps "
         "in Tracking-by-Detection}",
-        "\\author[1]{\\fnm{First}\\sur{Author}}\\email{author@example.org}",
-        "\\affil[1]{\\orgname{[Affiliation]}, \\city{[City]}, \\country{[Country]}}",
+        AUTHORS,
+        AFFILS,
         "\\abstract{" + abs_tex + "}",
         "\\keywords{" + keywords.replace(" · ", ", ") + "}",
         "\\maketitle",

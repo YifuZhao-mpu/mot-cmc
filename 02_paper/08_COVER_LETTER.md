@@ -64,8 +64,10 @@ tried to write the paper so that a reader can tell the two apart.
 
 Yours sincerely,
 
-[Author names]
-[Affiliation]
+Yifu Zhao, Xiaofan Zou, Junhao Wei, Yanxiao Li, Haochen Li, Sio-Kei Im, Yapeng Wang and Xu Yang
+
+On behalf of all authors — **Yapeng Wang** (corresponding), Faculty of Applied Sciences,
+Macao Polytechnic University, Macao 999078, China · yapengwang@mpu.edu.mo
 
 ---
 
@@ -77,7 +79,7 @@ directly concerned by the results and would be well placed to find any remaining
 ## Statements
 
 - **Competing interests**: none.
-- **Funding**: [placeholder].
+- **Funding**: Macao Polytechnic University (RP/FCA-06/2026) and the Macao Science and Technology Development Fund (FDCT-MOST: 0018/2025/AMJ).
 - **Data and code**: fully released; repository DOI to be minted at acceptance.
 - **AI assistance**: disclosed in the manuscript. No number in the paper was produced by a language
   model; all were produced by executing the released code.

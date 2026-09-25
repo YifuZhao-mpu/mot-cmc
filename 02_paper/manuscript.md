@@ -1,9 +1,23 @@
 # Camera-Motion Compensation Is Not the Bottleneck: A Measurement Study of Shared Warps in Tracking-by-Detection
 
-**[Author Name]**^1^ · **[Author Name]**^1^
+**Yifu Zhao**^1^ · **Xiaofan Zou**^2^ · **Junhao Wei**^1^ · **Yanxiao Li**^1^ · **Haochen Li**^1^ · **Sio-Kei Im**^3^ · **Yapeng Wang**^1,\*^ · **Xu Yang**^1^
 
-^1^ [Affiliation], [City], [Country]
-Corresponding author: [Email] · ORCID: [ORCID]
+^1^ Faculty of Applied Sciences, Macao Polytechnic University, Macao 999078, China
+^2^ School of Mechanical and Electrical Engineering and Automation, Shanghai University, Shanghai 200444, China
+^3^ Macao Polytechnic University, Macao 999078, China
+
+\* Corresponding author: yapengwang@mpu.edu.mo
+
+| Author | ORCID | E-mail |
+|---|---|---|
+| Yifu Zhao | 0009-0004-2363-9269 | p2523269@mpu.edu.mo |
+| Xiaofan Zou | 0009-0005-5995-3150 | xiaofanz@shu.edu.cn |
+| Junhao Wei | 0009-0006-0553-2032 | p2312195@mpu.edu.mo |
+| Yanxiao Li | 0009-0008-3389-1619 | p2525981@mpu.edu.mo |
+| Haochen Li | 0009-0000-8213-5854 | p2523372@mpu.edu.mo |
+| Sio-Kei Im | 0000-0002-5599-4300 | marcusim@mpu.edu.mo |
+| Yapeng Wang | 0000-0002-1085-5091 | yapengwang@mpu.edu.mo |
+| Xu Yang | 0000-0002-7037-3609 | xuyang@mpu.edu.mo |
 
 ---
 
@@ -829,11 +843,13 @@ A large language model (Anthropic Claude) was used throughout this work as a res
 
 ## CRediT Author Statement
 
-[Author 1]: Conceptualization, Methodology, Software, Formal analysis, Investigation, Data curation, Writing — original draft, Visualization. [Author 2]: [roles]. All authors read and approved the final manuscript.
+**Yifu Zhao**: [roles]. **Xiaofan Zou**: [roles]. **Junhao Wei**: [roles]. **Yanxiao Li**: [roles]. **Haochen Li**: [roles]. **Sio-Kei Im**: [roles]. **Yapeng Wang**: [roles]. **Xu Yang**: [roles]. All authors read and approved the final manuscript.
+
+*To be completed by the authors before submission. The contribution taxonomy is CRediT (Conceptualization, Methodology, Software, Validation, Formal analysis, Investigation, Resources, Data curation, Writing — original draft, Writing — review & editing, Visualization, Supervision, Project administration, Funding acquisition). We have not assigned roles on the authors' behalf.*
 
 ## Funding
 
-[Funding statement placeholder.]
+This work is supported by the grant from Macao Polytechnic University (RP/FCA-06/2026) and the Macao Science and Technology Development Fund (FDCT-MOST: 0018/2025/AMJ).
 
 ## Competing Interests
 
