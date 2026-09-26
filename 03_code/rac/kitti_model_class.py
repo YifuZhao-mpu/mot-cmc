@@ -34,7 +34,8 @@ _sys.path.insert(0, str(_pl.Path(__file__).resolve().parents[1]))
 from rac.paths import p  # noqa: E402
 
 sys.path.insert(0, str(_P(__file__).resolve().parents[2] / "03_code"))
-from rac.kitti_egomotion import (  # noqa: E402
+from rac.kitti_egomotion import (
+    best_similarity,  # noqa: E402
     camera_poses, relative_motion, load_labels, project, exact_displacement,
 )
 
@@ -43,19 +44,31 @@ EVAL = ("Car", "Van", "Truck", "Pedestrian", "Cyclist")
 
 
 def fit_apply(src, dst, model):
+    """Fit one warp family to exact correspondences and return the predictions.
+
+    The correspondences here are the objects' own true displacements, computed
+    from annotated 3D positions and true camera motion, so they contain no
+    outliers and the fit must be least squares. An earlier version used LMEDS
+    for the similarity and affine rows, which on a frame with three or four
+    objects interpolates a minimal sample and discards the rest -- the same
+    defect corrected in `best_similarity`.
+    """
     if model == "similarity":
-        M, _ = cv2.estimateAffinePartial2D(src.astype(np.float32).reshape(-1, 1, 2),
-                                           dst.astype(np.float32).reshape(-1, 1, 2),
-                                           method=cv2.LMEDS)
+        M = best_similarity(src, dst)
         if M is None:
             return None
         return (M[:, :2] @ src.T).T + M[:, 2]
     if model == "affine":
-        M, _ = cv2.estimateAffine2D(src.astype(np.float32).reshape(-1, 1, 2),
-                                    dst.astype(np.float32).reshape(-1, 1, 2),
-                                    method=cv2.LMEDS)
-        if M is None:
+        n = len(src)
+        A = np.zeros((2 * n, 6)); y = np.empty(2 * n)
+        A[0::2, 0], A[0::2, 1], A[0::2, 2] = src[:, 0], src[:, 1], 1.0
+        A[1::2, 3], A[1::2, 4], A[1::2, 5] = src[:, 0], src[:, 1], 1.0
+        y[0::2], y[1::2] = dst[:, 0], dst[:, 1]
+        try:
+            c = np.linalg.lstsq(A, y, rcond=None)[0]
+        except np.linalg.LinAlgError:
             return None
+        M = c.reshape(2, 3)
         return (M[:, :2] @ src.T).T + M[:, 2]
     if model == "homography":
         if len(src) < 4:

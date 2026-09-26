@@ -206,15 +206,51 @@ def parallax_residual(K, R, t, X_prev: np.ndarray) -> dict:
                 per_point=err)
 
 
-def best_similarity(src: np.ndarray, dst: np.ndarray) -> np.ndarray | None:
-    """Least-squares 4-DOF similarity fitting src->dst. The best any
-    BoT-SORT-style compensator could possibly do for this frame, given perfect
-    correspondences on the tracked objects themselves."""
+def best_similarity(src: np.ndarray, dst: np.ndarray,
+                    robust: bool = False) -> np.ndarray | None:
+    """Fit a 4-DOF similarity src -> dst.
+
+    `robust=False` (the default) is an ordinary least-squares fit, and it is what
+    the phrase "the best similarity that could be fitted to these points" means:
+    it minimises the total squared residual and uses every correspondence.
+
+    `robust=True` uses LMEDS, which minimises the *median* squared residual and
+    therefore tolerates up to half the correspondences being outliers. That is
+    the right estimator when the correspondences are noisy -- background points
+    carrying monocular depths, or observed object displacements that contain the
+    objects' own motion -- and the wrong one when they are exact.
+
+    This distinction matters and an earlier version of this function got it
+    wrong: it used LMEDS everywhere while documenting itself as least squares.
+    On a frame with three or four annotated objects, a 4-DOF similarity has a
+    two-point minimal sample, so LMEDS interpolates two targets exactly and
+    leaves the rest unfitted -- which inflates the max-minus-min spread the
+    per-object study reports. 44.7 % of the moving frames used in Section 6.2
+    have four objects or fewer. Under LMEDS the median within-frame spread after
+    the "best" similarity was 5.878 px and 54.31 % of frames exceeded 5 px;
+    under least squares it is 2.431 px and 27.12 %.
+    """
     import cv2
     if len(src) < 2:
         return None
-    H, _ = cv2.estimateAffinePartial2D(
-        src.astype(np.float32).reshape(-1, 1, 2),
-        dst.astype(np.float32).reshape(-1, 1, 2),
-        method=cv2.LMEDS)
-    return H
+    if robust:
+        H, _ = cv2.estimateAffinePartial2D(
+            src.astype(np.float32).reshape(-1, 1, 2),
+            dst.astype(np.float32).reshape(-1, 1, 2),
+            method=cv2.LMEDS)
+        return H
+    # least squares on [a -b tx; b a ty]
+    s_, d_ = np.asarray(src, float), np.asarray(dst, float)
+    n = len(s_)
+    A = np.zeros((2 * n, 4))
+    A[0::2, 0], A[0::2, 1], A[0::2, 2] = s_[:, 0], -s_[:, 1], 1.0
+    A[1::2, 0], A[1::2, 1], A[1::2, 3] = s_[:, 1], s_[:, 0], 1.0
+    y = np.empty(2 * n)
+    y[0::2], y[1::2] = d_[:, 0], d_[:, 1]
+    try:
+        a, b, tx, ty = np.linalg.lstsq(A, y, rcond=None)[0]
+    except np.linalg.LinAlgError:
+        return None
+    if not np.all(np.isfinite([a, b, tx, ty])):
+        return None
+    return np.array([[a, -b, tx], [b, a, ty]])

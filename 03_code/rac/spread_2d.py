@@ -91,7 +91,7 @@ def measure(tracks: dict[int, dict[int, np.ndarray]], seq: str, ds: str) -> list
             continue
         p0 = np.stack([a[i] for i in ids])
         p1 = np.stack([b[i] for i in ids])
-        S = best_similarity(p0, p1)
+        S = best_similarity(p0, p1, robust=True)   # observed displacements contain object motion
         if S is None:
             continue
         S = np.asarray(S, float)

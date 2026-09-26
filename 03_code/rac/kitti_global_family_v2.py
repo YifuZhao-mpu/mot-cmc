@@ -107,7 +107,7 @@ def main() -> None:
         f0 = sorted(f for f in os.listdir(img_dir) if f.endswith(".png"))[0]
         h, w = cv2.imread(os.path.join(img_dir, f0)).shape[:2]
 
-        V4 = np.load(fp("04_experiments/kitti_warps_v4/{seq}.npz"))
+        V4 = np.load(p(f"04_experiments/kitti_warps_v4/{seq}.npz"))
         n = len(V4["global_oracle"])
         # fall back to the single-depth global similarity, never to identity
         planar_h = np.zeros((n, 9))
@@ -133,7 +133,7 @@ def main() -> None:
             if bp is None:
                 continue
             bmoved = camera_induced(K, R, t, bp, bz)
-            S = best_similarity(bp, bmoved)
+            S = best_similarity(bp, bmoved, robust=True)   # monocular depths carry outliers
             Hh, _ = cv2.findHomography(bp.astype(np.float32).reshape(-1, 1, 2),
                                        bmoved.astype(np.float32).reshape(-1, 1, 2),
                                        method=cv2.RANSAC, ransacReprojThreshold=1.0)

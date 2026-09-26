@@ -106,7 +106,7 @@ def run(model, ds: str, seq: str, img_dir: str, tracks: dict, stride: int) -> li
         if len(z) < MIN_OBJ:
             continue
         c0, c1, z = np.asarray(c0), np.asarray(c1), np.asarray(z)
-        S = best_similarity(c0, c1)
+        S = best_similarity(c0, c1, robust=True)   # observed displacements contain object motion
         if S is None:
             continue
         S = np.asarray(S, float)

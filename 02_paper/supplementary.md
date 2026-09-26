@@ -31,7 +31,7 @@ Four, all found by measurement rather than by argument, and all recorded because
 
 *The oracle configuration's fallback.* The tracker reverted to the online estimate whenever the reference warp failed its quality gate, on 18.2 % of MOT17-05's validation frames, so "the only variable is the warp" was false. Re-run strictly, the axis moves by 0.012 HOTA (§5.3).
 
-*The claim that perfecting compensation is never positive.* Stratified by the paper's own static/moving control, it is +0.169 HOTA [+0.013, +0.523] on the moving sequences with an appearance channel. The claim is withdrawn and §5.4 states the bound instead of the sign.
+*The claim that perfecting compensation is never positive.* Stratified by the paper's own static/moving control, it is +0.189 HOTA [+0.050, +0.517] on the moving sequences with an appearance channel. The claim is withdrawn and §5.4 states the bound instead of the sign.
 
 We also withdrew three claims when sequence-level intervals replaced point estimates: a "±0.104 across 7/7 hyperparameter settings" framing, which measures tuning sensitivity rather than generalisation; "+0.686 HOTA over the best global model"; and a leave-one-sequence-out result that used an unweighted per-sequence mean while every interval in the paper used a weighted aggregate — under the paper's own estimator the car gain does not change sign.
 
@@ -44,3 +44,30 @@ Both are measured over the 31,470 object-frames that lie in moving frames with a
 **Candidate 2: pedestrian boxes are smaller, so a given pixel error costs more IoU.** Also false, and in a way worth stating precisely. The disagreement between an object's own warp and the shared warp exceeds one third of the object's box width — roughly where a pure translation drops IoU below the gate — in **3.33 %** of car object-frames and **3.28 %** of pedestrian ones. The two classes are not merely ordered the wrong way; they are equally exposed, so the explanation has nothing to work with.
 
 Both were specified before being measured, and both are recorded rather than dropped.
+
+
+### The estimator presented as a best fit
+
+`best_similarity` was documented as a least-squares 4-DOF fit and implemented with `cv2.LMEDS`,
+which minimises the median squared residual and tolerates up to half the correspondences being
+outliers. That is the right estimator for background points carrying monocular depths and the
+wrong one for three to five objects at exact annotated depths. On a 4-DOF similarity the minimal
+sample is two points, so on the 44.7 % of moving frames with four or fewer targets LMEDS
+interpolates two and discards the rest — inflating precisely the max-minus-min statistic Section
+6.2 reports, while the manuscript called the fit "the best possible".
+
+| within-frame spread, 4,318 moving frames | median | p90 | max | > 5 px |
+|---|---|---|---|---|
+| LMEDS, as first reported | 5.878 px | 30.404 | 473.5 | 54.31 % |
+| least squares, as reported now | **2.431 px** | **10.114** | **67.7** | **27.12 %** |
+
+`best_similarity` now takes an explicit `robust` argument, defaulting to least squares, and every
+call site declares which it needs. All nine warp bundles were refitted and all sixteen affected
+tracking arms re-run. The refit script asserts that each bundle's `online` array survives
+byte-identical, so the deployed estimator stayed fixed across the correction.
+
+Consequences beyond the spread: the per-target correction's advantage over the depth-blind global
+similarity on pedestrians falls from +0.842 [+0.067, +1.226] to **+0.726 [−0.090, +1.096]** and no
+longer excludes zero, and the gate-crossing rate of Section 6.3 rises slightly, from 2.082 % to
+2.175 %. The homography comparison that carries the paper's positive claim is unaffected: it is
+fitted to background points, where the robust estimator was correct and remains in use.

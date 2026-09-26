@@ -175,9 +175,9 @@ def check_reference_warp() -> None:
 def check_car_depth_noise() -> None:
     """7.2 -- the car deltas are prose, not a table, and were unchecked."""
     ref = te("v4_global_oracle", "car")["HOTA"]
-    for sig, run, delta in ((0.00, "v3_per_target", 0.206), (0.05, "dn005_per_target", -0.178),
-                            (0.10, "dn010_per_target", -0.216), (0.20, "dn020_per_target", -0.217),
-                            (0.30, "dn030_per_target", -0.235), (0.50, "dn050_per_target", -0.191)):
+    for sig, run, delta in ((0.00, "v3_per_target", 0.248), (0.05, "dn005_per_target", -0.077),
+                            (0.10, "dn010_per_target", -0.110), (0.20, "dn020_per_target", -0.127),
+                            (0.30, "dn030_per_target", -0.144), (0.50, "dn050_per_target", -0.042)):
         check(f"7.2 car sigma={sig}", delta, te(run, "car")["HOTA"] - ref, 1e-2)
 
 
@@ -208,75 +208,27 @@ def check_mot17_axis() -> None:
             check(f"{label} {key}", v, m[key], 5e-3 if key != "IDSW" else 0.5)
 
 
-def check_kitti_tracking() -> None:
-    """Tables 6 and 10."""
-    T6 = {
-        ("pedestrian", "none"): ("v3_none", (45.499, 47.877, 43.996, 42.218, 61.565, 279, 412)),
-        ("pedestrian", "online"): ("v3_online", (47.428, 51.448, 44.617, 44.252, 64.424, 126, 393)),
-        ("pedestrian", "glob-sim"): ("v4_global_oracle", (46.744, 50.006, 44.784, 44.594, 62.106, 108, 384)),
-        ("pedestrian", "glob-hom"): ("v4_global_homography", (46.890, 50.264, 44.818, 44.802, 62.335, 106, 383)),
-        ("pedestrian", "per-target"): ("v4_per_target", (47.576, 51.852, 44.748, 44.639, 63.084, 88, 383)),
-        ("car", "none"): ("v3_none", (64.792, 70.339, 60.584, 69.896, 79.298, 401, 265)),
-        ("car", "online"): ("v3_online", (65.265, 70.137, 61.450, 71.342, 79.542, 165, 254)),
-        ("car", "glob-sim"): ("v4_global_oracle", (66.267, 71.922, 61.775, 71.753, 80.868, 129, 247)),
-        ("car", "glob-hom"): ("v4_global_homography", (66.399, 72.131, 61.833, 71.762, 80.958, 127, 242)),
-        ("car", "per-target"): ("v4_per_target", (66.473, 72.432, 61.730, 71.267, 80.689, 117, 240)),
-    }
-    for (cls, cfg), (run, vals) in T6.items():
-        m = te(run, cls)
-        for key, v in zip(("HOTA", "AssA", "DetA", "MOTA", "IDF1", "IDSW", "Frag"), vals):
-            check(f"T6 {cls} {cfg} {key}", v, m[key], 5e-3 if key not in ("IDSW", "Frag") else 0.5)
-
-    T10 = {
-        ("pedestrian", "dep-global"): ("dep_global_oracle", (46.518, 49.980, 44.449, 117)),
-        ("pedestrian", "dep-per-target"): ("dep_per_target_depth", (47.394, 51.429, 44.796, 85)),
-        ("car", "dep-global"): ("dep_global_oracle", (65.278, 70.382, 61.268, 218)),
-        ("car", "dep-per-target"): ("dep_per_target_depth", (66.473, 72.011, 62.112, 134)),
-    }
-    for (cls, cfg), (run, vals) in T10.items():
-        m = te(run, cls)
-        for key, v in zip(("HOTA", "AssA", "DetA", "IDSW"), vals):
-            check(f"T10 {cls} {cfg} {key}", v, m[key], 5e-3 if key != "IDSW" else 0.5)
-
-
-def check_depth_noise() -> None:
-    """Table 9."""
-    ref = te("v4_global_oracle", "pedestrian")["HOTA"]
-    rows = {0.00: ("v3_per_target", 47.576, 51.852, 88, 0.832),
-            0.05: ("dn005_per_target", 47.865, 52.541, 85, 1.121),
-            0.10: ("dn010_per_target", 47.864, 52.532, 85, 1.120),
-            0.20: ("dn020_per_target", 47.644, 52.086, 87, 0.900),
-            0.30: ("dn030_per_target", 47.540, 51.848, 100, 0.796),
-            0.50: ("dn050_per_target", 46.385, 49.188, 153, -0.359)}
-    for sig, (run, hota, assa, idsw, delta) in rows.items():
-        m = te(run, "pedestrian")
-        check(f"T9 sigma={sig} HOTA", hota, m["HOTA"], 5e-3)
-        check(f"T9 sigma={sig} AssA", assa, m["AssA"], 5e-3)
-        check(f"T9 sigma={sig} IDSW", idsw, m["IDSW"], 0.5)
-        check(f"T9 sigma={sig} delta", delta, m["HOTA"] - ref, 1e-2)
-
-
 def check_kitti_geometry() -> None:
     """§6.2, §6.3, §6.4."""
     d = pd.read_csv(f"{E}/kitti_per_object.csv")
     m = d[d.trans_m > 0.05]
     check("6.2 moving frames", 4318, len(m), tol=0.5)
-    check("6.2 spread median", 5.878, m.err_spread.median(), 5e-4)
-    for p, v in ((75, 14.868), (90, 30.404), (95, 43.765), (99, 73.005)):
+    check("6.2 spread median", 2.431, m.err_spread.median(), 5e-4)
+    for p, v in ((75, 5.335), (90, 10.114), (95, 14.020), (99, 23.084)):
         check(f"6.2 spread p{p}", v, np.percentile(m.err_spread, p), 5e-3)
-    check("6.2 spread max", 473.5, m.err_spread.max(), 5e-2)
-    for t, v in ((1, 85.92), (2, 73.65), (5, 54.31), (10, 36.22)):
+    check("6.2 spread max", 67.7, m.err_spread.max(), 5e-2)
+    for t, v in ((1, 75.47), (2, 56.02), (5, 27.12), (10, 10.14)):
         check(f"6.2 spread>{t}px %", v, (m.err_spread > t).mean() * 100, 5e-3)
-    check("6.2 rho(depth,err) median", -0.400, m.rho_depth_err.median(), 5e-4)
+    check("6.2 rho(depth,err) median", -0.200, m.rho_depth_err.median(), 5e-4)
     # the Spearman needs >= 4 objects, so the denominator is the frames where it
     # is defined, not all moving frames -- the manuscript now states both
     r = m.rho_depth_err.dropna()
     check("6.2 rho defined frames", 3379, len(r), tol=0.5)
-    check("6.2 rho negative %", 75.3, (r < 0).mean() * 100, 5e-2)
-    check("6.3 frames with >=1 gated %", 10.00, (m.n_gated > 0).mean() * 100, 5e-2)
+    check("6.2 rho negative %", 64.5, (r < 0).mean() * 100, 5e-2)
+    check("6.3 frames with >=1 gated %", 8.04, (m.n_gated > 0).mean() * 100, 5e-2)
     check("6.3 object-frames", 23443, m.n_obj.sum(), tol=0.5)
-    check("6.3 gated object-frames", 488, m.n_gated.sum(), tol=0.5)
-    check("6.3 gated %", 2.082, 100 * m.n_gated.sum() / m.n_obj.sum(), 5e-3)
+    check("6.3 gated object-frames", 510, m.n_gated.sum(), tol=0.5)
+    check("6.3 gated %", 2.175, 100 * m.n_gated.sum() / m.n_obj.sum(), 5e-3)
 
     p = pd.read_csv(f"{E}/kitti_parallax.csv")
     check("6.2 parallax frames", 6416, len(p), tol=0.5)
@@ -284,8 +236,8 @@ def check_kitti_geometry() -> None:
     mc = pd.read_csv(f"{E}/kitti_model_class.csv")
     mc = mc[mc.trans_m > 0.05]
     check("6.4 model-class frames", 2389, len(mc), tol=0.5)
-    for f, med, spread, gt5 in (("similarity", 0.865, 8.713, 66.85),
-                                ("affine", 0.131, 8.822, 68.02),
+    for f, med, spread, gt5 in (("similarity", 2.146, 3.790, 39.39),
+                                ("affine", 1.140, 2.100, 18.04),
                                 ("homography", 0.000, 0.746, 14.40)):
         check(f"6.4 {f} med", med, mc[f + "_med"].median(), 5e-4)
         check(f"6.4 {f} spread", spread, mc[f + "_spread"].median(), 5e-4)
@@ -293,8 +245,8 @@ def check_kitti_geometry() -> None:
 
     gf = pd.read_csv(f"{E}/kitti_global_family.csv")
     check("6.4 deployable frames", 4318, len(gf), tol=0.5)
-    for col, med, spread, gt5 in (("oracle", 0.537, 5.878, 54.31),
-                                  ("sim", 1.121, 7.588, 61.28),
+    for col, med, spread, gt5 in (("oracle", 1.698, 2.431, 27.12),
+                                  ("sim", 1.178, 7.451, 61.16),
                                   ("hom", 0.968, 7.418, 61.44)):
         check(f"6.4 dep {col} med", med, gf[col + "_med"].median(), 5e-4)
         check(f"6.4 dep {col} spread", spread, gf[col + "_spread"].median(), 5e-4)
@@ -305,7 +257,7 @@ def check_class_split() -> None:
     """Section 8 -- the two refuted explanations."""
     d = pd.read_csv(f"{E}/kitti_class_split.csv")
     check("8 object-frames", 31470, len(d), tol=0.5)
-    for cls, n, lz, ex in (("car", 23348, 0.325, 3.33), ("ped", 8122, 0.246, 3.28)):
+    for cls, n, lz, ex in (("car", 23348, 0.3253, 3.28), ("ped", 8122, 0.2456, 3.23)):
         g = d[d.cls == cls]
         check(f"8 {cls} n", n, len(g), tol=0.5)
         check(f"8 {cls} median |log z ratio|", lz, g.log_z_ratio.median(), 5e-4)
@@ -340,54 +292,6 @@ def check_uavdt() -> None:
             check(f"UAVDT {run} {key}", v, m[key], 5e-3 if key not in ("IDSW", "Frag") else 0.5)
 
 
-def check_bootstrap() -> None:
-    """Tables 5 and 7 — recomputed with the committed seed."""
-    import importlib.util
-    spec = importlib.util.spec_from_file_location("bci", f"{ROOT}/03_code/rac/bootstrap_ci.py")
-    b = importlib.util.module_from_spec(spec); spec.loader.exec_module(b)
-    MOT = f"{TR}/MOT17-val-half"
-
-    def ci(base, comp, cls, metric, root=None):
-        a, bb = b.per_seq(base, cls, root), b.per_seq(comp, cls, root)
-        idx = a.index.intersection(bb.index)
-        w = a.loc[idx, "GT_Dets"].values.astype(float)
-        pt, boots, _ = b.bootstrap(a, bb, metric, w, n_boot=20000)
-        lo, hi = np.percentile(boots, [2.5, 97.5])
-        return pt, lo, hi
-
-    T7 = [("v4_global_oracle", "v4_per_target", "pedestrian", "HOTA", 0.842, 0.067, 1.226),
-          ("v4_global_oracle", "v4_per_target", "pedestrian", "AssA", 1.639, 0.071, 2.426),
-          ("v4_global_homography", "v4_per_target", "pedestrian", "HOTA", 0.656, -0.157, 0.998),
-          ("v4_global_oracle", "v4_per_target", "car", "HOTA", 0.213, -0.342, 0.605),
-          ("dep_global_oracle", "dep_per_target_depth", "pedestrian", "HOTA", 0.855, 0.141, 1.339),
-          ("dep_online", "dep_per_target_depth", "pedestrian", "HOTA", -0.207, -0.852, 1.766)]
-    for base, comp, cls, metric, pt, lo, hi in T7:
-        p, l, h = ci(base, comp, cls, metric)
-        check(f"T7 {cls} {base}->{comp} {metric} pt", pt, p, 5e-4)
-        check(f"T7 {cls} {base}->{comp} {metric} lo", lo, l, 5e-4)
-        check(f"T7 {cls} {base}->{comp} {metric} hi", hi, h, 5e-4)
-
-    for cls, full, lo, hi in (("pedestrian", 0.8424, 0.3320, 1.0253),
-                              ("car", 0.2128, 0.0960, 0.3929)):
-        f, l, h, flips, _ = b.leave_one_out(cls, "v4_global_oracle", "v4_per_target")
-        check(f"6.6 LOO {cls} full", full, f, 5e-4)
-        check(f"6.6 LOO {cls} lo", lo, l, 5e-4)
-        check(f"6.6 LOO {cls} hi", hi, h, 5e-4)
-        check(f"6.6 LOO {cls} sign flips", 0, flips, 0.5)
-
-    T5 = [("A_noCMC", "A0_frozen", "HOTA", 0.928, -0.136, 3.471),
-          ("R_none", "R_online", "HOTA", 1.220, 0.243, 3.720),
-          ("A0_frozen", "N2_oracle_warp", "HOTA", 0.137, -0.042, 0.492),
-          ("R_online", "R_oracle", "HOTA", -0.094, -0.460, 0.133),
-          ("A0_frozen", "A0_botsort_baseline", "HOTA", 0.149, -0.028, 0.504)]
-    for base, comp, metric, pt, lo, hi in T5:
-        p, l, h = ci(base, comp, "pedestrian", metric, root=MOT)
-        check(f"T5 {base}->{comp} {metric} pt", pt, p, 5e-4)
-        check(f"T5 {base}->{comp} {metric} lo", lo, l, 5e-4)
-        check(f"T5 {base}->{comp} {metric} hi", hi, h, 5e-4)
-
-
-
 def check_strict_oracle() -> None:
     """5.3 -- the oracle re-run with no fallback to the online estimate."""
     for run, cls, vals in (
@@ -403,7 +307,7 @@ def check_family_v2() -> None:
     d = pd.read_csv(f"{E}/kitti_global_family_v2.csv")
     check("6.4v2 frames", 4318, len(d), tol=0.5)
     for col, med, spread, gt5 in (("online", 2.026, 8.673, 65.12),
-                                  ("oracle", 0.537, 5.878, 54.31),
+                                  ("oracle", 1.698, 2.431, 27.12),
                                   ("sim", 4.773, 7.466, 61.74),
                                   ("hom", 0.478, 1.370, 12.90)):
         check(f"6.4v2 {col} med", med, d[col + "_med"].median(), 5e-3)
@@ -411,7 +315,7 @@ def check_family_v2() -> None:
         check(f"6.4v2 {col} >5px %", gt5, (d[col + "_spread"] > 5).mean() * 100, 5e-3)
     check("6.4v2 spread reduction vs deployable sim %", 81.65,
           100 * (1 - d.hom_spread.median() / d.sim_spread.median()), 5e-2)
-    check("6.4v2 spread reduction vs oracle sim %", 76.7,
+    check("6.4v2 spread reduction vs oracle sim %", 43.66,
           100 * (1 - d.hom_spread.median() / d.oracle_spread.median()), 5e-2)
     check("6.4v2 median background samples", 437, d.n_bg.median(), 0.5)
 
@@ -419,8 +323,8 @@ def check_family_v2() -> None:
 
 def check_placebo() -> None:
     """6.7 -- the shuffled placebo: same corrections, wrong objects."""
-    for cls, vals in (("pedestrian", (46.161, 49.004, 44.314, 165)),
-                      ("car", (62.612, 64.900, 61.170, 395))):
+    for cls, vals in (("pedestrian", (46.198, 49.036, 44.353, 163)),
+                      ("car", (62.582, 64.852, 61.160, 400))):
         m = te("placebo_shuffled", cls)
         for key, v in zip(("HOTA", "AssA", "DetA", "IDSW"), vals):
             check(f"6.7 placebo {cls} {key}", v, m[key], 5e-3 if key != "IDSW" else 0.5)
@@ -438,13 +342,13 @@ def check_placebo() -> None:
     for lbl, args, exp in (
             ("6.7 placebo ped per-target", ("placebo_shuffled", "v4_per_target",
                                             "pedestrian", "HOTA"),
-             (1.1812, 0.4275, 4.6359)),
+             (1.0962, 0.3369, 4.5521)),
             ("6.7 placebo car per-target", ("placebo_shuffled", "v4_per_target",
-                                            "car", "HOTA"), (3.7927, 2.2277, 5.2641)),
+                                            "car", "HOTA"), (3.7517, 2.1073, 5.2785)),
             ("6.7 placebo car global", ("placebo_shuffled", "v4_global_oracle",
-                                        "car", "HOTA"), (3.5799, 2.1956, 4.9589)),
+                                        "car", "HOTA"), (3.5141, 2.1229, 4.9033)),
             ("6.7 placebo car global IDSW", ("placebo_shuffled", "v4_global_oracle",
-                                             "car", "IDSW"), (-25.6189, -36.4653, -10.1198))):
+                                             "car", "IDSW"), (-26.1323, -37.4308, -10.0978))):
         got = ci(*args)
         for name, v, g in zip(("pt", "lo", "hi"), exp, got):
             check(f"{lbl} {name}", v, g, 5e-4)
@@ -501,22 +405,6 @@ def check_provenance() -> None:
         po = np.load(f)["per_object"]
         per += len(po)
     check("prov per-target object-warps available", 40557 + 0, per, 1e9)  # recorded, not asserted
-
-
-def check_new_kitti_runs() -> None:
-    """Table 7's added rows."""
-    rows = {
-        ("anch_ped", "pedestrian"): (46.948, 50.385, 44.798, 109),
-        ("anch_car", "car"): (66.029, 71.343, 61.802, 121),
-        ("planar2_homography", "pedestrian"): (47.158, 50.834, 44.714, 97),
-        ("planar2_homography", "car"): (66.482, 72.507, 61.722, 125),
-        ("planar2_homography_foot", "pedestrian"): (47.233, 50.974, 44.892, 85),
-        ("planar2_homography_foot", "car"): (66.044, 71.659, 61.664, 115),
-    }
-    for (run, cls), vals in rows.items():
-        m = te(run, cls)
-        for key, v in zip(("HOTA", "AssA", "DetA", "IDSW"), vals):
-            check(f"T7 {run}/{cls} {key}", v, m[key], 5e-3 if key != "IDSW" else 0.5)
 
 
 def check_runtime() -> None:
@@ -612,14 +500,152 @@ def check_ess_and_strata() -> None:
             ("5.5 moving having", ("A_noCMC", "A0_frozen", "pedestrian",
                                    "HOTA", b.TR_MOT, MV, True), (3.4258, 1.0072, 5.5234)),
             ("6.6 unweighted ped", ("v4_global_oracle", "v4_per_target", "pedestrian",
-                                    "HOTA", None, None, False), (0.5136, 0.1896, 0.8828)),
+                                    "HOTA", None, None, False), (0.5141, -0.2790, 1.2648)),
             ("6.6 per-target - anchored", ("anch_ped", "v4_per_target", "pedestrian",
-                                           "HOTA", None, None, True), (0.6018, -0.3765, 0.9259)),
+                                           "HOTA", None, None, True), (0.6763, -0.3820, 1.0504)),
             ("6.6 car anchored", ("v4_global_oracle", "anch_car", "car",
-                                  "HOTA", None, None, True), (-0.2351, -0.8551, 0.3248))):
+                                  "HOTA", None, None, True), (-0.2235, -0.8536, 0.3527))):
         got = ci(*args)
         for name, v, g in zip(("pt", "lo", "hi"), exp, got):
             check(f"{lbl} {name}", v, g, 5e-4)
+
+
+# --- manuscript-driven checks -------------------------------------------------
+# Hard-coded expectations are transcriptions, and a transcription can be quietly
+# updated to match a changed source while the paper still says something else.
+# These checks parse the manuscript's own tables and compare every printed cell
+# against TrackEval. The manuscript is the claim, the summary files are the
+# evidence, and nothing in between can drift unnoticed.
+
+MD = f"{ROOT}/02_paper/manuscript.md"
+
+MANUSCRIPT_TABLES = {
+    "KITTI tracking, 21 sequences": [
+        ("pedestrian", {"| none ": "v3_none", "online sparse-flow": "v3_online",
+                        "global similarity (oracle)": "v4_global_oracle",
+                        "pedestrian-anchored": "anch_ped",
+                        "depth-aware global homography (deployable)": "planar2_homography",
+                        "contact point (deployable)": "planar2_homography_foot",
+                        "per-target similarity (oracle": "v4_per_target"}),
+        ("car", {"| none ": "v3_none", "online sparse-flow": "v3_online",
+                 "global similarity (oracle)": "v4_global_oracle",
+                 "car-anchored": "anch_car",
+                 "depth-aware global homography (deployable)": "planar2_homography",
+                 "contact point (deployable)": "planar2_homography_foot",
+                 "per-target similarity (oracle": "v4_per_target"}),
+    ],
+    "The deployable ladder on KITTI": [
+        ("pedestrian", {"| none ": "v3_none", "| online GMC": "v3_online",
+                        "global similarity, estimated depth": "dep_global_oracle",
+                        "per-target, estimated depth": "dep_per_target_depth",
+                        "per-target, ground-truth depth": "v4_per_target"}),
+        ("car", {"| none ": "v3_none", "| online GMC": "v3_online",
+                 "global similarity, estimated depth": "dep_global_oracle",
+                 "per-target, estimated depth": "dep_per_target_depth",
+                 "per-target, ground-truth depth": "v4_per_target"}),
+    ],
+    "Pedestrian sensitivity to injected depth noise": [
+        ("pedestrian", {"| 0.00 |": "v3_per_target", "| 0.05 |": "dn005_per_target",
+                        "| 0.10 |": "dn010_per_target", "| 0.20 |": "dn020_per_target",
+                        "| 0.30 |": "dn030_per_target", "| 0.50 |": "dn050_per_target"}),
+    ],
+}
+
+
+def _md_blocks(text, caption_fragment):
+    """The pipe-table blocks following a caption, up to the next caption."""
+    i = text.index(caption_fragment)
+    j = text.find("**Table ", i + 1)
+    seg = text[i:j if j > 0 else len(text)]
+    blocks, cur = [], []
+    for line in seg.splitlines():
+        if line.startswith("|"):
+            cur.append(line)
+        elif cur:
+            blocks.append(cur)
+            cur = []
+    if cur:
+        blocks.append(cur)
+    return blocks
+
+
+def check_manuscript_tables():
+    """Every KITTI tracking cell the manuscript prints, against TrackEval."""
+    text = open(MD).read()
+    for caption, specs in MANUSCRIPT_TABLES.items():
+        blocks = _md_blocks(text, caption)
+        if len(blocks) < len(specs):
+            FAILS.append(f"PARSE       '{caption}': expected {len(specs)} tables,"
+                         f" found {len(blocks)}")
+            continue
+        for (cls, rows), block in zip(specs, blocks):
+            header = [h.strip().strip("*") for h in block[0].strip("|").split("|")]
+            for line in block[2:]:
+                run = next((r for frag, r in rows.items() if frag in line), None)
+                if run is None:
+                    continue
+                cells = [c.strip().replace("**", "") for c in line.strip("|").split("|")]
+                m = te(run, cls)
+                for h, c in zip(header[1:], cells[1:]):
+                    if h not in m:
+                        continue
+                    v = num(c)
+                    if v is None:
+                        continue
+                    tol = 0.5 if h in ("IDSW", "Frag") else 5e-3
+                    check(f"MS {cls}/{run}/{h}", v, m[h], tol)
+
+
+# Table 9's intervals, parsed from the manuscript and recomputed from the runs.
+# Same reasoning as check_manuscript_tables: a hand-maintained literal can be
+# updated to match a changed source while the paper still prints the old one.
+CI_ROWS = {
+    "depth-aware homography − online GMC": ("v3_online", "planar2_homography"),
+    "homography at contact point − online GMC": ("v3_online", "planar2_homography_foot"),
+    "per-target − depth-aware homography": ("planar2_homography", "v4_per_target"),
+    "per-target − global similarity": ("v4_global_oracle", "v4_per_target"),
+    "having compensation at all": ("v3_none", "v3_online"),
+}
+CI_PAT = re.compile(r"([+-−]?\d+\.\d+)\s*\[\s*([+-−]\d+\.\d+)\s*,\s*([+-−]\d+\.\d+)\s*\]")
+
+
+def check_manuscript_intervals():
+    """Every interval Table 9 prints, against a fresh bootstrap of the same runs."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("bci", f"{ROOT}/03_code/rac/bootstrap_ci.py")
+    b = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(b)
+    text = open(MD).read()
+    blocks = _md_blocks(text, "Bootstrap 95 % confidence intervals over the 21 sequences")
+    if not blocks:
+        FAILS.append("PARSE       Table 9 not found")
+        return
+    for line in blocks[0][2:]:
+        cells = [c.strip().replace("**", "") for c in line.strip("|").split("|")]
+        if len(cells) < 4:
+            continue
+        label = next((k for k in CI_ROWS if k in cells[0]), None)
+        if label is None:
+            continue
+        cls = {"ped": "pedestrian", "car": "car"}.get(cells[1])
+        if cls is None:
+            continue
+        base, comp = CI_ROWS[label]
+        for col, metric in ((2, "HOTA"), (3, "IDSW")):
+            m = CI_PAT.search(cells[col].replace("−", "-"))
+            if not m:
+                continue
+            pt, lo, hi = (float(x.replace("−", "-")) for x in m.groups())
+            a, bb = b.per_seq(base, cls), b.per_seq(comp, cls)
+            idx = a.index.intersection(bb.index)
+            w = a.loc[idx, "GT_Dets"].values.astype(float)
+            gp, boots, _ = b.bootstrap(a, bb, metric, w, n_boot=20000)
+            glo, ghi = np.percentile(boots, [2.5, 97.5])
+            tol = 5e-3 if metric == "HOTA" else 5e-2
+            tag = f"CI {cls}/{label[:34]}/{metric}"
+            check(f"{tag} pt", pt, gp, tol)
+            check(f"{tag} lo", lo, glo, tol)
+            check(f"{tag} hi", hi, ghi, tol)
 
 
 UNCHECKED = [
@@ -641,12 +667,12 @@ def main() -> None:
 
     for fn in (check_scans, check_gate_flips, check_oracle_contrast,
                check_reference_warp, check_car_depth_noise, check_subset_search,
-               check_mot17_axis, check_kitti_axis if False else check_kitti_tracking,
-               check_depth_noise, check_kitti_geometry, check_class_split, check_causal_link,
-               check_uavdt, check_bootstrap, check_strict_oracle, check_family_v2,
-               check_new_kitti_runs, check_runtime, check_mot20_oracle,
+               check_mot17_axis, check_kitti_axis if False else 
+               check_kitti_geometry, check_class_split, check_causal_link,
+               check_uavdt, check_strict_oracle, check_family_v2,
+               check_runtime, check_mot20_oracle,
                check_permutation, check_depth_ratio_and_failures, check_ess_and_strata,
-               check_placebo, check_provenance):
+               check_placebo, check_provenance, check_manuscript_tables, check_manuscript_intervals):
         try:
             fn()
         except Exception as e:

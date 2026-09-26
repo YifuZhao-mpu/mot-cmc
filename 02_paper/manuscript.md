@@ -23,7 +23,7 @@
 
 ## Abstract
 
-Tracking-by-detection trackers compensate camera motion with a single two-dimensional warp applied to every predicted track, and a recurring assumption is that handling this warp's failures would reduce identity switches. We measure what that could be worth, and find the assumption misdirected in a way that points at a better correction. On MOT17, on the sequences that actually have camera motion, replacing the online estimate with a non-causal oracle warp is worth **−0.04 HOTA (95 % CI [−0.20, +0.05])** without an appearance channel and **+0.19 [+0.05, +0.52]** with one, against **+3.43 [+1.01, +5.52]** for having a working compensator at all; the error it removes changes the association gate's decision for 55 of 109,955 ground-truth pairs, 34 of them harmfully. Against an offline reference we verify that compensation is accurate on MOT17 and MOT20 — including on the sequence that puts 82 % of its keypoints on pedestrians, where the disagreement is 0.76 px — and that its error is predictable, for free, from the RANSAC residual the solver already discards. On KITTI, where the camera translates, a shared four-degree-of-freedom warp is genuinely inadequate: after the best such warp that could be fitted to the targets themselves, objects in one frame still need corrections differing by more than 5 px in 54.3 % of moving frames. The missing argument is **depth**, not per-object treatment. A global homography fitted to background points at their monocularly estimated depths — reading no annotations — cuts the within-frame residual spread from 8.67 px to **1.37 px**, beats the compensator the tracker ships by **+1.19 HOTA [+0.26, +1.92]** on cars, and commits **85 pedestrian identity switches against 126**. A per-target correction, given ground-truth depth and ground-truth association, adds nothing on top of it (−0.01 [−0.53, +0.45] on cars, +0.42 [−0.03, +1.00] on pedestrians), while a placebo that applies the same per-object corrections to the wrong objects is worse than applying none at all — the correction carries object depth, and a global model that has depth suffices to deliver it. The cost is a depth network at 65× a compensation call. All measurement code and data are released, together with a script that recomputes the paper's numbers from source.
+Tracking-by-detection trackers compensate camera motion with a single two-dimensional warp applied to every predicted track, and a recurring assumption is that handling this warp's failures would reduce identity switches. We measure what that could be worth, and find the assumption misdirected in a way that points at a better correction. On MOT17, on the sequences that actually have camera motion, replacing the online estimate with a non-causal oracle warp is worth **−0.04 HOTA (95 % CI [−0.20, +0.05])** without an appearance channel and **+0.19 [+0.05, +0.52]** with one, against **+3.43 [+1.01, +5.52]** for having a working compensator at all; the error it removes changes the association gate's decision for 55 of 109,955 ground-truth pairs, 34 of them harmfully. Against an offline reference we verify that compensation is accurate on MOT17 and MOT20 — including on the sequence that puts 82 % of its keypoints on pedestrians, where the disagreement is 0.76 px — and that its error is predictable, for free, from the RANSAC residual the solver already discards. On KITTI, where the camera translates, a shared four-degree-of-freedom warp is genuinely inadequate: after the best such warp that could be fitted to the targets themselves, objects in one frame still need corrections differing by more than 5 px in 27.1 % of moving frames, and 2.2 % of object-frames are pushed past the association gate. The missing argument is **depth**, not per-object treatment. A global homography fitted to background points at their monocularly estimated depths — reading no annotations — cuts the within-frame residual spread from 8.67 px to **1.37 px**, and beats the compensator the tracker ships by **+1.19 HOTA [+0.26, +1.92]** on cars. On pedestrians its HOTA advantage is not established (−0.43 [−1.03, +1.03]), but it cuts identity switches from **126 to 97**, and to **85** when the same warp is applied through each box's contact point. A per-target correction, given ground-truth depth *and* ground-truth association, has no established HOTA advantage over any global warp we tried, including the depth-blind one it was designed to beat; a placebo that applies the same per-object corrections to the wrong objects is worse than applying none at all, so the correction does carry object depth — and a global model that has depth suffices to deliver it. The cost is a depth network at 65× a compensation call. All measurement code and data are released, together with a script that recomputes the paper's numbers from source.
 
 **Keywords** Multi-object tracking · Camera motion compensation · Evaluation methodology · Benchmark analysis · Identity switches · Reproducibility
 
@@ -61,19 +61,19 @@ A second observation that we initially built on does not survive inspection, and
 
 **The same holds on UAVDT**, the canonical severe-camera-motion benchmark, where switching compensation on changes 5 identity switches out of 3,342.
 
-**Where a shared warp really is inadequate, what it is missing is depth.** On KITTI, after the best four-degree-of-freedom warp that could be fitted to the targets themselves, objects in one frame still need corrections differing by more than 5 px in 54.3 % of moving frames, and 2.08 % of object-frames are pushed past the association gate. We initially concluded that no global family could fix this, and published that conclusion internally on an experiment whose static grid sat at a single depth — which makes the induced mapping a plane homography exactly, so an eight-degree-of-freedom model carried no more depth information than a four. §6.4 records the correction.
+**Where a shared warp really is inadequate, what it is missing is depth.** On KITTI, after the best four-degree-of-freedom warp that could be fitted to the targets themselves, objects in one frame still need corrections differing by more than 5 px in 27.1 % of moving frames, and 2.18 % of object-frames are pushed past the association gate — seventy times the MOT17 rate. We initially concluded that no global family could fix this, and published that conclusion internally on an experiment whose static grid sat at a single depth — which makes the induced mapping a plane homography exactly, so an eight-degree-of-freedom model carried no more depth information than a four. §6.4 records the correction.
 
-**A global homography that has depth removes most of it, and it is deployable.** Fitted to background points at their monocularly estimated depths, with the tracker's own detections masked out and no annotation read at any point, it reduces the within-frame residual spread from 8.673 px to **1.370 px** and the fraction of badly-served frames from 54 % to 13 %. In tracking it beats the compensator BoT-SORT ships by **+1.187 HOTA [+0.262, +1.922]** on cars, and on pedestrians it commits **97 identity switches against 126** — 85 when applied through each box's contact point, the fewest of any configuration we ran.
+**A global homography that has depth removes most of it, and it is deployable.** Fitted to background points at their monocularly estimated depths, with the tracker's own detections masked out and no annotation read at any point, it reduces the within-frame residual spread to **1.370 px**, against 2.431 px for the best similarity fitted to the targets themselves and 8.673 px for the deployed estimator, and cuts the fraction of frames whose targets disagree by more than 5 px from 27 % to 13 %. In tracking it beats the compensator BoT-SORT ships by **+1.187 HOTA [+0.262, +1.922]** on cars, and on pedestrians it commits **97 identity switches against 126** — 85 when applied through each box's contact point, the fewest of any configuration we ran.
 
-**Per-target correction adds nothing on top of that.** Given ground-truth depth *and* ground-truth association, a per-object correction is −0.006 [−0.530, +0.446] against the depth-aware homography on cars and +0.424 [−0.032, +1.002] on pedestrians; both cross zero, and on pedestrians it commits more identity switches than the contact-point homography. The +0.842 HOTA it enjoys over a *depth-blind* global similarity is real and is not evidence for per-object treatment; it is evidence that the shared warp was missing depth.
+**Per-target correction has no established HOTA advantage over any global warp.** Given ground-truth depth *and* ground-truth association, it is −0.073 [−0.624, +0.392] against the depth-aware homography on cars and +0.366 [−0.035, +0.986] on pedestrians, and +0.238 [−0.405, +0.730] and +0.726 [−0.090, +1.096] against the depth-blind global similarity it was built to beat. All four cross zero. Only its pedestrian identity-switch reduction over that similarity survives (−3.12 [−5.84, −0.04]), and on pedestrians it commits more identity switches than the contact-point homography.
 
-**The effect is depth and not perturbation.** Permuting which object's correction goes to which track within a frame — the same corrections, the same magnitudes and directions, only the pairing destroyed — is worse than applying no per-object correction at all, by 3.58 HOTA on cars [+2.20, +4.96] and 25.6 weighted identity switches per sequence. Whatever the correction carries, it is object-specific and it is what depth determines.
+**The effect is depth and not perturbation.** Permuting which object's correction goes to which track within a frame — the same corrections, the same magnitudes and directions, only the pairing destroyed — is worse than applying no per-object correction at all, by 3.51 HOTA on cars [+2.12, +4.90] and 26.1 weighted identity switches per sequence. Whatever the correction carries, it is object-specific and it is what depth determines.
 
 ### 1.2 Contributions
 
 1. **A bound on what compensation accuracy could be worth.** Not whether compensation helps — that is known, and §2 reports five published measurements — but the residual headroom once a working compensator is in place, which is what a paper proposing a more robust compensator implicitly claims. On MOT17 with camera motion present it is −0.04 HOTA with a 95 % upper bound of +0.05 motion-only and +0.52 with appearance. We know of no prior measurement of this quantity (§5).
 2. **Two instruments that make it measurable**: an oracle-warp contrast that bounds compensation error on benchmarks with no ground-truth camera motion, and a gate-flip count that asks whether the error changes an association *decision* rather than how large it is (§3).
-3. **A diagnosis and a deployable remedy on KITTI.** The limitation of a shared warp is that it takes no depth argument, not that it is shared. The geometry is the classical plane-plus-parallax result (Irani & Anandan, 1998); what is new is the quantification, the demonstration that supplying depth to a *global* homography removes 82 % of the residual spread, and that this converts into tracking gains over the deployed compensator without any per-object machinery (§6).
+3. **A diagnosis and a deployable remedy on KITTI.** The limitation of a shared warp is that it takes no depth argument, not that it is shared. The geometry is the classical plane-plus-parallax result (Irani & Anandan, 1998); what is new is the quantification, the demonstration that supplying depth to a *global* homography removes 82 % of the residual spread left by a deployable similarity, and that this converts into a tracking gain over the deployed compensator — on cars, +1.19 HOTA [+0.26, +1.92] — without any per-object machinery (§6).
 4. **A negative result about per-object correction**, which is the direction we and the prior work we cite had assumed was necessary: given the depth-aware global warp, per-object correction adds nothing measurable, and the per-object configuration that appears to win over a depth-blind baseline needs ground-truth association to do it (§6.5, §6.6).
 
 We are not the first to observe that compensation can fail. BoT-SORT's own limitations section says it, and we quote it in §2. Nor are we the first to correct with depth: EMAP (Mahdian et al., 2024) does so on this benchmark with this base tracker, per object. What we add is the measurement that the per-object part is unnecessary.
@@ -136,7 +136,7 @@ HOTA (Luiten et al., 2021) decomposes tracking quality into detection and associ
 
 We are not first to observe that compensation can fail: BoT-SORT is, in the paper we instrument. We are not first to report that it contributes little on a static-camera benchmark: Deep OC-SORT is. We are not first to correct per object using depth: EMAP is, on the same benchmark and with the same base tracker.
 
-What we contribute is a measurement none of them makes. All of the above compare *having* compensation with *not having* it. None asks what a **perfect** warp would be worth — the headroom that remains once a working compensator is in place, which is the quantity a paper proposing a more robust compensator is implicitly claiming. Section 5 bounds it, on the benchmark where camera motion is present, at +0.05 HOTA motion-only and +0.52 with an appearance channel. Section 6 then shows on KITTI that this is not a small-effect artefact of a benign benchmark: where the shared-warp residual is large, driving it down by a factor of six still does not improve tracking, and what does is making the correction per target.
+What we contribute is a measurement none of them makes. All of the above compare *having* compensation with *not having* it. None asks what a **perfect** warp would be worth — the headroom that remains once a working compensator is in place, which is the quantity a paper proposing a more robust compensator is implicitly claiming. Section 5 bounds it, on the benchmark where camera motion is present, at +0.05 HOTA motion-only and +0.52 with an appearance channel. Section 6 then shows on KITTI that this is not a small-effect artefact of a benign benchmark, and identifies what the shared warp is actually missing: driving its residual down *within the same depth-blind family* does not improve tracking and can make it worse, while giving that same shared warp depth does — without any per-object machinery.
 
 ## 3 Measurement Instruments
 
@@ -464,16 +464,16 @@ The information is not in the median. It is in the spread, plotted in Figure 3. 
 
 | | Median | p75 | p90 | p95 | p99 | Max |
 |---|---|---|---|---|---|---|
-| Spread across objects in one frame | **5.878 px** | 14.868 | 30.404 | 43.765 | 73.005 | **473.5** |
+| Spread across objects in one frame | **2.431 px** | 5.335 | 10.114 | 14.020 | 23.084 | **67.7** |
 
 | Objects in the same frame disagree by more than | Share of moving frames |
 |---|---|
-| 1 px | 85.92 % |
-| 2 px | 73.65 % |
-| **5 px** | **54.31 %** |
-| 10 px | 36.22 % |
+| 1 px | 75.47 % |
+| 2 px | 56.02 % |
+| **5 px** | **27.12 %** |
+| 10 px | 10.14 % |
 
-In more than half of all moving frames, objects in the same image require corrections differing by more than five pixels — after the best global correction that could possibly be computed. The spread is depth-driven, as parallax predicts: the per-frame Spearman correlation between object depth and residual has median −0.400 and is negative in 75.3 % of the frames where it is defined (3,379 of the 4,318 moving frames; the statistic needs at least four objects, and 939 frames have three). Nearer objects carry the larger residual.
+In 27 % of all moving frames, objects in the same image require corrections differing by more than five pixels — after the best global similarity that can be fitted to those objects themselves. The spread is depth-driven, as parallax predicts: the per-frame Spearman correlation between object depth and residual has median −0.200 and is negative in 64.5 % of the frames where it is defined (3,379 of the 4,318 moving frames; the statistic needs at least four objects, and the remaining 939 have exactly three). Nearer objects carry the larger residual.
 
 ### 6.3 It reaches the association gate
 
@@ -481,10 +481,10 @@ Spread in pixels is not yet an effect on tracking. Using each object's true box 
 
 | | KITTI (residual after the best global *similarity*) | MOT17 (compensation error) |
 |---|---|---|
-| Moving frames with ≥ 1 object pushed below the gate | **10.00 %** | — |
-| Object-frames gated out | **488 / 23,443 = 2.082 %** | **34 / 109,955 = 0.031 %** |
+| Moving frames with ≥ 1 object pushed below the gate | **8.04 %** | — |
+| Object-frames gated out | **510 / 23,443 = 2.175 %** | **34 / 109,955 = 0.031 %** |
 
-Sixty-seven times the MOT17 rate — and the two numbers are not the same kind of quantity, so the ratio is indicative rather than exact. The MOT17 figure is the *total* effect of imperfect compensation. The KITTI figure is what survives the best global **similarity** that could be fitted to these objects. Section 6.4 shows that a richer family with access to depth removes most of it, so it is not irreducible; what it is irreducible to is the four-degree-of-freedom warp the tracker actually applies.
+Seventy times the MOT17 rate — and the two numbers are not the same kind of quantity, so the ratio is indicative rather than exact. The MOT17 figure is the *total* effect of imperfect compensation. The KITTI figure is what survives the best global **similarity** that could be fitted to these objects. Section 6.4 shows that a richer family with access to depth removes most of it, so it is not irreducible; what it is irreducible to is the four-degree-of-freedom warp the tracker actually applies.
 
 The measurement uses no images, no detector and no tracker. It is a property of the scene geometry and the compensation model.
 
@@ -496,13 +496,13 @@ Section 6.2 shows that one similarity cannot serve a frame's targets. The obviou
 
 | Family | DOF | Median residual | Within-frame spread | Frames with spread > 5 px |
 |---|---|---|---|---|
-| Similarity | 4 | 0.865 px | 8.713 px | 66.85 % |
-| Affine | 6 | 0.131 px | 8.822 px | 68.02 % |
+| Similarity | 4 | 2.146 px | 3.790 px | 39.39 % |
+| Affine | 6 | 1.140 px | 2.100 px | 18.04 % |
 | Homography | 8 | **0.000 px** | 0.746 px | 14.40 % |
 
 The exactly-zero residual is the tell: eight degrees of freedom interpolate five or more correspondences. This measures how expressive each family is, not what a compensator could achieve, because a compensator never sees these correspondences. We briefly read it as evidence that the family was the whole problem.
 
-**Second error: flattening the scene.** We then fitted both families to a grid of *static scene* points, as a compensator must — but placed the grid at a single depth. The mapping induced between two views of a plane **is** a homography, so `findHomography` recovers it to 6.2 × 10⁻⁶ px and the 8-DOF model carries exactly as much depth information as the 4-DOF one: one depth. On that construction a homography reduced the within-frame spread by **2.25 %** (7.588 → 7.418 px), and we read that as evidence that the family was *not* the problem. It was evidence about our grid. The two errors point in opposite directions and neither answered the question.
+**Second error: flattening the scene.** We then fitted both families to a grid of *static scene* points, as a compensator must — but placed the grid at a single depth. The mapping induced between two views of a plane **is** a homography, so `findHomography` recovers it to 6.2 × 10⁻⁶ px and the 8-DOF model carries exactly as much depth information as the 4-DOF one: one depth. On that construction a homography reduced the within-frame spread by **0.45 %** (7.451 → 7.418 px), and we read that as evidence that the family was *not* the problem. It was evidence about our grid. The two errors point in opposite directions and neither answered the question.
 
 **The measurement.** A compensator can have depth — a monocular network supplies it, and §7 already runs one. We refitted both families to background points carrying their **own** depths: a grid over the lower image, points inside the tracker's own **detections** masked out (not annotations — a compensator cannot read labels), a median of 437 background samples per frame, back-projected at each point's estimated depth, transformed by the true camera motion and re-projected. The ground plane is present rather than flattened away. Measured at object centres against their true induced displacement, on the same 4,318 frames as §6.2:
 
@@ -513,7 +513,7 @@ Figure 4 plots the distributions and sets them against what each warp produces i
 | | Median residual | Within-frame spread | Frames with spread > 5 px |
 |---|---|---|---|
 | Online sparse-flow GMC (what the tracker ships) | 2.026 px | 8.673 px | 65.12 % |
-| Oracle similarity, fitted to the objects (§6.2) | 0.537 px | 5.878 px | 54.31 % |
+| Oracle similarity, fitted to the objects (§6.2, moving frames only) | 1.698 px | 2.431 px | 27.12 % |
 | Deployable similarity, depth-varying background | 4.773 px | 7.466 px | 61.74 % |
 | **Deployable homography, depth-varying background** | **0.478 px** | **1.370 px** | **12.90 %** |
 
@@ -521,7 +521,7 @@ Table 6 supports three readings.
 
 **A similarity cannot use depth and is made worse by being shown it.** Fitted to genuinely depth-varying correspondences it reaches 4.773 px median residual, against 0.537 px for one fitted to a single depth chosen well. Four degrees of freedom have nowhere to put the information.
 
-**A homography can.** It reduces the within-frame spread to 1.370 px — **81.6 %** below the deployable similarity's 7.466 px, and **76.7 %** below the 5.878 px that survives the best similarity that could be fitted to the objects themselves. The fraction of frames in which targets disagree by more than 5 px falls from 54.31 % to 12.90 %. This is not a subtle effect and it does not require ground truth: the depth comes from a network, the correspondences from background points the tracker could pick itself.
+**A homography can.** It reduces the within-frame spread to 1.370 px — **81.6 %** below the deployable similarity's 7.466 px, and **43.6 %** below the 2.431 px that survives the best similarity that could be fitted to the objects themselves. The fraction of frames in which targets disagree by more than 5 px falls from 27.12 % to 12.90 %. This is not a subtle effect and it does not require ground truth: the depth comes from a network, the correspondences from background points the tracker could pick itself.
 
 **The reason is that KITTI's scene is approximately a plane and its targets stand on it.** A homography is exactly the family that maps one plane to another, which is why eight degrees of freedom suffice here and why the result should not be expected to transfer to a scene without a dominant plane. It is also, restated in image coordinates, the geometry that UCMCTrack exploits by leaving the image plane altogether.
 
@@ -547,7 +547,19 @@ Table 7 lists the configurations and what each is allowed to use. Two disclosure
 
 *The per-target configuration reads ground truth at run time.* To decide which object's warp to apply to a track, it matches the track's predicted box against the **annotated** boxes of the previous frame (IoU distance below 0.7) and falls back to the global similarity when no match is found. Over the 21 sequences, 40,557 of 69,000 track-warp applications (58.8 %) receive a per-object warp and 28,443 (41.2 %) receive the global one. It is therefore not a deployable method, and it differs from the global configurations in more than whether the correction is shared: it also consults annotations and applies the correction selectively. We report it as an upper bound and draw no deployability conclusion from it. The two depth-aware homography rows read no annotations at all.
 
-*Fallbacks are reported per configuration.* A single plausibility guard replaces any warp whose implied scale falls outside [0.5, 2.0] with the identity, applied identically everywhere; it fires 0 times for `online` and the global similarity, 26 times for per-target, and 889 of 68,966 applications (1.29 %) for the depth-aware homography, which is relinearised per track and therefore has more opportunity to produce an implausible local scale. Separately, on frames where too few background points survive the detection mask the homography falls back to the global similarity — 1,291 of 8,008 frames (16.1 %), almost all of them near-static. It never falls back to the identity except on the first frame of each sequence.
+*Fallbacks are reported per configuration, measured rather than quoted.* A single plausibility guard replaces any warp whose implied **scale** falls outside [0.5, 2.0] with the identity, applied identically everywhere. Instrumenting it on the runs that produced Table 8:
+
+| Configuration | guard applications | fired | rate |
+|---|---|---|---|
+| online GMC | 67,923 | 0 | 0 % |
+| global similarity | 67,712 | 0 | 0 % |
+| per-target | 69,000 | 26 | 0.04 % |
+| depth-aware homography, corners | 68,014 | 1,090 | 1.60 % |
+| depth-aware homography, contact point | 67,668 | 0 | 0 % |
+
+The corner-wise homography is relinearised per track and so has more opportunity to produce an implausible local scale. The contact-point variant never trips the guard because it takes its scale from the global similarity — which also means the guard does not bound *its* translation at all. We tested whether that matters: capping translation at 300 px reproduces the corner arm exactly and moves the contact-point arm by one identity switch (85 → 86); at 1,000 px both reproduce exactly. The unbounded displacements land on tracks that were already lost.
+
+Separately, the homography is simply not fitted on frames where the camera has not moved — `‖t‖ < 0.05 m`, a hard skip in the generator — and those frames fall back to the global similarity. That is **1,270 of 8,008 frames**, plus 21 first frames that take the identity: 16.1 % in total, and **exactly** the set of near-static frames, verified by set equality rather than by count. No moving frame takes a fallback in any bundle.
 
 Two specification errors were found and corrected before these numbers were produced, and both are recorded in Supplementary S2 rather than quietly fixed.
 
@@ -561,11 +573,11 @@ Two specification errors were found and corrected before these numbers were prod
 |---|---|---|---|---|
 | none | 45.499 | 47.877 | 43.996 | 279 |
 | online sparse-flow GMC (deployable) | **47.428** | 51.448 | 44.617 | 126 |
-| global similarity (oracle) | 46.744 | 50.006 | 44.784 | 108 |
-| global similarity, pedestrian-anchored (oracle) | 46.948 | 50.385 | 44.798 | 109 |
+| global similarity (oracle) | 46.775 | 49.974 | 44.841 | 108 |
+| global similarity, pedestrian-anchored (oracle) | 46.823 | 50.060 | 44.825 | 111 |
 | **depth-aware global homography (deployable)** | 47.158 | 50.834 | 44.714 | 97 |
-| **depth-aware homography, contact point (deployable)** | 47.233 | 50.974 | 44.892 | **85** |
-| per-target similarity (oracle, reads annotations) | **47.576** | **51.852** | 44.748 | 88 |
+| **depth-aware homography, contact point (deployable)** | 47.229 | 50.968 | 44.890 | **85** |
+| per-target similarity (oracle, reads annotations) | **47.518** | **51.807** | 44.660 | 88 |
 
 *Car*
 
@@ -573,11 +585,11 @@ Two specification errors were found and corrected before these numbers were prod
 |---|---|---|---|---|
 | none | 64.792 | 70.339 | 60.584 | 401 |
 | online sparse-flow GMC (deployable) | 65.265 | 70.137 | 61.450 | 165 |
-| global similarity (oracle) | 66.267 | 71.922 | 61.775 | 129 |
-| global similarity, car-anchored (oracle) | 66.029 | 71.343 | 61.802 | 121 |
+| global similarity (oracle) | 66.166 | 71.748 | 61.739 | 133 |
+| global similarity, car-anchored (oracle) | 65.934 | 71.215 | 61.736 | 125 |
 | **depth-aware global homography (deployable)** | **66.482** | **72.507** | 61.722 | 125 |
 | depth-aware homography, contact point (deployable) | 66.044 | 71.659 | 61.664 | **115** |
-| per-target similarity (oracle, reads annotations) | 66.473 | 72.432 | 61.730 | 117 |
+| per-target similarity (oracle, reads annotations) | 66.414 | 72.618 | 61.457 | 117 |
 
 Table 9 and Figure 5 give the intervals.
 
@@ -587,12 +599,12 @@ Table 9 and Figure 5 give the intervals.
 |---|---|---|---|
 | **depth-aware homography − online GMC** | **car** | **+1.187 [+0.262, +1.922]** | −3.35 [−8.01, +0.15] |
 | depth-aware homography − online GMC | ped | −0.430 [−1.030, +1.030] | −0.75 [−11.72, +2.53] |
-| homography at contact point − online GMC | car | +0.757 [−0.023, +1.866] | **−4.38 [−9.06, −0.76]** |
-| homography at contact point − online GMC | ped | −0.393 [−1.189, +1.968] | −1.90 [−12.64, +1.03] |
-| per-target − depth-aware homography | car | −0.006 [−0.530, +0.446] | −1.08 [−2.88, +0.61] |
-| per-target − depth-aware homography | ped | +0.424 [−0.032, +1.002] | +0.18 [−0.64, +1.54] |
-| per-target − global similarity | ped | **+0.842 [+0.067, +1.226]** | **−3.12 [−5.86, −0.03]** |
-| per-target − global similarity | car | +0.213 [−0.342, +0.605] | −1.17 [−2.48, +0.24] |
+| homography at contact point − online GMC | car | +0.757 [−0.023, +1.865] | **−4.38 [−9.06, −0.76]** |
+| homography at contact point − online GMC | ped | −0.397 [−1.193, +1.967] | −1.90 [−12.64, +1.03] |
+| per-target − depth-aware homography | car | −0.073 [−0.624, +0.392] | −0.91 [−2.82, +0.70] |
+| per-target − depth-aware homography | ped | +0.366 [−0.035, +0.986] | +0.18 [−0.64, +1.54] |
+| per-target − global similarity | ped | +0.726 [−0.090, +1.096] | **−3.12 [−5.84, −0.04]** |
+| per-target − global similarity | car | +0.238 [−0.405, +0.730] | −1.05 [−2.51, +0.31] |
 | having compensation at all | ped | **+1.875 [+0.681, +4.768]** | **−22.25 [−33.23, −0.41]** |
 | having compensation at all | car | +0.528 [−0.600, +2.001] | **−14.77 [−26.52, −5.02]** |
 
@@ -600,9 +612,17 @@ Four readings.
 
 **Supplying depth to the shared warp is what works, and it is deployable.** On cars the depth-aware homography beats the compensator BoT-SORT ships by **+1.187 HOTA [+0.262, +1.922]**, excluding zero, and it reads no annotations. On pedestrians its HOTA is 0.43 below the shipped compensator with an interval that crosses zero, but it commits **97 identity switches against 126**, and applied through the contact point, **85** — the fewest of any configuration in the paper, including the annotation-reading oracle.
 
-**The per-target correction adds nothing on top of it.** Against the depth-aware homography, per-target is −0.006 [−0.530, +0.446] on cars and +0.424 [−0.032, +1.002] on pedestrians; both cross zero, and on pedestrians per-target commits *more* identity switches than the contact-point homography (88 against 85). The large +0.842 [+0.067, +1.226] that per-target enjoys over the global *similarity* is therefore not evidence that corrections must be per-object. It is evidence that the shared warp was missing depth, and a global model that has depth closes the gap — without ground-truth ego-motion at run time being any more available to one than the other, and without the annotation channel per-target needs.
+**The per-target correction has no established HOTA advantage over anything.** Against the depth-aware homography it is −0.073 [−0.624, +0.392] on cars and +0.366 [−0.035, +0.986] on pedestrians; against the depth-blind global similarity it is +0.238 [−0.405, +0.730] and +0.726 [−0.090, +1.096]. Every one of those intervals crosses zero, and on pedestrians per-target commits *more* identity switches than the contact-point homography (88 against 85). Only its identity-switch reduction over the global similarity survives, and only on pedestrians (−3.12 [−5.84, −0.04]). Giving the shared warp depth is what produces an established effect; making the correction per object, with ground-truth depth and ground-truth association, does not add one.
 
-**Improving a shared warp along the wrong axis can hurt.** On pedestrians, moving from the deployable GMC to the single-depth global oracle costs 0.684 HOTA: a global fit anchored at the scene's median depth is systematically wrong for the near objects pedestrians usually are, and making that fit *more accurate in its own terms* makes it more confidently wrong for them. Anchoring it at the pedestrians' own median depth recovers about a third of that (46.948), and giving it depth properly recovers all of it and more. This is the non-monotonicity §5.3 finds on MOT17, here with a mechanism and a remedy.
+Three cautions belong with Table 9, and each was raised in review before we applied it.
+
+*The identity-switch column is a weighted mean difference, not a rate.* It uses the same ground-truth-detection weighting as HOTA, so multiplying it by the sequence count does not recover the total. The pedestrian per-target total is 108 → 88, a reduction of **20 over 21 sequences** — −0.95 per sequence unweighted — while the weighted figure is −3.12, because the sequences carrying most of the pedestrian ground truth are the ones where the reduction happens. We report both.
+
+*The effective sample size is far below the nominal one.* Six of the 21 sequences contain no pedestrian ground truth and one carries 52.9 % of it; the Kish effective sample size is **3.05** for the pedestrian comparisons and 10.47 for cars. Unweighted, per-target over the global similarity on pedestrians is +0.514 [−0.279, +1.265] against the weighted +0.726 [−0.090, +1.096] — both cross zero. Leave-one-sequence-out, under the same weighting, keeps that comparison in [+0.286, +0.944] and the car one in [+0.107, +0.418], neither changing sign.
+
+*Multiplicity.* Table 9 reports 20 intervals and §7 a further eight. The one HOTA result that excludes zero — the depth-aware homography over the deployed compensator on cars — has P(Δ ≤ 0) = 0.005 and survives a Bonferroni correction over 20; the identity-switch intervals whose upper ends sit within 0.1 of zero do not, and we mark those as marginal rather than established.
+
+**Improving a shared warp along the wrong axis can hurt.** On pedestrians, moving from the deployable GMC to the single-depth global oracle costs 0.684 HOTA: a global fit anchored at the scene's median depth is systematically wrong for the near objects pedestrians usually are, and making that fit *more accurate in its own terms* makes it more confidently wrong for them. Anchoring it at the pedestrians' own median depth recovers a little of that (46.823), and giving it depth properly recovers all of it and more. This is the non-monotonicity §5.3 finds on MOT17, here with a mechanism and a remedy.
 
 **Cars and pedestrians rank the two applications differently.** Applying the homography to all four box corners is better on cars (66.482 against 66.044); applying it through the contact point is better on pedestrians (47.233 against 47.158, and 85 identity switches against 97). A ground-plane homography is correct for an object's contact point and wrong above it, and pedestrians are tall relative to their footprint while cars are not. We report the split rather than choosing the winner per class.
 
@@ -614,15 +634,17 @@ We answer it with a placebo, and then localise the effect.
 
 **The placebo.** Within each frame we permute which object's correction is applied to which track, subject to no object keeping its own. The set of corrections is unchanged, so their magnitude and direction distributions are preserved exactly; the only thing destroyed is the pairing between an object and the correction its depth implies. Everything else — the ground-truth gate, the fallback to the shared warp, the plausibility guard, the frozen detections — is identical to the per-target arm. Permutations are seeded per (sequence, frame) and reproducible.
 
+Table 10 gives the result.
+
 **Table 10** The shuffled placebo: the same corrections, applied to the wrong objects.
 
 | Configuration | ped HOTA | ped IDSW | car HOTA | car IDSW |
 |---|---|---|---|---|
-| global similarity (no per-object correction) | 46.744 | 108 | 66.267 | 129 |
-| **shuffled placebo** | **46.161** | **165** | **62.612** | **395** |
-| per-target | 47.576 | 88 | 66.473 | 117 |
+| global similarity (no per-object correction) | 46.775 | 108 | 66.166 | 133 |
+| **shuffled placebo** | **46.198** | **163** | **62.582** | **400** |
+| per-target | 47.518 | 88 | 66.414 | 117 |
 
-The placebo is not merely worse than the per-target arm — it is **worse than applying no per-object correction at all**, by 3.58 HOTA on cars [+2.20, +4.96] and by 25.6 identity switches per weighted sequence [−36.47, −10.12]. Against the per-target arm it loses 1.18 HOTA on pedestrians [+0.43, +4.64] and 3.79 on cars [+2.23, +5.26]. A perturbation matched in magnitude and direction but wrong in its assignment is actively harmful, which is what one would expect if the correction carries real per-object information and not if its benefit were perturbation magnitude.
+The placebo is not merely worse than the per-target arm — it is **worse than applying no per-object correction at all**, by 3.51 HOTA on cars [+2.12, +4.90] and by 26.1 identity switches per weighted sequence [−37.43, −10.10]. Against the per-target arm it loses 1.10 HOTA on pedestrians [+0.34, +4.55] and 3.75 on cars [+2.11, +5.28]. A perturbation matched in magnitude and direction but wrong in its assignment is actively harmful, which is what one would expect if the correction carries real per-object information and not if its benefit were perturbation magnitude.
 
 This rules out the alternative explanation. It does not rule out every alternative: the pairing the placebo destroys is depth-derived by construction, so the test shows that *object-specific* information matters and that it is the information our per-object warp encodes, which is depth. A reader who wished to attribute the effect to some other object-specific quantity correlated with depth would need to name one.
 
@@ -630,7 +652,7 @@ This rules out the alternative explanation. It does not rule out every alternati
 
 We defined exposure per (sequence, frame, class) as the median absolute difference, at box centres, between an object's own depth-derived warp and the shared depth-blind one — the disagreement that depth information removes. Improvement is the per-frame identity-switch difference between the two configurations. Neither quantity was used to build either tracker.
 
-The result is Table 10, plotted in Figure 6.
+The result is Table 11, plotted in Figure 6.
 
 **Table 11** Pedestrian identity switches by exposure quartile, 2,377 frames.
 
@@ -646,7 +668,7 @@ All 20 of the improvement comes from the top exposure quartile. The bottom quart
 
 The counter is validated: its total, 280 − 260 = 20, reproduces TrackEval's independently computed pedestrian delta (108 − 88 = 20) exactly.
 
-The same counter is *not* reliable for cars and we do not use it there. The same permutation test on cars returns p = 0.946 — significant in the opposite direction. Its car total also disagrees with TrackEval in sign, and the cause is identified: the COCO detector labels cars, trucks and buses alike as vehicles, while KITTI's evaluation protocol treats Van and Truck as ignore regions, so the per-frame counter and TrackEval are not counting the same events. Reporting a quartile table under those conditions would be reporting an artefact. The car column of §6.6 therefore stands without a verified mechanism, which is one more reason it is marked not established.
+The same counter is *not* reliable for cars and we do not use it there. The same permutation test on cars returns p = 0.946 — significant in the opposite direction. Its car total also disagrees with TrackEval in sign, and the cause is identified: the COCO detector labels cars, trucks and buses alike as vehicles, while KITTI's evaluation protocol treats Van and Truck as ignore regions, so the per-frame counter and TrackEval are not counting the same events. Reporting a quartile table under those conditions would be reporting an artefact. The car column of §6.6 therefore stands without a *per-frame* localisation. That is a gap in the mechanism evidence and not in the effect: the car comparison against the deployed compensator is the one KITTI HOTA interval in this paper that excludes zero.
 
 ---
 ## 7 Deployability
@@ -659,42 +681,40 @@ The §6 comparisons use ground-truth ego-motion throughout, and the oracle rows 
 
 **Ego-motion.** On a vehicle this is an onboard sensor reading. KITTI's `oxts` stream is the platform's own GPS/INS, and using it is realistic rather than oracular — with the caveat in §9.3 that it is a post-processed survey-grade unit, not a commodity one, and that we have not substituted visually estimated ego-motion. Both prescriptions need it equally.
 
-**Depth.** This must be estimated, and §7.3 replaces it. The depth-aware homography of §6.4 already uses *estimated* depth: the background points it fits to are back-projected at monocular depths, not annotated ones. Nothing in that configuration reads ground truth.
+**Depth.** This must be estimated, and the depth-aware homography of §6.4 already estimates it: the background points it fits to are back-projected at monocular depths, not annotated ones. It reads **no annotations** on the 6,717 moving frames. Two qualifications belong with that. It does read ground-truth ego-motion, as every configuration in §6 does. And on the 1,270 near-static frames where no homography is fitted (§6.5) it falls back to a similarity that *was* anchored at the median annotated depth — a leak we measure rather than assert: the implied displacement of those warps at the image centre has a median of 0.095 px and a maximum of 4.4 px, and none exceeds 5 px.
 
 **Target identity.** Here the two prescriptions part. The depth-aware homography needs none: it is a single warp fitted to background points, applied to every track. The per-target correction of §6.6 needs to know which object a track is, and in the configuration we report it obtains that by matching against **annotated** boxes (§6.5) — which is why we report it as an upper bound and not as a method. The `per_target_depth` pipeline below eliminates identity by querying the depth map at the tracker's own predicted box, and §7.3 evaluates that version.
 
 So the remedy §6 arrives at needs one estimated quantity, depth, and an ego-motion source; the per-object alternative needs those plus an association the tracker does not have. That asymmetry, rather than any metric difference, is the strongest reason to prefer the global correction.
 
-### 7.2 How much depth error the gain survives
+### 7.2 How much depth error the correction survives
 
-Monocular depth error is approximately multiplicative, so we inject `z' = z · exp(N(0, σ))` and re-run the whole pipeline. Seeding is per sequence and reproducible.
+Monocular depth error is approximately multiplicative, so we inject `z' = z · exp(N(0, σ))` and re-run. This sweep was built for the per-target arm and we report it for that arm; §7.3 explains why the conclusion it supports is narrower than it was.
 
 Table 12 and Figure 7 give the sweep.
 
-**Table 12** Pedestrian sensitivity to injected depth noise. Reference: global-similarity oracle, HOTA 46.744, IDSW 108.
+**Table 12** Pedestrian sensitivity to injected depth noise, per-target arm. Reference: global-similarity oracle, HOTA 46.775.
 
 | σ | ≈ relative error | HOTA | vs global oracle | AssA | IDSW |
 |---|---|---|---|---|---|
-| 0.00 | 0 % | 47.576 | **+0.832** | 51.852 | 88 |
-| 0.05 | 5 % | 47.865 | **+1.121** | 52.541 | 85 |
-| 0.10 | 11 % | 47.864 | **+1.120** | 52.532 | 85 |
-| 0.20 | 22 % | 47.644 | **+0.900** | 52.086 | 87 |
-| 0.30 | 35 % | 47.540 | **+0.796** | 51.848 | 100 |
-| 0.50 | 65 % | 46.385 | −0.359 | 49.188 | 153 |
+| 0.00 | 0 % | 47.518 | +0.743 | 51.807 | 88 |
+| 0.05 | 5 % | 47.770 | +0.995 | 52.288 | 84 |
+| 0.10 | 11 % | 47.771 | +0.996 | 52.257 | 85 |
+| 0.20 | 22 % | 47.673 | +0.898 | 52.096 | 87 |
+| 0.30 | 35 % | 47.564 | +0.789 | 51.857 | 99 |
+| 0.50 | 65 % | 46.399 | −0.376 | 49.177 | 143 |
 
-The gain is flat to roughly 22 % relative depth error, still clearly positive at 35 %, and collapses only at 65 %. Published monocular metric-depth models reach roughly 5–10 % AbsRel on KITTI, so the required precision exists.
+The curve is flat to roughly 22 % relative depth error, still positive at 35 %, and turns negative only at 65 %. Published monocular metric-depth models reach roughly 5–10 % AbsRel on KITTI, so the precision this needs exists. On cars the same sweep gives +0.248 at σ = 0 and is negative at every larger σ tested.
 
-The σ = 0.05 and 0.10 rows sit slightly above the zero-noise row. That difference, 0.29 HOTA, is a quarter of the width of the confidence interval on the gain itself (Table 8: [+0.067, +1.226]), and we do not read it as "noise helps". The honest statement is that the curve is flat across that range.
-
-On cars the same sweep gives +0.206 at σ = 0, then −0.178 at σ = 0.05 and negative at every larger σ tested. The car effect turns negative at the smallest noise level applied, which is consistent with §6.6: it was inside its own uncertainty to begin with.
-
-The sweep has a known optimism. Injected noise is independent per object; real monocular error is spatially correlated, so a real model's errors on two nearby objects are not independent draws. The sweep therefore maps the *shape* of the tolerance, and the load-bearing evidence is the next subsection, which uses a real model.
+Two caveats. The injected noise is independent per object while real monocular error is spatially correlated, so the curve maps the *shape* of the tolerance and not its level. And this is the per-target arm: we have **not** run the equivalent sweep for the depth-aware homography, whose depth enters through the back-projection of several hundred background points and whose sensitivity is therefore a different and probably more forgiving function. That is a gap, and §9.2 records it.
 
 ### 7.3 A real monocular depth model
 
-We replaced ground-truth depth with Depth-Anything-V2 Metric (Yang et al., 2024; VKITTI outdoor checkpoint), querying the depth map at the tracker's own predicted box, and re-ran the whole ladder. Table 13 gives the result; Figure 7 marks it against the synthetic sweep.
+We replaced ground-truth depth with Depth-Anything-V2 Metric (Yang et al., 2024; VKITTI outdoor checkpoint), querying the depth map at the tracker's own predicted box, and re-ran the ladder.
 
-**Table 13** The deployable ladder on KITTI. Depth is estimated throughout; ego-motion is the platform's own sensor.
+Table 13 gives the ladder.
+
+**Table 13** The deployable ladder on KITTI. Depth is estimated in the middle rows; ego-motion is the platform's own sensor throughout.
 
 *Pedestrian*
 
@@ -702,9 +722,9 @@ We replaced ground-truth depth with Depth-Anything-V2 Metric (Yang et al., 2024;
 |---|---|---|---|---|
 | none | 45.499 | 47.877 | 43.996 | 279 |
 | online GMC | 47.428 | 51.448 | 44.617 | 126 |
-| global similarity, estimated depth | 46.518 | 49.980 | 44.449 | 117 |
-| **per-target, estimated depth** | **47.394** | **51.429** | **44.796** | **85** |
-| per-target, ground-truth depth (§6.6) | 47.576 | 51.852 | 44.748 | 88 |
+| global similarity, estimated depth | **47.536** | 51.799 | 44.677 | 115 |
+| per-target, estimated depth | 47.394 | 51.429 | 44.796 | **85** |
+| per-target, ground-truth depth (§6.6) | 47.518 | 51.807 | 44.660 | 88 |
 
 *Car*
 
@@ -712,30 +732,24 @@ We replaced ground-truth depth with Depth-Anything-V2 Metric (Yang et al., 2024;
 |---|---|---|---|---|
 | none | 64.792 | 70.339 | 60.584 | 401 |
 | online GMC | 65.265 | 70.137 | 61.450 | 165 |
-| global similarity, estimated depth | 65.278 | 70.382 | 61.268 | 218 |
-| **per-target, estimated depth** | **66.473** | **72.011** | **62.112** | **134** |
-| per-target, ground-truth depth (§6.6) | 66.473 | 72.432 | 61.730 | 117 |
+| global similarity, estimated depth | 65.341 | 70.242 | 61.515 | 201 |
+| **per-target, estimated depth** | **66.473** | **72.011** | 62.112 | **134** |
+| per-target, ground-truth depth (§6.6) | 66.414 | 72.618 | 61.457 | 117 |
 
-The two car HOTA values in the last two rows are not a transcription error: they are 66.47275 with estimated depth and 66.47348 with ground truth, and they round to the same three decimals by coincidence.
+With bootstrap intervals:
 
-With bootstrap intervals over the 21 sequences, against the same-depth global baseline:
+| Comparison | Class | HOTA | ΔIDSW |
+|---|---|---|---|
+| per-target − global, both estimated depth | ped | −0.262 [−0.767, +1.214] | **−2.07 [−7.12, −0.20]** |
+| per-target − global, both estimated depth | car | **+1.124 [+0.506, +1.629]** | −2.54 [−7.06, +0.36] |
+| per-target − online GMC | ped | −0.207 [−0.852, +1.766] | −2.11 [−12.66, +0.73] |
+| per-target − online GMC | car | **+1.206 [+0.154, +2.104]** | −2.57 [−7.11, +0.74] |
 
-| Comparison | Class | HOTA | AssA | IDSW |
-|---|---|---|---|---|
-| per-target − global, both estimated depth | ped | **+0.855 [+0.141, +1.339]** | **+1.293 [+0.108, +2.124]** | **−4.01 [−6.65, −0.27]** |
-| per-target − global, both estimated depth | car | **+1.206 [+0.557, +1.752]** | **+1.705 [+0.509, +2.752]** | −4.35 [−11.91, +0.14] |
-| per-target (estimated depth) − online GMC | ped | −0.207 [−0.852, +1.766] | −0.554 [−1.792, +2.970] | −2.11 [−12.66, +0.73] |
-| per-target (estimated depth) − online GMC | car | **+1.206 [+0.154, +2.104]** | +1.850 [−0.210, +3.538] | −2.57 [−7.11, +0.74] |
+**Replacing ground-truth depth with a network costs almost nothing** — per-target moves from 47.518 to 47.394 on pedestrians and from 66.414 to 66.473 on cars. Depth is not the fragile input.
 
-The pedestrian gain over the global baseline is **+0.855** with estimated depth against **+0.842** with ground truth. Replacing the oracle costs essentially nothing, and the identity-switch reduction becomes larger rather than smaller. The core claim of §6 therefore does not depend on ground-truth depth.
+**But the per-object step is not what the estimated depth buys.** On pedestrians the *global* similarity built from the same estimated depth reaches 47.536, above the per-target arm and above the deployed compensator, and per-target's advantage over it is −0.262 [−0.767, +1.214]. Only its identity-switch reduction survives there (−2.07 [−7.12, −0.20]). On cars per-target does keep a HOTA advantage over both the global arm (+1.124 [+0.506, +1.629]) and the deployed compensator (+1.206 [+0.154, +2.104]) — the one place in this paper where a per-object correction establishes something a global one does not, and we report it as such rather than suppressing it because it cuts against the section's conclusion.
 
-Two things must be said against this result. First, the checkpoint is domain-matched: it is fine-tuned on a synthetic replica of KITTI, so this is a best-case deployability test and not a cross-domain one. Second, and more important:
-
-**Against plain image-based GMC, the per-target pipeline with estimated depth is not established on pedestrians.** The interval is [−0.852, +1.766] on HOTA and [−12.66, +0.73] on identity switches; both cross zero. On cars its HOTA comparison against online GMC does exclude zero (+1.206 [+0.154, +2.104]) while its association metrics do not.
-
-This is the arm §6.6 supersedes, and we keep it because the comparison is informative: the per-target pipeline needs estimated depth *and* an association to apply it, and it does not beat the shipped compensator on pedestrians, while the depth-aware global homography needs only the depth map and does beat it on cars (+1.187 [+0.262, +1.922]) while cutting pedestrian identity switches from 126 to 97. Both are built from the same monocular depth. The difference between them is what the depth is used for: fitting one better warp, or correcting each track separately.
-
----
+We did not anticipate that asymmetry and we cannot explain it: the class that gains from per-object treatment under estimated depth is the class whose per-object result under *ground-truth* depth was never established (§6.6), and §8 adds that neither class dominates on the homography comparison either.
 
 ### 7.4 What it costs
 
@@ -759,7 +773,7 @@ A second, cheaper recommendation follows from §5.5 rather than from §6, and we
 
 ## 8 What We Could Not Explain
 
-The pedestrian result is established and the car result is not, on the same sequences, the same frames and the same camera motion. We do not know why, and we report the two explanations we pre-specified and then refuted.
+The two classes rank the evidence differently, on the same sequences, the same frames and the same camera motion. On **cars** the depth-aware homography beats the deployed compensator by +1.187 HOTA [+0.262, +1.922]; on **pedestrians** the same comparison is −0.430 [−1.030, +1.030] and crosses zero, while the pedestrian identity-switch count is the one that moves most (126 → 97, or 85 at the contact point). Neither class dominates the other, and the two applications of the same warp also rank differently by class (§6.6). We do not know why, and we report the two explanations we pre-specified and then refuted.
 
 The two explanations, their pre-specification and the measurements that refuted them are given in full in Supplementary S3. In brief: pedestrians are **not** further from the frame's median depth than cars (median |log(z/z_median)| 0.246 against 0.325; a one-sided Mann–Whitney in the hypothesised direction returns p = 1.000), and pedestrian boxes are **not** more exposed per unit of error (3.28 % of pedestrian object-frames exceed one third of the box width against 3.33 % for cars — the two classes are equally exposed, so the explanation has nothing to work with).
 
@@ -795,7 +809,7 @@ One measurement did overturn an explanation we had been using. We had attributed
 
 *The MOT17 reference warp is a better estimate, not truth*, so every compensation-error figure on MOT17 and MOT20 is a lower bound. It also shares the online estimator's four-degree-of-freedom family and masks annotated foreground before extracting features, so model-family error cancels in the contrast: §5's bound covers methods that remain within that family, which is where every deployed compensator we know of sits, but not a compensator that changes family.
 
-*KITTI's ego-motion is a sensor estimate, not ground truth.* It is an OXTS RT3003 GPS/INS at 10 Hz, composed through the camera calibration chain. At KITTI's focal length of about 721 px, one milliradian of attitude error is 0.7 px of image motion — larger than the 0.101 px oracle residual quoted in §6.2 and comparable to §6.4's 0.537 px. We do not propagate that error, and the two sub-pixel figures in §6 should be read as being at or below the sensor's own floor. The 5.878 px within-frame spread and the 2.08 % gate rate are an order of magnitude above it and are unaffected. On a vehicle the same stream is an onboard reading rather than an oracle, but it is a post-processed survey-grade one, not a commodity sensor, and we have not tested the method with visually estimated ego-motion.
+*KITTI's ego-motion is a sensor estimate, not ground truth.* It is an OXTS RT3003 GPS/INS at 10 Hz, composed through the camera calibration chain. At KITTI's focal length of about 721 px, one milliradian of attitude error is 0.7 px of image motion — comparable to the sub-pixel residuals quoted in §6.2 and §6.4, and larger than the 0.478 px median residual of the depth-aware homography. We do not propagate that error, and every sub-pixel figure in §6 should be read as at or below the sensor's own floor. The 2.431 px within-frame spread, the 1.370 px the homography leaves, and the 2.18 % gate rate sit above it, but the first two only by a factor of two to three, so the *ordering* of the models is safe and their absolute residuals are not. On a vehicle the same stream is an onboard reading rather than an oracle, but it is a post-processed survey-grade one, not a commodity sensor, and we have not tested the method with visually estimated ego-motion.
 
 *The depth model is domain-matched.* Depth-Anything-V2 Metric VKITTI is fine-tuned on a synthetic replica of KITTI, so §7.3 is a best-case deployability test, and §7.4 shows it costs 65× the compensation it improves.
 
@@ -811,7 +825,11 @@ One measurement did overturn an explanation we had been using. We had attributed
 
 ### 9.4 Changes from earlier analysis
 
-Four measurements in this paper replace earlier ones of our own that were wrong, and three claims were withdrawn when sequence-level intervals replaced point estimates. Each is described where it occurs — the oracle specification in §6.5, the warp-family test in §6.4, the oracle configuration's fallback in §5.3, and the sign of the perfecting effect in §5.4 — and Supplementary S2 collects them with what each earlier version reported and how it was found. We summarise them rather than omit them because a measurement paper that reports only its final state is not auditable, and because two of the four were found by a reviewer rather than by us.
+Five measurements in this paper replace earlier ones of our own that were wrong, and four claims were withdrawn when sequence-level intervals replaced point estimates. Each is described where it occurs — the oracle specification in §6.5, the two warp-family tests and the estimator in §6.4, and the oracle configuration's fallback in §5.3 — and Supplementary S2 collects them with what each earlier version reported and how it was found.
+
+One deserves naming here because it moved a headline. Our similarity fit was documented as least squares and implemented with LMEDS, a robust estimator that minimises the *median* squared residual. A four-degree-of-freedom similarity has a two-point minimal sample, so on the 44.7 % of moving frames with four or fewer annotated targets it interpolates two exactly and leaves the rest unfitted — which inflates the max-minus-min spread we report, and which we described four times as "the best possible" fit. Under least squares the median within-frame spread after that fit is **2.431 px rather than 5.878 px**, and the fraction of frames whose targets disagree by more than 5 px is **27.1 % rather than 54.3 %**. Every warp fitted to exact correspondences was refitted and every tracking run that consumes one was re-run; the deployable estimator's own array was held byte-identical across the correction so that it remained the controlled variable. The diagnosis is unchanged and the problem is half the size we first reported.
+
+We summarise these rather than omit them because a measurement paper that reports only its final state is not auditable, and because three of the five were found by someone executing the released code rather than reading the manuscript.
 
 ### 9.5 Conclusion
 
@@ -819,9 +837,9 @@ We set out to reduce identity switches by detecting when camera-motion compensat
 
 What stands is a bound and a diagnosis. On MOT17 with camera motion present, a perfect warp is worth −0.04 HOTA with a 95 % upper bound of +0.05 without an appearance channel and +0.52 with one, against +3.43 for having a working compensator at all. Whatever a more robust compensator can recover on that benchmark, it is bounded well below what the field routinely claims for such modules, and it is indistinguishable from the difference between two ordinary implementations of an ordinary one. Compensation *accuracy*, in the sense of estimating a better member of the family the tracker already uses, is not where the headroom is.
 
-Where a shared warp genuinely fails, the reason is that it takes no depth argument. On KITTI, after the best four-degree-of-freedom warp that could be fitted to the targets themselves, objects in one frame still need corrections differing by more than 5 px in 54.3 % of moving frames. We spent two experiments concluding that no global family could fix this and both were wrong by construction. A global homography fitted to background points at their estimated depths cuts that spread to 1.37 px, beats the compensator the tracker ships by +1.19 HOTA on cars, and commits 85 pedestrian identity switches against 126 — and it reads no annotations, needs no per-object association, and adds one `findHomography` call to a depth map the pipeline may already be computing. A per-target correction with ground-truth depth and ground-truth association adds nothing on top of it, and a placebo that keeps those corrections but applies them to the wrong objects is worse than applying none — so what the correction carries really is object depth, and a global model that has depth is enough to deliver it.
+Where a shared warp genuinely fails, the reason is that it takes no depth argument. On KITTI, after the best four-degree-of-freedom warp that could be fitted to the targets themselves, objects in one frame still need corrections differing by more than 5 px in 27.1 % of moving frames. We spent two experiments concluding that no global family could fix this and both were wrong by construction, and a third measuring the size of the problem with a robust estimator that discarded up to half the targets on the 45 % of frames with four or fewer. A global homography fitted to background points at their estimated depths cuts that spread to 1.37 px and beats the compensator the tracker ships by +1.19 HOTA [+0.26, +1.92] on cars; on pedestrians its HOTA advantage is not established, but it cuts identity switches from 126 to 97, and to 85 applied through each box's contact point. It reads no annotations on any moving frame, needs no per-object association, and adds one `findHomography` call to a depth map the pipeline may already be computing. A per-target correction with ground-truth depth *and* ground-truth association has no established HOTA advantage over any global warp we built — and a placebo that keeps those corrections but applies them to the wrong objects is worse than applying none, so what the correction carries really is object depth, and a global model that has depth is enough to deliver it.
 
-Two lessons, one narrow and one not. The narrow one: if you compensate camera motion on a translating platform, give the warp depth rather than more degrees of freedom or a better fit within the same family — and if your scene has a dominant plane, eight degrees of freedom are the right eight. The general one is about what it takes to establish a negative. Three times in this work we concluded that something did not matter, and twice the conclusion was an artefact of how the treatment had been applied rather than of the quantity itself: a warp that was silently the online estimate on a fifth of the hardest sequence, and a homography that was silently absent on a third of moving frames. Both were found by running the released code, not by reading the manuscript. A null claim needs the treatment audited as carefully as the outcome, and the practical form of that audit is a script that recomputes the paper's numbers and fails on mismatch — which we release, and which did not catch either of these, because it checks values and not provenance.
+Two lessons, one narrow and one not. The narrow one: if you compensate camera motion on a translating platform, give the warp depth rather than more degrees of freedom or a better fit within the same family — and if your scene has a dominant plane, eight degrees of freedom are the right eight. The general one is about what it takes to establish a negative. Four times in this work we concluded that something did not matter or could not be fixed, and each time the conclusion turned out to be a property of how the experiment was built rather than of the quantity: a warp that was silently the online estimate on a fifth of the hardest sequence; a homography fitted to a single-depth grid, which it therefore reproduced exactly; a homography that was silently absent on a third of moving frames; and a *robust* estimator presented as a best fit, which on the 45 % of frames with four or fewer targets interpolates two and discards the rest, inflating the very max-minus-min statistic we reported. All four were found by executing the released code. A null claim needs the treatment audited as carefully as the outcome, and the audit that works is not a checklist: our own `verify_numbers.py` passed 526 of 526 while three of those four defects were live, because it checks values against committed artefacts rather than re-deriving them and cannot see an estimator choice at all.
 
 ---
 

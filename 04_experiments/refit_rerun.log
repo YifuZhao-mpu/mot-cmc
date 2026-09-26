@@ -1,0 +1,33 @@
+[00:35:24] v4_global_oracle (mode=global_oracle, bundle=kitti_warps_v4)
+[v4_global_oracle] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/v4_global_oracle/data
+[00:35:36] v4_global_homography (mode=global_homography, bundle=kitti_warps_v4)
+[v4_global_homography] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/v4_global_homography/data
+[00:35:56] v4_per_target (mode=per_target, bundle=kitti_warps_v4)
+[v4_per_target] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/v4_per_target/data
+[00:36:10] placebo_shuffled (mode=per_target_shuffled, bundle=kitti_warps_v4)
+[placebo_shuffled] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/placebo_shuffled/data
+[00:36:24] anch_ped (mode=global_anchored_ped, bundle=kitti_warps_anchored)
+[anch_ped] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/anch_ped/data
+[00:36:36] anch_car (mode=global_anchored_car, bundle=kitti_warps_anchored)
+[anch_car] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/anch_car/data
+[00:36:48] planar2_homography (mode=global_homography, bundle=kitti_warps_planar)
+[planar2_homography] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/planar2_homography/data
+[00:37:09] planar2_homography_foot (mode=global_homography_foot, bundle=kitti_warps_planar)
+[planar2_homography_foot] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/planar2_homography_foot/data
+[00:37:24] planar2_oracle (mode=global_oracle, bundle=kitti_warps_planar)
+[planar2_oracle] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/planar2_oracle/data
+[00:37:36] dep_global_oracle (mode=global_oracle, bundle=kitti_warps_depth)
+[dep_global_oracle] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/dep_global_oracle/data
+[00:37:48] dep_per_target_depth (mode=per_target_depth, bundle=kitti_warps_depth)
+[dep_per_target_depth] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/dep_per_target_depth/data
+[00:38:12] dn005_per_target (mode=per_target, bundle=kitti_warps_dn005)
+[dn005_per_target] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/dn005_per_target/data
+[00:38:26] dn010_per_target (mode=per_target, bundle=kitti_warps_dn010)
+[dn010_per_target] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/dn010_per_target/data
+[00:38:39] dn020_per_target (mode=per_target, bundle=kitti_warps_dn020)
+[dn020_per_target] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/dn020_per_target/data
+[00:38:53] dn030_per_target (mode=per_target, bundle=kitti_warps_dn030)
+[dn030_per_target] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/dn030_per_target/data
+[00:39:07] dn050_per_target (mode=per_target, bundle=kitti_warps_dn050)
+[dn050_per_target] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/dn050_per_target/data
+[00:39:21] ALL DONE
