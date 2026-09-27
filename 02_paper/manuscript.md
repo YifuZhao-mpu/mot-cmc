@@ -191,6 +191,8 @@ Determinism was verified rather than assumed: five independent runs of the MOT17
 
 All evaluation uses the official TrackEval implementation (Luiten & Hoffhues, 2020).
 
+Two estimators of the same contrast appear in this paper and they are not interchangeable. The HOTA figure in every results table is TrackEval's `COMBINED` output, which pools all sequences' detections into one computation. The point estimate attached to every confidence interval is the detection-weighted mean of the per-sequence HOTA figures, because that is the quantity the bootstrap resamples. The two weight sequences differently and do not agree exactly: across the ten KITTI contrasts of Table 9 they differ by a median of 0.026 HOTA and at most 0.198 (the pedestrian contact-point row). So a point estimate quoted with an interval may differ in the second decimal from the table cell for the same pair of runs, and where the difference is large enough to matter — the pedestrian rows — it is the interval that should be read, since it is the one that carries the uncertainty.
+
 ---
 ## 4 How Accurate Is Compensation?
 
@@ -670,12 +672,6 @@ The counter is validated: its total, 280 − 260 = 20, reproduces TrackEval's in
 
 The same counter is *not* reliable for cars and we do not use it there. The same permutation test on cars returns p = 0.946 — significant in the opposite direction. Its car total also disagrees with TrackEval in sign, and the cause is identified: the COCO detector labels cars, trucks and buses alike as vehicles, while KITTI's evaluation protocol treats Van and Truck as ignore regions, so the per-frame counter and TrackEval are not counting the same events. Reporting a quartile table under those conditions would be reporting an artefact. The car column of §6.6 therefore stands without a *per-frame* localisation. That is a gap in the mechanism evidence and not in the effect: the car comparison against the deployed compensator is the one KITTI HOTA interval in this paper that excludes zero.
 
----
-## 7 Deployability
-
-The §6 comparison uses ground-truth ego-motion and ground-truth depth. It is an upper bound, and an upper bound is only interesting if something can be built underneath it. This section separates the three ground-truth inputs, because they are not equally hard to replace, and an earlier version of our own analysis treated them as if they were.
-
-
 ### 6.8 Where the homography's gain comes from, per frame
 
 Section 6.7 localises the per-target arm, which §6.6 supersedes. The same instrument aimed at the comparison the paper actually recommends asks: in which frames does the depth-aware homography move the targets most differently from the compensator the tracker ships, and are those the frames where it removes identity switches? Exposure is now the median disagreement, at box centres, between the deployed warp and the homography; improvement is the per-frame identity-switch difference between those two trackers.
@@ -702,9 +698,15 @@ The result is Table 12.
 | Q3 | 1.95 px | 56 | 48 | +8 |
 | **Q4** | **4.09 px** | **59** | **39** | **+20** |
 
-On cars, **all** of the improvement is in the top exposure quartile and the bottom quartile yields exactly zero; a paired permutation test over the 6,469 frames puts the observed +46 against a null mean of 10.95 (sd 6.91), **p < 0.0001**. On pedestrians the pattern is the same and weaker: +20 in Q4 against a null mean of 5.75 (sd 5.58), **p = 0.0071**, with the two lowest quartiles slightly negative.
+On cars the net improvement of 44 is more than accounted for by the top exposure quartile alone, which carries +46, while the bottom quartile yields exactly zero; a paired permutation test over the 6,469 frames puts the observed +46 against a null mean of 10.95 (sd 6.91), **p < 0.0001**. On pedestrians the pattern is the same and weaker: +20 in Q4 against a null mean of 5.75 (sd 5.58), **p = 0.0071**, with the two lowest quartiles slightly negative.
 
-Two qualifications. This counter is **approximate for this contrast**: its totals are 297 → 253 on cars where TrackEval gives 165 → 125, and 291 → 268 on pedestrians where TrackEval gives 126 → 97. The direction and rough magnitude agree, but unlike §6.7's per-target counter — whose delta reproduced TrackEval's exactly — this one does not, so we read the quartile *pattern* and not the counts. And exposure is again computed from the two warps that produced the two trackers, so this localises the intervention rather than independently identifying depth as its active ingredient; §6.7's placebo is what does the latter, and it was run on the per-target arm.
+Two qualifications. This counter is **approximate for this contrast**: its totals are 297 → 253 on cars where TrackEval gives 165 → 125, and 291 → 268 on pedestrians where TrackEval gives 126 → 97. The direction and rough magnitude agree, but unlike §6.7's per-target counter — whose delta reproduced TrackEval's exactly — this one does not, so we read the quartile *pattern* and not the counts. A clarification is owed here, because §6.7 declines to use the car counter at all. What disqualified it there was a **sign** disagreement with TrackEval, −48 against +16, and that is a property of the contrast rather than of the class: the two are not counting the same events, and on the per-target contrast the discrepancy was large enough to invert the answer. On this contrast they agree in sign and to within 4 switches of 40 on cars (+44 against +40) and 6 of 29 on pedestrians (+23 against +29). Agreement in sign and magnitude is the condition under which we are willing to read a quartile table, §6.7's car column fails it, and this one does not. And exposure is again computed from the two warps that produced the two trackers, so this localises the intervention rather than independently identifying depth as its active ingredient; §6.7's placebo is what does the latter, and it was run on the per-target arm.
+
+---
+## 7 Deployability
+
+The §6 comparison uses ground-truth ego-motion and ground-truth depth. It is an upper bound, and an upper bound is only interesting if something can be built underneath it. This section separates the three ground-truth inputs, because they are not equally hard to replace, and an earlier version of our own analysis treated them as if they were.
+
 
 ### 7.1 What each correction actually needs
 
@@ -714,13 +716,13 @@ The §6 comparisons use ground-truth ego-motion throughout, and the oracle rows 
 
 **Depth.** This must be estimated, and the depth-aware homography of §6.4 already estimates it: the background points it fits to are back-projected at monocular depths, not annotated ones. It reads **no annotations** on the 6,717 moving frames. Two qualifications belong with that. It does read ground-truth ego-motion, as every configuration in §6 does. And on the 1,270 near-static frames where no homography is fitted (§6.5) it falls back to a similarity that *was* anchored at the median annotated depth — a leak we measure rather than assert: the implied displacement of those warps at the image centre has a median of 0.095 px and a maximum of 4.4 px, and none exceeds 5 px.
 
-**Target identity.** Here the two prescriptions part. The depth-aware homography needs none: it is a single warp fitted to background points, applied to every track. The per-target correction of §6.6 needs to know which object a track is, and in the configuration we report it obtains that by matching against **annotated** boxes (§6.5) — which is why we report it as an upper bound and not as a method. The `per_target_depth` pipeline below eliminates identity by querying the depth map at the tracker's own predicted box, and §7.3 evaluates that version.
+**Target identity.** Here the two prescriptions part. The depth-aware homography needs none: it is a single warp fitted to background points, applied to every track. The per-target correction of §6.6 needs to know which object a track is, and in the configuration we report it obtains that by matching against **annotated** boxes (§6.5) — which is why we report it as an upper bound and not as a method. The `per_target_depth` pipeline below eliminates identity by querying the depth map at the tracker's own predicted box, and §7.4 evaluates that version.
 
 So the remedy §6 arrives at needs one estimated quantity, depth, and an ego-motion source; the per-object alternative needs those plus an association the tracker does not have. That asymmetry, rather than any metric difference, is the strongest reason to prefer the global correction.
 
 ### 7.2 How much depth error the correction survives
 
-Monocular depth error is approximately multiplicative, so we inject `z' = z · exp(N(0, σ))` and re-run. This sweep was built for the per-target arm and we report it for that arm; §7.4 explains why the conclusion it supports is narrower than it was.
+Monocular depth error is approximately multiplicative, so we inject `z' = z · exp(N(0, σ))` and re-run. The second column of each sweep table converts σ to the relative depth error at one standard deviation, `exp(σ) − 1`. This sweep was built for the per-target arm and we report it for that arm; §7.4 explains why the conclusion it supports is narrower than it was.
 
 Table 13 and Figure 7 give the sweep.
 
@@ -741,7 +743,7 @@ One caveat carries through: the injected noise is independent per object while r
 
 ### 7.3 How much depth error the homography survives
 
-The sweep above is the per-target arm's, and its shape does not carry over: the homography's depth enters through the back-projection of a few hundred background points rather than through one lookup per object, so noise on individual points is averaged by the fit. We measured it rather than argued it, by injecting the same multiplicative noise into the background depths and refitting and re-running at every level.
+The sweep above is the per-target arm's, and its shape does not carry over: the homography's depth enters through the back-projection of many background points — a median of 437 per frame, interquartile range 379 to 522 — rather than through one lookup per object, of which there is a median of 5, so noise on individual points is averaged by the fit. We measured it rather than argued it, by injecting the same multiplicative noise into the background depths and refitting and re-running at every level.
 
 Table 14 gives it.
 
@@ -756,9 +758,9 @@ Table 14 gives it.
 | 0.30 | 35 % | 46.807 | −0.621 | 101 | 66.643 | **+1.378** | 125 |
 | 0.50 | 65 % | 46.521 | −0.907 | 106 | 66.538 | **+1.273** | 122 |
 
-**On cars the advantage does not degrade at all.** It is +1.22 HOTA with clean depth and +1.27 at 65 % relative error, and the interval excludes zero at every level tested: +1.371 [+0.487, +2.146] at 35 % and +1.272 [+0.338, +2.053] at 65 %. The variation across the column is smaller than the interval width and we read it as noise, not structure. On pedestrians the HOTA deficit widens monotonically from −0.27 to −0.91 and identity switches drift from 97 to 106, so there the correction does depend on depth quality — but it never reaches the deployed compensator's 126 either.
+**On cars the advantage does not degrade at all.** It is +1.22 HOTA with clean depth and +1.27 at 65 % relative error, and the bootstrap interval excludes zero at **every one of the six levels** — in σ order [+0.262, +1.922], [+0.262, +1.852], [+0.493, +2.066], [+0.371, +1.974], [+0.487, +2.146] and [+0.338, +2.053]. The variation across the column is smaller than the interval width and we read it as noise, not structure. On pedestrians the HOTA deficit widens monotonically from −0.27 to −0.91 and identity switches drift from 97 to 106, so there the correction does depend on depth quality — but it never reaches the deployed compensator's 126 either.
 
-That asymmetry is the opposite of the per-target arm's, which is flat to 22 % and then collapses at 65 % (§7.2). The reason is structural: a per-object correction consumes one depth value per target, so an error there is an error in that target's whole correction, while the homography consumes a few hundred and is fitted to them. **Coarse depth is enough**, which matters because §7.5 prices the depth network at 65× a compensation call and the cheapest sources — a calibrated ground plane, a stereo baseline, a coarse network — are exactly the coarse ones.
+That asymmetry is the opposite of the per-target arm's, which is flat to 22 % and then collapses at 65 % (§7.2). The reason is structural: a per-object correction consumes one depth value per target, so an error there is an error in that target's whole correction, while the homography consumes nearly two orders of magnitude more of them — 437 against 5 at the median — and is fitted to them rather than reading any one of them off. **Coarse depth is enough**, which matters because §7.5 prices the depth network at 65× a compensation call and the cheapest sources — a calibrated ground plane, a stereo baseline, a coarse network — are exactly the coarse ones.
 
 ### 7.4 A real monocular depth model
 
@@ -805,7 +807,7 @@ We did not anticipate that asymmetry and we cannot explain it: the class that ga
 
 ### 7.5 What it costs
 
-No published camera-motion ablation we are aware of omits the throughput cost, and ours should not either — particularly because §7.3's pipeline runs a monocular depth network on every frame. Measured on the hardware every other result in this paper was produced on:
+No published camera-motion ablation we are aware of omits the throughput cost, and ours should not either — particularly because §7.4's pipeline runs a monocular depth network on every frame. Measured on the hardware every other result in this paper was produced on:
 
 Table 16 gives the cost of each component.
 

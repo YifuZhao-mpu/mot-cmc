@@ -337,3 +337,36 @@ negative result that per-object correction adds nothing on top.
 construction, and none was caught by a checklist — two were caught by a reviewer *executing* the
 released code. `verify_numbers.py` passed 486/486 while the configuration it checked was switched
 off on 35.7 % of moving frames. Provenance checks were added for that reason.
+
+## Stage 6' — review of §6.8 and §7.3, the two sections nobody had reviewed (2026-09-27)
+
+The previous round added two sections and committed them unreviewed. This round reviewed them the
+way the rounds that worked were run: by executing the code and re-deriving every printed number,
+not by reading. Six findings, all fixed.
+
+| F# | Finding |
+|---|---|
+| F59 | **§6.8 was placed after `## 7 Deployability`, and this was not cosmetic.** `build_latex.py` strips the Markdown's manual numbers and lets LaTeX number subsections, so in the committed PDF §6.8 was typeset as 7.1 and every subsequent subsection shifted by one — §7.1→7.2, …, §7.5→7.6. Every one of the paper's 11 `§7.x` cross-references therefore pointed at the wrong subsection of the submitted artefact. Moved to the end of §6; verified against the regenerated `.tex` ordering. |
+| F60 | **Two stale cross-references** left by the renumbering: §7.1 said "§7.3 evaluates that version" of the `per_target_depth` pipeline and §7.5 said "§7.3's pipeline runs a monocular depth network on every frame". Both are §7.4. Found by a script that checks every `§N.M` in the text against the heading list, not by reading. |
+| F61 | **The paper prints two estimators for one quantity and never said so.** Result-table HOTA cells are TrackEval's `COMBINED` output; every interval's point estimate is the detection-weighted mean of per-sequence HOTA, because that is what the bootstrap resamples. So the abstract's +1.19 and Table 14's +1.217 are the same contrast, and §7.3's prose printed +1.371 where its own table said +1.378. Measured the disagreement over all ten KITTI contrasts: median 0.026 HOTA, max **0.198** (pedestrian contact-point row — large enough to halve that effect). Stated the convention in §3.5, replaced §7.3's two cherry-picked intervals with all six, and checked the claim "excludes zero at every level" at all six σ (it holds). |
+| F62 | **§6.8 used the car per-frame counter that §6.7 had just declared unusable**, with no reconciliation. Measured the discriminator: on the per-target contrast the car counter disagrees with TrackEval in *sign* (−48 against +16), on the homography contrast it agrees in sign and to within 4 switches of 40 (+44 against +40). It is a property of the contrast, not the class. Written into §6.8 and both halves checked. |
+| F63 | **"All of the improvement is in the top quartile"** overstated the car column: the net is +44 and Q4 carries +46, so Q4 more than accounts for it. Reworded to say that. |
+| F64 | **`REPRODUCE.md` was stale across two renumberings** — it stopped at Table 10 while the paper prints 16, and its Table 6/7/8/9 rows named the commands for other tables entirely. Anyone following it would have run the wrong command for most of the paper. Rewritten against the actual 16 tables; four commands in it (two inherited) named flags no script accepts (`scan_mot.py --dataset`, `uavdt_track.py --scan`, `run_rac.py --dataset`, `analyse_oracle.py --by-sequence`) and one attributed §5.6 to MOT20 when §5.6 is UAVDT. |
+
+**Verifier**: 541 → **690** checks, 0 problems. New coverage: every cell of Tables 12 and 14 parsed
+from the manuscript and recomputed (HOTA, deltas, IDSW, the `exp(σ)−1` relative-error column, the
+quartile medians and the permutation null); the six §7.3 intervals as fresh bootstraps plus the
+zero-exclusion claim; §3.5's estimator-disagreement figures; §7.3's background-point counts
+(median 437, IQR 379–522, against 5 objects) which had been "a few hundred"; and a provenance check
+that every table in the manuscript appears in `REPRODUCE.md` and that no command there names a
+script, flag or `--mode` value that does not exist. Each new check was **mutation-tested** — a
+deliberate error injected into the manuscript and the check confirmed to catch it — because a new
+check that passes first time is indistinguishable from one that is not running. A dead
+`check_kitti_axis if False else` ternary was removed; it read as a suppressed check.
+
+| F65 | **`REPRODUCE.md` was generated from a list inside `make_release.py`**, which is why F64 happened and why my first fix was silently overwritten the next time the release was built. It is now a maintained document at `02_paper/REPRODUCE.md` that `make_release.py` copies, with `check_reproduce_map` as the mechanical guard. While fixing it: `supplementary.md` and the reproduction page were **not in the release manifest at all** — 299 files became 301. |
+
+**Rebuilt**: 31 pages, 16 tables, 8 figures, manifest 301 files, submission package re-synced,
+Chinese abstract corrected (it still conflated the two homography configurations — +1.19 at box
+centres with 85 identity switches at the contact point — the defect the English abstract had already
+had fixed) and extended with the coarse-depth and localisation results.

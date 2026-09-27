@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import argparse
 import os
+import math
 import re
 from pathlib import Path as _P
 import sys
@@ -649,24 +650,257 @@ def check_manuscript_intervals():
 
 
 
+HOM_SIGMA = ((0.00, "planar2_homography"), (0.05, "hom_dn005"), (0.10, "hom_dn010"),
+             (0.20, "hom_dn020"), (0.30, "hom_dn030"), (0.50, "hom_dn050"))
+
+
 def check_homography_robustness():
-    """7.3 and 6.8 -- the two measurements the earlier draft declared missing."""
-    for sig, run, ped, car in ((0.05, "hom_dn005", 47.207, 66.407),
-                               (0.10, "hom_dn010", 46.947, 66.587),
-                               (0.20, "hom_dn020", 46.820, 66.479),
-                               (0.30, "hom_dn030", 46.807, 66.643),
-                               (0.50, "hom_dn050", 46.521, 66.538)):
-        check(f"7.3 hom sigma={sig} ped", ped, te(run, "pedestrian")["HOTA"], 5e-3)
-        check(f"7.3 hom sigma={sig} car", car, te(run, "car")["HOTA"], 5e-3)
+    """7.3 -- every cell of Table 14, read off the manuscript, against TrackEval.
+
+    The table prints HOTA and a delta against the deployed compensator. Both are
+    TrackEval COMBINED figures (see 3.5), so both are checked that way; the six
+    intervals the prose quotes are checked as bootstraps in
+    check_homography_intervals, which is where the other estimator lives.
+    """
+    text = open(MD).read()
+    blocks = _md_blocks(text, "Depth-aware homography under injected depth error")
+    if not blocks:
+        FAILS.append("PARSE       Table 14 not found")
+        return
+    base_p, base_c = te("v3_online", "pedestrian")["HOTA"], te("v3_online", "car")["HOTA"]
+    seen = set()
+    for line in blocks[0][2:]:
+        c = [x.strip().replace("**", "").replace("\u2212", "-") for x in line.strip("|").split("|")]
+        if len(c) < 8 or not re.match(r"^\d+\.\d+$", c[0]):
+            continue
+        sig = float(c[0])
+        run = dict(HOM_SIGMA).get(sig)
+        if run is None:
+            FAILS.append(f"PARSE       7.3 sigma={sig} has no mapped run")
+            continue
+        seen.add(sig)
+        check(f"7.3 sigma={sig} rel.err", float(c[1].rstrip(" %")),
+              100 * (math.exp(sig) - 1), 0.55)
+        ped, car = te(run, "pedestrian")["HOTA"], te(run, "car")["HOTA"]
+        check(f"7.3 sigma={sig} ped HOTA", float(c[2]), ped, 5e-3)
+        check(f"7.3 sigma={sig} ped vs GMC", float(c[3]), ped - base_p, 5e-3)
+        check(f"7.3 sigma={sig} ped IDSW", float(c[4]), te(run, "pedestrian")["IDSW"], 0.5)
+        check(f"7.3 sigma={sig} car HOTA", float(c[5]), car, 5e-3)
+        check(f"7.3 sigma={sig} car vs GMC", float(c[6]), car - base_c, 5e-3)
+        check(f"7.3 sigma={sig} car IDSW", float(c[7]), te(run, "car")["IDSW"], 0.5)
+    missing = {s for s, _ in HOM_SIGMA} - seen
+    if missing:
+        FAILS.append(f"PARSE       7.3 rows absent from the manuscript: {sorted(missing)}")
+    # the caption's two reference figures
+    m = re.search(r"online GMC: pedestrian ([\d.]+) / (\d+) identity switches, car ([\d.]+) / (\d+)",
+                  text)
+    if not m:
+        FAILS.append("PARSE       Table 14 caption reference figures not found")
+    else:
+        check("7.3 caption ped GMC HOTA", float(m.group(1)), base_p, 5e-3)
+        check("7.3 caption ped GMC IDSW", float(m.group(2)), te("v3_online", "pedestrian")["IDSW"], 0.5)
+        check("7.3 caption car GMC HOTA", float(m.group(3)), base_c, 5e-3)
+        check("7.3 caption car GMC IDSW", float(m.group(4)), te("v3_online", "car")["IDSW"], 0.5)
+
+
+def check_reproduce_map():
+    """The release page must map every table the manuscript prints, and must not
+    name a script or flag that does not exist.
+
+    REPRODUCE.md is the only part of the release a reader follows by hand, and it
+    went stale twice across two table renumberings without anything noticing.
+    """
+    rp = f"{ROOT}/99_artifacts/RELEASE/REPRODUCE.md"
+    if not os.path.exists(rp):
+        FAILS.append("MISSING     99_artifacts/RELEASE/REPRODUCE.md")
+        return
+    txt = open(rp).read()
+    md = open(MD).read()
+    tables = {int(m) for m in re.findall(r"^\*\*Table (\d+)\*\*", md, re.M)}
+    listed = {int(m) for m in re.findall(r"^\| (\d+) \|", txt, re.M)}
+    for t in sorted(tables - listed):
+        FAILS.append(f"PROVENANCE  Table {t} is in the manuscript but not in REPRODUCE.md")
+    for t in sorted(listed - tables):
+        FAILS.append(f"PROVENANCE  REPRODUCE.md lists Table {t}, which the manuscript does not print")
+    if tables and tables == listed:
+        globals()["OKS"] = OKS + 1
+    if tables != set(range(1, len(tables) + 1)):
+        FAILS.append(f"PROVENANCE  manuscript table numbers are not gapless: {sorted(tables)}")
+    else:
+        globals()["OKS"] = OKS + 1
+    for name in sorted(set(re.findall(r"rac/([A-Za-z0-9_]+\.(?:py|sh))", txt))):
+        fp = f"{ROOT}/03_code/rac/{name}"
+        if not os.path.exists(fp):
+            FAILS.append(f"PROVENANCE  REPRODUCE.md names rac/{name}, which does not exist")
+            continue
+        globals()["OKS"] = OKS + 1
+        if not name.endswith(".py"):
+            continue
+        used = set(re.findall(r"--[a-z0-9-]+",
+                              " ".join(re.findall(rf"rac/{re.escape(name)}((?:\s+[^`;|]*)?)", txt))))
+        have = set(re.findall(r'add_argument\(\s*"(--[a-z0-9-]+)"', open(fp).read()))
+        for f in sorted(used - have):
+            FAILS.append(f"PROVENANCE  REPRODUCE.md passes {f} to rac/{name}, which does not accept it")
+    # the --mode values it names must be modes kitti_track.py actually has
+    src = open(f"{ROOT}/03_code/rac/kitti_track.py").read()
+    ch = re.search(r'"--mode".*?choices=\[(.*?)\]', src, re.S)
+    allowed = set(re.findall(r'"([a-z_]+)"', ch.group(1))) if ch else set()
+    used = set()
+    for m in re.findall(r"--mode ([{a-zA-Z_,]+)", txt):
+        used |= {v for v in re.sub(r"[{}]", "", m).split(",") if v}
+    for v in sorted(used - allowed):
+        FAILS.append(f"PROVENANCE  REPRODUCE.md names --mode {v}, not a kitti_track.py choice")
+    if used and not (used - allowed):
+        globals()["OKS"] = OKS + 1
+
+
+def check_background_point_counts():
+    """7.3 -- the counts its structural argument rests on, from the family CSV."""
+    d = pd.read_csv(f"{E}/kitti_global_family_v2.csv")
+    text = open(MD).read()
+    m = re.search(r"a median\s+of (\d+) per frame, interquartile range (\d+) to (\d+)", text)
+    if not m:
+        FAILS.append("PARSE       7.3 background-point counts not found")
+        return
+    q25, med, q75 = d.n_bg.quantile([0.25, 0.5, 0.75])
+    check("7.3 n_bg median", float(m.group(1)), med, 0.5)
+    check("7.3 n_bg q25", float(m.group(2)), q25, 0.5)
+    check("7.3 n_bg q75", float(m.group(3)), q75, 0.5)
+    m = re.search(r"of which there is a median of (\d+)", text)
+    check("7.3 n_obj median", float(m.group(1)) if m else -1, d.n_obj.median(), 0.5)
+    m = re.search(r"(\d+) against (\d+) at the\s+median", text)
+    if m:
+        check("7.3 ratio numerator", float(m.group(1)), med, 0.5)
+        check("7.3 ratio denominator", float(m.group(2)), d.n_obj.median(), 0.5)
+
+
+def check_homography_intervals():
+    """7.3 -- the six intervals the prose lists, and the claim that none crosses zero."""
+    b = _bci()
+    text = open(MD).read()
+    i = text.index("excludes zero at **every one of the six levels**")
+    quoted = re.findall(r"\[([+-\u2212]\d+\.\d+), ([+-\u2212]\d+\.\d+)\]",
+                        text[i:text.index(".", i + 200)])
+    if len(quoted) != len(HOM_SIGMA):
+        FAILS.append(f"PARSE       7.3 lists {len(quoted)} intervals, expected {len(HOM_SIGMA)}")
+        return
+    for (sig, run), (lo_s, hi_s) in zip(HOM_SIGMA, quoted):
+        a, bb = b.per_seq("v3_online", "car"), b.per_seq(run, "car")
+        idx = a.index.intersection(bb.index)
+        w = a.loc[idx, "GT_Dets"].values.astype(float)
+        _, boots, _ = b.bootstrap(a, bb, "HOTA", w, n_boot=20000)
+        glo, ghi = np.percentile(boots, [2.5, 97.5])
+        check(f"7.3 CI car sigma={sig} lo", float(lo_s.replace("\u2212", "-")), glo, 5e-3)
+        check(f"7.3 CI car sigma={sig} hi", float(hi_s.replace("\u2212", "-")), ghi, 5e-3)
+        if glo <= 0:
+            FAILS.append(f"CLAIM       7.3 says every interval excludes zero, but "
+                         f"sigma={sig} lower bound is {glo:+.3f}")
+        else:
+            globals()["OKS"] = OKS + 1
+
+
+def check_estimator_convention():
+    """3.5 -- the median and maximum disagreement between the two HOTA estimators."""
+    b = _bci()
+    gaps = []
+    for label, (base, comp) in CI_ROWS.items():
+        for cls in ("car", "pedestrian"):
+            comb = te(comp, cls)["HOTA"] - te(base, cls)["HOTA"]
+            a, bb = b.per_seq(base, cls), b.per_seq(comp, cls)
+            idx = a.index.intersection(bb.index)
+            w = a.loc[idx, "GT_Dets"].values.astype(float)
+            gp, _, _ = b.bootstrap(a, bb, "HOTA", w, n_boot=20000)
+            gaps.append(abs(comb - gp))
+    text = open(MD).read()
+    m = re.search(r"differ by a median of ([\d.]+) HOTA and\s+at most ([\d.]+)", text)
+    if not m:
+        FAILS.append("PARSE       3.5 estimator-disagreement figures not found")
+        return
+    check("3.5 estimator gap median", float(m.group(1)), float(np.median(gaps)), 5e-3)
+    check("3.5 estimator gap max", float(m.group(2)), float(np.max(gaps)), 5e-3)
+    check("3.5 estimator gap n_contrasts", 10, len(gaps), 0.5)
+
+
+def check_causal_link_homography():
+    """6.8 -- Table 12's quartile cells and the permutation tests, from the CSV."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("kcl", f"{ROOT}/03_code/rac/kitti_causal_link.py")
+    kcl = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(kcl)
     d = pd.read_csv(f"{E}/kitti_causal_link_hom.csv")
-    for cls, tot_g, tot_p, q4 in (("car", 297, 253, 46), ("pedestrian", 291, 268, 20)):
+    text = open(MD).read()
+    blocks = _md_blocks(text, "Identity switches by exposure quartile, depth-aware homography")
+    if len(blocks) < 2:
+        FAILS.append("PARSE       Table 12 needs two blocks, found "
+                     f"{len(blocks)}")
+        return
+    for blk, cls in zip(blocks, ("car", "pedestrian")):
         g = d[d.cls == cls]
-        check(f"6.8 {cls} total global", tot_g, g.idsw_global.sum(), 0.5)
-        check(f"6.8 {cls} total hom", tot_p, g.idsw_per.sum(), 0.5)
+        check(f"6.8 {cls} n_frames", _caption_int(text, cls), len(g), 0.5)
         q = pd.qcut(g.exposure, 4, labels=False, duplicates="drop")
-        sub = g[q == 3]
-        check(f"6.8 {cls} Q4 improvement", q4,
-              sub.idsw_global.sum() - sub.idsw_per.sum(), 0.5)
+        rows = [ln for ln in blk[2:] if ln.startswith("|")]
+        if len(rows) != 4:
+            FAILS.append(f"PARSE       Table 12 {cls} has {len(rows)} quartile rows")
+            continue
+        for k, line in enumerate(rows):
+            c = [x.strip().replace("**", "").replace("\u2212", "-") for x in line.strip("|").split("|")]
+            sub = g[q == k]
+            check(f"6.8 {cls} Q{k+1} exposure", float(c[1].rstrip(" px")),
+                  float(sub.exposure.median()), 5e-3)
+            check(f"6.8 {cls} Q{k+1} IDSW online", float(c[2]), sub.idsw_global.sum(), 0.5)
+            check(f"6.8 {cls} Q{k+1} IDSW hom", float(c[3]), sub.idsw_per.sum(), 0.5)
+            check(f"6.8 {cls} Q{k+1} improvement", float(c[4]),
+                  sub.idsw_global.sum() - sub.idsw_per.sum(), 0.5)
+        # the permutation test the prose leads with, recomputed from the same CSV
+        r = kcl.permutation_test(g)
+        seg = text[text.index("### 6.8"):text.index("### 7.1")]
+        anchor = "observed +46" if cls == "car" else "+20 in Q4"
+        mm = re.search(re.escape(anchor) + r".*?null mean of ([\d.]+) \(sd ([\d.]+)\)",
+                       seg, re.S)
+        if not mm:
+            FAILS.append(f"PARSE       6.8 {cls} permutation figures not found")
+            continue
+        check(f"6.8 {cls} perm observed", 46 if cls == "car" else 20, r["observed"], 0.5)
+        check(f"6.8 {cls} perm null mean", float(mm.group(1)), r["null_mean"], 5e-2)
+        check(f"6.8 {cls} perm null sd", float(mm.group(2)), r["null_sd"], 5e-2)
+    for cls, tot_g, tot_p in (("car", 297, 253), ("pedestrian", 291, 268)):
+        g = d[d.cls == cls]
+        check(f"6.8 {cls} counter total online", tot_g, g.idsw_global.sum(), 0.5)
+        check(f"6.8 {cls} counter total hom", tot_p, g.idsw_per.sum(), 0.5)
+    # 6.8's reconciliation with 6.7: the car counter is admissible on this contrast
+    # and not on the per-target one, and the discriminator is sign agreement with
+    # TrackEval. Both halves of that claim are checked, including the 6.7 refusal.
+    for tag, csv, base, comp, pairs in (
+            ("6.8", f"{E}/kitti_causal_link_hom.csv", "v3_online", "planar2_homography",
+             (("car", 44, 40), ("pedestrian", 23, 29))),
+            ("6.7", f"{E}/kitti_causal_link.csv", "v4_global_oracle", "v4_per_target",
+             (("car", -48, 16),))):
+        dd = pd.read_csv(csv)
+        for cls, claimed_cnt, claimed_te in pairs:
+            g = dd[dd.cls == cls]
+            cnt = int(g.idsw_global.sum() - g.idsw_per.sum())
+            tev = int(te(base, cls)["IDSW"] - te(comp, cls)["IDSW"])
+            check(f"{tag} {cls} counter delta", claimed_cnt, cnt, 0.5)
+            check(f"{tag} {cls} TrackEval delta", claimed_te, tev, 0.5)
+            agree = cnt * tev > 0
+            if agree != (tag == "6.8"):
+                FAILS.append(f"CLAIM       {tag} {cls}: sign agreement is {agree}, "
+                             f"manuscript requires {tag == '6.8'}")
+            else:
+                globals()["OKS"] = OKS + 1
+
+
+def _caption_int(text: str, cls: str) -> int:
+    m = re.search(rf"\*{cls.capitalize()} \(([\d,]+) frames\)", text)
+    return int(m.group(1).replace(",", "")) if m else -1
+
+
+def _bci():
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("bci", f"{ROOT}/03_code/rac/bootstrap_ci.py")
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m
 
 
 UNCHECKED = [
@@ -688,13 +922,14 @@ def main() -> None:
 
     for fn in (check_scans, check_gate_flips, check_oracle_contrast,
                check_reference_warp, check_car_depth_noise, check_subset_search,
-               check_mot17_axis, check_kitti_axis if False else 
-               check_kitti_geometry, check_class_split, check_causal_link,
+               check_mot17_axis, check_kitti_geometry, check_class_split, check_causal_link,
                check_uavdt, check_strict_oracle, check_family_v2,
                check_runtime, check_mot20_oracle,
                check_permutation, check_depth_ratio_and_failures, check_ess_and_strata,
                check_placebo, check_provenance, check_manuscript_tables, check_manuscript_intervals,
-               check_homography_robustness):
+               check_homography_robustness, check_homography_intervals,
+               check_background_point_counts, check_reproduce_map,
+               check_estimator_convention, check_causal_link_homography):
         try:
             fn()
         except Exception as e:
