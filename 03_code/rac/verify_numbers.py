@@ -754,6 +754,27 @@ def check_reproduce_map():
         globals()["OKS"] = OKS + 1
 
 
+def check_release_doc_refs():
+    """No release document may point at a section the manuscript does not have.
+
+    DATA.md said the depth model was imported for 7.3 after 7.3 became a different
+    measurement; REPRODUCE.md had two of the same. A section reference in a
+    maintained document is exactly as checkable as a number.
+    """
+    heads = set(re.findall(r"^#{2,3} (\d+(?:\.\d+)?) ", open(MD).read(), re.M))
+    for rel in ("99_artifacts/RELEASE/DATA.md", "02_paper/REPRODUCE.md",
+                "99_artifacts/RELEASE/REPRODUCE.md"):
+        fp = f"{ROOT}/{rel}"
+        if not os.path.exists(fp):
+            FAILS.append(f"MISSING     {rel}")
+            continue
+        refs = set(re.findall(r"(?:\u00a7|Section )(\d+(?:\.\d+)?)", open(fp).read()))
+        for r in sorted(refs - heads):
+            FAILS.append(f"PROVENANCE  {rel} cites \u00a7{r}, which the manuscript does not have")
+        if not (refs - heads):
+            globals()["OKS"] = OKS + 1
+
+
 def check_background_point_counts():
     """7.3 -- the counts its structural argument rests on, from the family CSV."""
     d = pd.read_csv(f"{E}/kitti_global_family_v2.csv")
@@ -928,7 +949,7 @@ def main() -> None:
                check_permutation, check_depth_ratio_and_failures, check_ess_and_strata,
                check_placebo, check_provenance, check_manuscript_tables, check_manuscript_intervals,
                check_homography_robustness, check_homography_intervals,
-               check_background_point_counts, check_reproduce_map,
+               check_background_point_counts, check_reproduce_map, check_release_doc_refs,
                check_estimator_convention, check_causal_link_homography):
         try:
             fn()

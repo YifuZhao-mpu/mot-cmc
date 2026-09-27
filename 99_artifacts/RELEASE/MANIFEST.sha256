@@ -48,7 +48,7 @@ c49458fb30d2ad9001164f41740de7cc06ad3addec81fa9c93687c6ddea0b28c  03_code/rac/bu
 # code — paper build and verification  (4 files)
 8bae0c905e9b2877c778278f9d45dd9f296d01e69e2a978fe066a9e173672b12  03_code/rac/make_figures.py
 227a41e393a857b0368c29df7db698deabdee2eaf06ef940a5c2850ce43d57de  03_code/rac/build_latex.py
-fb209df87110b49950470cd1b0808c59ba522440cbdf42e445c6210850faedc0  03_code/rac/verify_numbers.py
+4c0cf788d58d15804accaf58685b8b7927dc80e9c1f579c1be323c2016b9abe3  03_code/rac/verify_numbers.py
 3ea8995ba22ee037bed93916cdf24393826e43394d7be7a69936eaf24578f3fe  03_code/rac/make_release.py
 
 # code — shell drivers  (4 files)
