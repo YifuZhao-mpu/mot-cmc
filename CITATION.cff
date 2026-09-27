@@ -1,0 +1,76 @@
+cff-version: 1.2.0
+message: "If you use this software or data, please cite the paper."
+title: "Camera-Motion Compensation Is Not the Bottleneck: measurement code and data"
+abstract: >-
+  Measurement code, frozen-detection manifests, per-sequence TrackEval output and
+  figures for the paper "Camera-Motion Compensation Is Not the Bottleneck: A
+  Measurement Study of Shared Warps in Tracking-by-Detection", including a script
+  that recomputes every number the paper prints from source.
+type: software
+license: MIT
+repository-code: "https://github.com/YifuZhao-mpu/mot-cmc"
+keywords:
+  - multi-object tracking
+  - camera motion compensation
+  - evaluation methodology
+  - benchmark analysis
+  - identity switches
+  - reproducibility
+authors:
+  - family-names: Zhao
+    given-names: Yifu
+    orcid: "https://orcid.org/0009-0004-2363-9269"
+    affiliation: "Faculty of Applied Sciences, Macao Polytechnic University"
+    email: p2523269@mpu.edu.mo
+  - family-names: Zou
+    given-names: Xiaofan
+    orcid: "https://orcid.org/0009-0005-5995-3150"
+    affiliation: "School of Mechanical and Electrical Engineering and Automation, Shanghai University"
+  - family-names: Wei
+    given-names: Junhao
+    orcid: "https://orcid.org/0009-0006-0553-2032"
+    affiliation: "Faculty of Applied Sciences, Macao Polytechnic University"
+  - family-names: Li
+    given-names: Yanxiao
+    orcid: "https://orcid.org/0009-0008-3389-1619"
+    affiliation: "Faculty of Applied Sciences, Macao Polytechnic University"
+  - family-names: Li
+    given-names: Haochen
+    orcid: "https://orcid.org/0009-0000-8213-5854"
+    affiliation: "Faculty of Applied Sciences, Macao Polytechnic University"
+  - family-names: Im
+    given-names: Sio-Kei
+    orcid: "https://orcid.org/0000-0002-5599-4300"
+    affiliation: "Macao Polytechnic University"
+  - family-names: Wang
+    given-names: Yapeng
+    orcid: "https://orcid.org/0000-0002-1085-5091"
+    affiliation: "Faculty of Applied Sciences, Macao Polytechnic University"
+    email: yapengwang@mpu.edu.mo
+  - family-names: Yang
+    given-names: Xu
+    orcid: "https://orcid.org/0000-0002-7037-3609"
+    affiliation: "Faculty of Applied Sciences, Macao Polytechnic University"
+preferred-citation:
+  type: article
+  title: "Camera-Motion Compensation Is Not the Bottleneck: A Measurement Study of Shared Warps in Tracking-by-Detection"
+  journal: "International Journal of Computer Vision"
+  year: 2026
+  status: submitted
+  authors:
+    - family-names: Zhao
+      given-names: Yifu
+    - family-names: Zou
+      given-names: Xiaofan
+    - family-names: Wei
+      given-names: Junhao
+    - family-names: Li
+      given-names: Yanxiao
+    - family-names: Li
+      given-names: Haochen
+    - family-names: Im
+      given-names: Sio-Kei
+    - family-names: Wang
+      given-names: Yapeng
+    - family-names: Yang
+      given-names: Xu

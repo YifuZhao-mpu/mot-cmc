@@ -1,0 +1,29 @@
+{
+  "upload_type": "software",
+  "title": "Camera-Motion Compensation Is Not the Bottleneck: measurement code and data",
+  "description": "<p>Measurement code, frozen detections manifests, per-sequence TrackEval output and figures for the paper <em>Camera-Motion Compensation Is Not the Bottleneck: A Measurement Study of Shared Warps in Tracking-by-Detection</em>.</p><p>The release includes <code>03_code/rac/verify_numbers.py</code>, which parses the manuscript's own tables and confidence intervals and recomputes every printed value from the released CSVs and TrackEval summaries, exiting non-zero on any mismatch. <code>99_artifacts/RELEASE/REPRODUCE.md</code> maps every table and figure in the paper to the command that regenerates it; <code>MANIFEST.sha256</code> hashes every released file.</p><p>Benchmark images (MOT17, MOT20, UAVDT, KITTI), model weights and the third-party tracker and depth-model source trees are <em>not</em> redistributed; <code>99_artifacts/RELEASE/DATA.md</code> records where to obtain each and the SHA-256 of every artefact that affects a number in the paper.</p><p>Code is MIT-licensed; the measurement data under <code>04_experiments/</code>, <code>05_figures/</code> and <code>99_artifacts/RELEASE/</code> is CC BY 4.0.</p>",
+  "license": "MIT",
+  "access_right": "open",
+  "creators": [
+    {"name": "Zhao, Yifu", "orcid": "0009-0004-2363-9269", "affiliation": "Faculty of Applied Sciences, Macao Polytechnic University, Macao, China"},
+    {"name": "Zou, Xiaofan", "orcid": "0009-0005-5995-3150", "affiliation": "School of Mechanical and Electrical Engineering and Automation, Shanghai University, Shanghai, China"},
+    {"name": "Wei, Junhao", "orcid": "0009-0006-0553-2032", "affiliation": "Faculty of Applied Sciences, Macao Polytechnic University, Macao, China"},
+    {"name": "Li, Yanxiao", "orcid": "0009-0008-3389-1619", "affiliation": "Faculty of Applied Sciences, Macao Polytechnic University, Macao, China"},
+    {"name": "Li, Haochen", "orcid": "0009-0000-8213-5854", "affiliation": "Faculty of Applied Sciences, Macao Polytechnic University, Macao, China"},
+    {"name": "Im, Sio-Kei", "orcid": "0000-0002-5599-4300", "affiliation": "Macao Polytechnic University, Macao, China"},
+    {"name": "Wang, Yapeng", "orcid": "0000-0002-1085-5091", "affiliation": "Faculty of Applied Sciences, Macao Polytechnic University, Macao, China"},
+    {"name": "Yang, Xu", "orcid": "0000-0002-7037-3609", "affiliation": "Faculty of Applied Sciences, Macao Polytechnic University, Macao, China"}
+  ],
+  "keywords": [
+    "multi-object tracking",
+    "camera motion compensation",
+    "evaluation methodology",
+    "benchmark analysis",
+    "identity switches",
+    "reproducibility",
+    "HOTA",
+    "MOT17",
+    "KITTI"
+  ],
+  "notes": "Supported by Macao Polytechnic University (RP/FCA-06/2026) and the Macao Science and Technology Development Fund (FDCT-MOST: 0018/2025/AMJ)."
+}
