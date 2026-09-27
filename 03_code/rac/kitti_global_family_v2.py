@@ -24,6 +24,9 @@ Writes 04_experiments/kitti_global_family_v2.csv
 """
 from __future__ import annotations
 
+import argparse
+import zlib
+
 import os
 from pathlib import Path as _P
 import sys
@@ -46,6 +49,12 @@ ROOT = p("04_experiments/data/KITTI/training")
 DEPTH = p("04_experiments/kitti_warps_depth")
 OUT = p("04_experiments/kitti_global_family_v2.csv")
 WOUT = p("04_experiments/kitti_warps_planar")
+# Depth-noise study for the homography arm. Its depth enters through the
+# back-projection of the background points, not through any per-object lookup,
+# so its sensitivity is a different function from the per-target arm's and had
+# to be measured rather than assumed.
+DEPTH_SIGMA = 0.0
+DEPTH_SEED = 0
 EVAL_CLASSES = ("Car", "Van", "Truck", "Pedestrian", "Cyclist")
 MOVING_M = 0.05
 MIN_OBJ = 3          # for the residual MEASUREMENT only -- it needs annotations
@@ -88,6 +97,9 @@ def background_points(w, h, boxes, depth, ds):
     iy = np.clip((p[:, 1] / ds).astype(int), 0, depth.shape[0] - 1)
     ix = np.clip((p[:, 0] / ds).astype(int), 0, depth.shape[1] - 1)
     z = depth[iy, ix].astype(np.float32)
+    if DEPTH_SIGMA > 0:
+        rng = np.random.default_rng(DEPTH_SEED * 1_000_003 + zlib.crc32(z.tobytes()))
+        z = z * np.exp(rng.normal(0.0, DEPTH_SIGMA, size=z.shape)).astype(np.float32)
     good = np.isfinite(z) & (z > 1.0) & (z < 120.0)
     return (p[good], z[good]) if good.sum() >= 12 else (None, None)
 
@@ -216,4 +228,15 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--depth-sigma", type=float, default=0.0)
+    ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--warp-out", default=None)
+    ap.add_argument("--csv-out", default=None)
+    a = ap.parse_args()
+    DEPTH_SIGMA, DEPTH_SEED = a.depth_sigma, a.seed
+    if a.warp_out:
+        WOUT = a.warp_out
+    if a.csv_out:
+        OUT = a.csv_out
     main()

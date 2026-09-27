@@ -1,0 +1,16 @@
+[00:40:32] sigma=0.05 -> dn005
+-> /tmp/claude-1003/-home-yifu/a9eaea1a-1c52-44c6-9f09-5ec9e1f0c87a/scratchpad/gf_dn005.csv
+[hom_dn005] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/hom_dn005/data
+[00:42:29] sigma=0.10 -> dn010
+-> /tmp/claude-1003/-home-yifu/a9eaea1a-1c52-44c6-9f09-5ec9e1f0c87a/scratchpad/gf_dn010.csv
+[hom_dn010] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/hom_dn010/data
+[00:44:49] sigma=0.20 -> dn020
+-> /tmp/claude-1003/-home-yifu/a9eaea1a-1c52-44c6-9f09-5ec9e1f0c87a/scratchpad/gf_dn020.csv
+[hom_dn020] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/hom_dn020/data
+[00:47:25] sigma=0.30 -> dn030
+-> /tmp/claude-1003/-home-yifu/a9eaea1a-1c52-44c6-9f09-5ec9e1f0c87a/scratchpad/gf_dn030.csv
+[hom_dn030] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/hom_dn030/data
+[00:50:10] sigma=0.50 -> dn050
+-> /tmp/claude-1003/-home-yifu/a9eaea1a-1c52-44c6-9f09-5ec9e1f0c87a/scratchpad/gf_dn050.csv
+[hom_dn050] -> /home/yifu/mot-cmc/04_experiments/trackers/KITTI/hom_dn050/data
+[00:53:10] DONE

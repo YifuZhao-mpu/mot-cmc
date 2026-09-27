@@ -648,6 +648,27 @@ def check_manuscript_intervals():
             check(f"{tag} hi", hi, ghi, tol)
 
 
+
+def check_homography_robustness():
+    """7.3 and 6.8 -- the two measurements the earlier draft declared missing."""
+    for sig, run, ped, car in ((0.05, "hom_dn005", 47.207, 66.407),
+                               (0.10, "hom_dn010", 46.947, 66.587),
+                               (0.20, "hom_dn020", 46.820, 66.479),
+                               (0.30, "hom_dn030", 46.807, 66.643),
+                               (0.50, "hom_dn050", 46.521, 66.538)):
+        check(f"7.3 hom sigma={sig} ped", ped, te(run, "pedestrian")["HOTA"], 5e-3)
+        check(f"7.3 hom sigma={sig} car", car, te(run, "car")["HOTA"], 5e-3)
+    d = pd.read_csv(f"{E}/kitti_causal_link_hom.csv")
+    for cls, tot_g, tot_p, q4 in (("car", 297, 253, 46), ("pedestrian", 291, 268, 20)):
+        g = d[d.cls == cls]
+        check(f"6.8 {cls} total global", tot_g, g.idsw_global.sum(), 0.5)
+        check(f"6.8 {cls} total hom", tot_p, g.idsw_per.sum(), 0.5)
+        q = pd.qcut(g.exposure, 4, labels=False, duplicates="drop")
+        sub = g[q == 3]
+        check(f"6.8 {cls} Q4 improvement", q4,
+              sub.idsw_global.sum() - sub.idsw_per.sum(), 0.5)
+
+
 UNCHECKED = [
     "3.1 bit-identity of the instrumented GMC -- asserted by instrumented_gmc.py itself",
     "4.3 confound stratification and placebo figures -- printed by confound_placebo.py",
@@ -672,7 +693,8 @@ def main() -> None:
                check_uavdt, check_strict_oracle, check_family_v2,
                check_runtime, check_mot20_oracle,
                check_permutation, check_depth_ratio_and_failures, check_ess_and_strata,
-               check_placebo, check_provenance, check_manuscript_tables, check_manuscript_intervals):
+               check_placebo, check_provenance, check_manuscript_tables, check_manuscript_intervals,
+               check_homography_robustness):
         try:
             fn()
         except Exception as e:

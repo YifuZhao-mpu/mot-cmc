@@ -156,9 +156,52 @@ def exposure_by_frame(seq: str, cls_filter) -> dict[int, float]:
     return out
 
 
+
+def exposure_homography(seq: str, cls_filter) -> dict[int, float]:
+    """Median disagreement (px) at box centres between the DEPLOYED estimator's
+    shared warp and the depth-aware global homography.
+
+    Section 6.7's original exposure statistic localises the per-target arm, which
+    Section 6.6 supersedes. This is the same idea aimed at the comparison the
+    paper actually recommends: how differently does the depth-aware homography
+    move this frame's targets, relative to the compensator the tracker ships?
+    If the homography's benefit comes from depth, the frames where the two warps
+    disagree most should be the frames where it removes identity switches.
+    """
+    Zp = np.load(f"{p('04_experiments/kitti_warps_planar')}/{seq}.npz")
+    hom, online = Zp["global_homography"], Zp["online"]
+    lab = load_labels(f"{ROOT}/label_02/{seq}.txt")
+    out = {}
+    for f, objs in lab.items():
+        if f >= len(hom):
+            continue
+        H = hom[f].reshape(3, 3)
+        O = online[f].reshape(2, 3)
+        vals = []
+        for o in objs:
+            if o["cls"] not in cls_filter:
+                continue
+            c = np.array([[(o["tlbr"][0] + o["tlbr"][2]) / 2,
+                           (o["tlbr"][1] + o["tlbr"][3]) / 2]])
+            q = np.concatenate([c, np.ones((1, 1))], 1) @ H.T
+            if not np.isfinite(q[0, 2]) or abs(q[0, 2]) < 1e-9:
+                continue
+            ph = q[:, :2] / q[:, 2:3]
+            po = (O[:, :2] @ c.T).T + O[:, 2]
+            vals.append(float(np.linalg.norm(ph - po)))
+        if vals:
+            out[f] = float(np.median(vals))
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--global-name", default="v3_global_oracle")
+    ap.add_argument("--out", default=None)
+    ap.add_argument("--exposure", default="per_target",
+                    choices=["per_target", "homography"],
+                    help="which contrast to localise: the superseded per-target arm, "
+                         "or the depth-aware homography against the deployed estimator")
     ap.add_argument("--per-name", default="v3_per_target")
     a = ap.parse_args()
 
@@ -177,22 +220,23 @@ def main():
                 continue
             sg = per_frame_idsw(ga, gt, cls_tr)
             sp = per_frame_idsw(pa, gt, cls_tr)
-            exp = exposure_by_frame(seq, cls_exp)   # exposure over the visually similar set
+            exp = (exposure_homography(seq, cls_exp) if a.exposure == "homography"
+                   else exposure_by_frame(seq, cls_exp))
             for f in sorted(set(sg) & set(sp) & set(exp)):
                 rows.append(dict(sequence=seq, cls=cname, frame=f,
                                  exposure=exp[f], idsw_global=sg[f], idsw_per=sp[f],
                                  improvement=sg[f] - sp[f], n_gt=len(gt[f][0])))
     d = pd.DataFrame(rows)
-    out = p("04_experiments/kitti_causal_link.csv")
+    out = a.out or p("04_experiments/kitti_causal_link.csv")
     d.to_csv(out, index=False)
 
     print("=== DA-CP2 C1: does per-target help MORE where the shared warp serves "
           "that class worse? ===\n")
     for cls, g in d.groupby("cls"):
-        r, p = spearmanr(g.exposure, g.improvement)
+        r, pval = spearmanr(g.exposure, g.improvement)
         print(f"--- {cls.upper()} --- n_frames {len(g)}  "
               f"total IDSW global {int(g.idsw_global.sum())} vs per-target {int(g.idsw_per.sum())}")
-        print(f"  spearman(exposure, improvement) = {r:+.4f}  p={p:.3e}")
+        print(f"  spearman(exposure, improvement) = {r:+.4f}  p={pval:.3e}")
         q = pd.qcut(g.exposure, 4, duplicates="drop")
         t = g.groupby(q, observed=True).agg(n=("frame", "size"),
                                             exp_med=("exposure", "median"),
