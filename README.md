@@ -32,8 +32,11 @@ mismatch:
 python 03_code/rac/verify_numbers.py
 ```
 
-It checks **526 values** and **33 provenance properties** — which run feeds which table, and whether
-any configuration is silently switched off. The provenance checks exist because the two most serious
+It checks **693 values and provenance properties**. Every cell of every table and every confidence
+interval is parsed out of the manuscript itself and recomputed, so the paper cannot drift from its
+own evidence; the provenance checks cover which run feeds which table, whether any configuration is
+silently switched off, and whether the reproduction page still maps every table and names only
+commands that exist. The provenance checks exist because the two most serious
 defects found in review were of that kind: a warp bundle that was the identity on 36 % of moving
 frames, and an oracle configuration that reverted to the online estimate on 18 % of the hardest
 sequence. A value-only checker passed both.
