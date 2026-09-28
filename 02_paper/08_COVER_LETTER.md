@@ -64,7 +64,7 @@ tried to write the paper so that a reader can tell the two apart.
 
 Yours sincerely,
 
-Yifu Zhao, Xiaofan Zou, Junhao Wei, Yanxiao Li, Sio-Kei Im, Yapeng Wang and Xu Yang
+Yifu Zhao, Xiaofan Zou, Yanxiao Li, Junhao Wei, Sio-Kei Im, Yapeng Wang and Xu Yang
 
 On behalf of all authors — **Yapeng Wang** (corresponding), Faculty of Applied Sciences,
 Macao Polytechnic University, Macao 999078, China · yapengwang@mpu.edu.mo

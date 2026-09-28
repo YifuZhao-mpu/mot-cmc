@@ -380,7 +380,9 @@ the author list. Propagated to the manuscript byline, the ORCID table, the CRedi
 metadata record and the checklist. Rebuilt: 31 pages, 7 `\author` entries, 0 occurrences of the
 removed name in the generated LaTeX; verifier 693/693, manifest 301 files / 0 problems.
 
-One discrepancy recorded rather than silently resolved: the supplied CRediT table lists **Yanxiao Li
-before Junhao Wei**, while the author order confirmed on 2026-09-27 has **Wei first**. The explicit
-ordering confirmation was taken to govern, and the conflict is flagged in `CHECKLIST.md` and
-`ORCID_AND_METADATA.md` so it gets one look before upload. It is reversible until the DOI is minted.
+The discrepancy that was flagged rather than silently resolved — the supplied CRediT table put
+**Yanxiao Li before Junhao Wei**, the 2026-09-27 e-mail list put Wei first — was resolved the same
+day in favour of the CRediT table, on the authors' instruction. **Final author list: Zhao, Zou,
+Li (Yanxiao), Wei, Im, Wang, Yang.** Propagated to the same nine places; rebuilt to 31 pages with the
+seven `\author` entries in that order, verifier 693/693, manifest 301 files. Nothing about the author
+metadata is outstanding.

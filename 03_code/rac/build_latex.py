@@ -59,8 +59,8 @@ FIGURES = [
 _A = [
     ("Yifu",     "Zhao", 1, "0009-0004-2363-9269", "p2523269@mpu.edu.mo", False),
     ("Xiaofan",  "Zou",  2, "0009-0005-5995-3150", "xiaofanz@shu.edu.cn",  False),
-    ("Junhao",   "Wei",  1, "0009-0006-0553-2032", "p2312195@mpu.edu.mo",  False),
     ("Yanxiao",  "Li",   1, "0009-0008-3389-1619", "p2525981@mpu.edu.mo",  False),
+    ("Junhao",   "Wei",  1, "0009-0006-0553-2032", "p2312195@mpu.edu.mo",  False),
     ("Sio-Kei",  "Im",   3, "0000-0002-5599-4300", "marcusim@mpu.edu.mo",  False),
     ("Yapeng",   "Wang", 1, "0000-0002-1085-5091", "yapengwang@mpu.edu.mo", True),
     ("Xu",       "Yang", 1, "0000-0002-7037-3609", "xuyang@mpu.edu.mo",    False),

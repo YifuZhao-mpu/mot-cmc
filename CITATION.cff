@@ -26,13 +26,13 @@ authors:
     given-names: Xiaofan
     orcid: "https://orcid.org/0009-0005-5995-3150"
     affiliation: "School of Mechanical and Electrical Engineering and Automation, Shanghai University"
-  - family-names: Wei
-    given-names: Junhao
-    orcid: "https://orcid.org/0009-0006-0553-2032"
-    affiliation: "Faculty of Applied Sciences, Macao Polytechnic University"
   - family-names: Li
     given-names: Yanxiao
     orcid: "https://orcid.org/0009-0008-3389-1619"
+    affiliation: "Faculty of Applied Sciences, Macao Polytechnic University"
+  - family-names: Wei
+    given-names: Junhao
+    orcid: "https://orcid.org/0009-0006-0553-2032"
     affiliation: "Faculty of Applied Sciences, Macao Polytechnic University"
   - family-names: Im
     given-names: Sio-Kei
@@ -58,10 +58,10 @@ preferred-citation:
       given-names: Yifu
     - family-names: Zou
       given-names: Xiaofan
-    - family-names: Wei
-      given-names: Junhao
     - family-names: Li
       given-names: Yanxiao
+    - family-names: Wei
+      given-names: Junhao
     - family-names: Im
       given-names: Sio-Kei
     - family-names: Wang
