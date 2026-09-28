@@ -24,6 +24,12 @@ __pycache__/
 
 # ---- large intermediates, regenerable from the scripts ---------------------
 04_experiments/kitti_warps*/
+# ...except the two bundles the provenance checks in verify_numbers.py read.
+# 2.5 MB each, and without them a fresh clone cannot run its own verifier.
+!04_experiments/kitti_warps_planar/
+!04_experiments/kitti_warps_planar/*.npz
+!04_experiments/kitti_warps_v4/
+!04_experiments/kitti_warps_v4/*.npz
 04_experiments/ref_warps*/
 04_experiments/detections/*/*.npz
 04_experiments/eval/

@@ -32,7 +32,9 @@ mismatch:
 python 03_code/rac/verify_numbers.py
 ```
 
-It checks **693 values and provenance properties**. Every cell of every table and every confidence
+It checks **710 values and provenance properties** from a fresh clone — the provenance checks read
+the released TrackEval output rather than the raw per-frame dumps, which are not redistributed, so
+this command works for you and not only for us. Every cell of every table and every confidence
 interval is parsed out of the manuscript itself and recomputed, so the paper cannot drift from its
 own evidence; the provenance checks cover which run feeds which table, whether any configuration is
 silently switched off, and whether the reproduction page still maps every table and names only

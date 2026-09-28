@@ -386,3 +386,19 @@ day in favour of the CRediT table, on the authors' instruction. **Final author l
 Li (Yanxiao), Wei, Im, Wang, Yang.** Propagated to the same nine places; rebuilt to 31 pages with the
 seven `\author` entries in that order, verifier 693/693, manifest 301 files. Nothing about the author
 metadata is outstanding.
+
+## One-folder handover, and a release defect it exposed (2026-09-28)
+
+Asked to gather the project into one folder. The repository is already one folder but is 67 GB, of
+which 64 GB is benchmark imagery that is not ours to redistribute, so the deliverable is everything
+the project itself produced: **524 files, 63 MB**, in the canonical layout, since `paths.py` and the
+manifest resolve against it. Built by `03_code/rac/make_bundle.py`, which refuses to finish unless
+both checkers pass *inside* the folder, so a bundle that exists is a bundle that verified.
+
+| F# | Finding |
+|---|---|
+| F66 | **The public repository could not pass its own verifier.** Running `verify_numbers.py` in a clean copy gave **12 problems**: nine provenance checks read the raw per-frame tracker dumps under `trackers/*/*/data/` and two read warp bundles, all of which `.gitignore` excludes as large and regenerable. The README's claim that one command recomputes the paper's numbers and exits non-zero on any mismatch was therefore false for anyone who cloned it — it exited non-zero for twelve reasons that had nothing to do with the paper. Fixed at the root: the run-coverage checks now count sequence rows in TrackEval's released `<class>_detailed.csv` instead of the unreleased dumps, which answers the same question ("did this run cover all 21 sequences, or was a table sourced from a partial run") from the release, and additionally check the raw file count when the dumps happen to be present. The two warp bundles the coverage checks need are 2.5 MB each and are now released and hashed (manifest 301 → 343 files). A fresh copy now passes. |
+| F67 | **Every count in the Data and Code Availability statement was stale.** It said 21 result CSVs when there were 22, and 61 tracker runs (44 KITTI, 15 MOT17) when there were 63 (47, 14, 2) — the growth came from this project's own later experiments, and the MOT17 figure had counted a determinism replica that has no TrackEval output. Corrected, and `check_availability_counts` now recomputes all seven figures from the tree. It immediately earned its keep: adding `make_bundle.py` moved the script count 42 → 43 and the check caught it on the next run. |
+
+**Verifier**: 693 → **710** checks, 0 problems. In a bundle without the raw dumps it is 700, because
+the ten optional raw-dump checks correctly do not run rather than failing.

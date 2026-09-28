@@ -66,6 +66,11 @@ GROUPS = {
     "detection manifests": None,       # filled from detections/**/manifest.json
     "tracker output (TrackEval summaries)": None,
     "figures": None,
+    # The two warp bundles the provenance checks read. Released so that a fresh
+    # clone can run verify_numbers.py; the other bundles are regenerable and large.
+    "warp bundles read by the provenance checks": sorted(
+        f"04_experiments/{d}/{i:04d}.npz"
+        for d in ("kitti_warps_planar", "kitti_warps_v4") for i in range(21)),
     "manuscript": ["02_paper/manuscript.md", "02_paper/latex/manuscript.tex",
                    "02_paper/REPRODUCE.md", "02_paper/supplementary.md"],
 }

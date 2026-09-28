@@ -355,6 +355,19 @@ def check_placebo() -> None:
             check(f"{lbl} {name}", v, g, 5e-4)
 
 
+def _seq_rows(run_dir: str, cls: str) -> float:
+    """Sequences covered by a run, from TrackEval's per-sequence CSV.
+
+    TrackEval writes one row per sequence plus a COMBINED row; the COMBINED row is
+    not a sequence and is not counted.
+    """
+    fp = f"{run_dir}/{cls}_detailed.csv"
+    if not os.path.exists(fp):
+        return float("nan")
+    d = pd.read_csv(fp)
+    return float((d.seq.astype(str) != "COMBINED").sum())
+
+
 def check_provenance() -> None:
     """The two Critical defects found in review were PROVENANCE, not value: a warp
     bundle that was the identity on a third of moving frames, and a table sourced
@@ -380,25 +393,30 @@ def check_provenance() -> None:
             check(f"prov {bundle}/{key} identity frames <= {max_ident}", 1.0,
                   1.0 if ident <= max_ident else 0.0, 0.5)
 
-    # 2. every run named in a table exists and was produced by the stated mode
-    for run, mode in (("v3_online", "online"), ("v4_global_oracle", "global_oracle"),
-                      ("planar2_homography", "global_homography"),
-                      ("planar2_homography_foot", "global_homography_foot"),
-                      ("v4_per_target", "per_target"),
-                      ("anch_ped", "global_anchored_ped"),
-                      ("anch_car", "global_anchored_car"),
-                      ("placebo_shuffled", "per_target_shuffled")):
+    # 2. every run named in a table exists and covers every sequence.
+    #
+    # This reads the per-sequence TrackEval output, which IS released, rather than
+    # the raw per-frame dumps under data/, which are not: at 265 MB they are
+    # regenerable from the scripts, and a check that only a full re-run can
+    # satisfy is a check nobody downstream can run. Counting sequence rows in
+    # <class>_detailed.csv answers the same question -- did this run cover all 21
+    # sequences, or was a table sourced from a partial run -- from the release.
+    # When the raw dumps are present the file count is checked as well.
+    for run in ("v3_online", "v4_global_oracle", "planar2_homography",
+                "planar2_homography_foot", "v4_per_target", "anch_ped",
+                "anch_car", "placebo_shuffled"):
+        check(f"prov run {run} sequences", 21, _seq_rows(f"{TR}/KITTI/{run}", "car"), 0.5)
         d = f"{TR}/KITTI/{run}/data"
-        if not os.path.isdir(d) or len(os.listdir(d)) != 21:
-            FAILS.append(f"PROVENANCE  {run}: expected 21 sequence files in {d}")
-        else:
-            check(f"prov run {run} sequences", 21, len(os.listdir(d)), 0.5)
+        if os.path.isdir(d):
+            check(f"prov run {run} raw dumps", 21, len(os.listdir(d)), 0.5)
 
     # 3. MOT17 oracle rows must come from the STRICT runs, not the hybrid ones
     for run in ("N2S_oracle_strict", "R_oracle_strict"):
-        d = f"{TR}/MOT17-val-half/{run}/data"
         check(f"prov strict run {run}", 7,
-              len(os.listdir(d)) if os.path.isdir(d) else 0, 0.5)
+              _seq_rows(f"{TR}/MOT17-val-half/{run}", "pedestrian"), 0.5)
+        d = f"{TR}/MOT17-val-half/{run}/data"
+        if os.path.isdir(d):
+            check(f"prov strict run {run} raw dumps", 7, len(os.listdir(d)), 0.5)
 
     # 4. the per-target configuration's ground-truth fallback rate, as disclosed
     tot = per = 0
@@ -754,6 +772,40 @@ def check_reproduce_map():
         globals()["OKS"] = OKS + 1
 
 
+def check_availability_counts():
+    """Every count the Data and Code Availability statement gives, from the tree.
+
+    These had gone stale: the statement said 21 CSVs and 61 runs after the number
+    had become 22 and 63. A count in a paper is a measurement like any other.
+    """
+    import glob
+    text = open(MD).read()
+    i = text.index("## Data and Code Availability")
+    seg = text[i:text.index("## Ethics", i)]
+    m = re.search(r"(\d+) analysis scripts and (\d+) shell drivers, (\d+) result CSVs", seg)
+    if not m:
+        FAILS.append("PARSE       availability counts not found")
+        return
+    check("avail analysis scripts", float(m.group(1)),
+          len(glob.glob(f"{ROOT}/03_code/rac/*.py")), 0.5)
+    check("avail shell drivers", float(m.group(2)),
+          len(glob.glob(f"{ROOT}/03_code/rac/*.sh")), 0.5)
+    check("avail result CSVs", float(m.group(3)), len(glob.glob(f"{E}/*.csv")), 0.5)
+    m = re.search(r"all (\d+) evaluated tracker runs \((\d+) on KITTI, (\d+) on MOT17, "
+                  r"(\d+) on UAVDT\)", seg)
+    if not m:
+        FAILS.append("PARSE       availability run counts not found")
+        return
+    def n_runs(bench):
+        return len({os.path.dirname(f) for f in
+                    glob.glob(f"{TR}/{bench}/**/*_summary.txt", recursive=True)})
+    k, mo, u = n_runs("KITTI"), n_runs("MOT17-val-half"), n_runs("UAVDT")
+    check("avail KITTI runs", float(m.group(2)), k, 0.5)
+    check("avail MOT17 runs", float(m.group(3)), mo, 0.5)
+    check("avail UAVDT runs", float(m.group(4)), u, 0.5)
+    check("avail total runs", float(m.group(1)), k + mo + u, 0.5)
+
+
 def check_release_doc_refs():
     """No release document may point at a section the manuscript does not have.
 
@@ -949,7 +1001,7 @@ def main() -> None:
                check_permutation, check_depth_ratio_and_failures, check_ess_and_strata,
                check_placebo, check_provenance, check_manuscript_tables, check_manuscript_intervals,
                check_homography_robustness, check_homography_intervals,
-               check_background_point_counts, check_reproduce_map, check_release_doc_refs,
+               check_background_point_counts, check_reproduce_map, check_release_doc_refs, check_availability_counts,
                check_estimator_convention, check_causal_link_homography):
         try:
             fn()

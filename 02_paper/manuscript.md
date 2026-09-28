@@ -898,7 +898,7 @@ Two lessons, one narrow and one not. The narrow one: if you compensate camera mo
 
 ## Data and Code Availability
 
-All measurement code and all measurement data are released: 40 analysis scripts and 4 shell drivers, 21 result CSVs, the frozen detection manifests with per-file SHA-256, TrackEval output for all 61 tracker runs (44 on KITTI, 15 on MOT17, 2 on UAVDT), the script that regenerates every figure from those CSVs, the script that builds the submission LaTeX from the Markdown source, and `verify_numbers.py`, which recomputes the paper's numbers from source and exits non-zero on any mismatch. Repository: [URL, to be replaced by an archived DOI at submission]. The benchmarks themselves (MOT17, MOT20, UAVDT, KITTI) are public and are not redistributed; the artefacts each result depends on, and the SHA-256 of those whose identity affects a number, are listed in the release.
+All measurement code and all measurement data are released: 43 analysis scripts and 4 shell drivers, 22 result CSVs, the frozen detection manifests with per-file SHA-256, TrackEval output for all 63 evaluated tracker runs (47 on KITTI, 14 on MOT17, 2 on UAVDT), the script that regenerates every figure from those CSVs, the script that builds the submission LaTeX from the Markdown source, and `verify_numbers.py`, which recomputes the paper's numbers from source and exits non-zero on any mismatch. Repository: [URL, to be replaced by an archived DOI at submission]. The benchmarks themselves (MOT17, MOT20, UAVDT, KITTI) are public and are not redistributed; the artefacts each result depends on, and the SHA-256 of those whose identity affects a number, are listed in the release.
 
 ## Ethics Statement
 
