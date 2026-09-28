@@ -370,3 +370,17 @@ check that passes first time is indistinguishable from one that is not running. 
 Chinese abstract corrected (it still conflated the two homography configurations — +1.19 at box
 centres with 85 identity switches at the contact point — the defect the English abstract had already
 had fixed) and extended with the coarse-depth and localisation results.
+
+## Author list settled (2026-09-28)
+
+CRediT contributions were supplied for **seven** authors; Haochen Li had no role. Assigning one on
+that author's behalf was not an option, so on the authors' instruction Haochen Li was removed from
+the author list. Propagated to the manuscript byline, the ORCID table, the CRediT statement,
+`build_latex.py`'s author block, `.zenodo.json`, `CITATION.cff`, the cover letter, the submission
+metadata record and the checklist. Rebuilt: 31 pages, 7 `\author` entries, 0 occurrences of the
+removed name in the generated LaTeX; verifier 693/693, manifest 301 files / 0 problems.
+
+One discrepancy recorded rather than silently resolved: the supplied CRediT table lists **Yanxiao Li
+before Junhao Wei**, while the author order confirmed on 2026-09-27 has **Wei first**. The explicit
+ordering confirmation was taken to govern, and the conflict is flagged in `CHECKLIST.md` and
+`ORCID_AND_METADATA.md` so it gets one look before upload. It is reversible until the DOI is minted.

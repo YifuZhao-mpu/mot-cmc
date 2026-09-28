@@ -1,6 +1,6 @@
 # Camera-Motion Compensation Is Not the Bottleneck: A Measurement Study of Shared Warps in Tracking-by-Detection
 
-**Yifu Zhao**^1^ · **Xiaofan Zou**^2^ · **Junhao Wei**^1^ · **Yanxiao Li**^1^ · **Haochen Li**^1^ · **Sio-Kei Im**^3^ · **Yapeng Wang**^1,\*^ · **Xu Yang**^1^
+**Yifu Zhao**^1^ · **Xiaofan Zou**^2^ · **Junhao Wei**^1^ · **Yanxiao Li**^1^ · **Sio-Kei Im**^3^ · **Yapeng Wang**^1,\*^ · **Xu Yang**^1^
 
 ^1^ Faculty of Applied Sciences, Macao Polytechnic University, Macao 999078, China
 ^2^ School of Mechanical and Electrical Engineering and Automation, Shanghai University, Shanghai 200444, China
@@ -14,7 +14,6 @@
 | Xiaofan Zou | 0009-0005-5995-3150 | xiaofanz@shu.edu.cn |
 | Junhao Wei | 0009-0006-0553-2032 | p2312195@mpu.edu.mo |
 | Yanxiao Li | 0009-0008-3389-1619 | p2525981@mpu.edu.mo |
-| Haochen Li | 0009-0000-8213-5854 | p2523372@mpu.edu.mo |
 | Sio-Kei Im | 0000-0002-5599-4300 | marcusim@mpu.edu.mo |
 | Yapeng Wang | 0000-0002-1085-5091 | yapengwang@mpu.edu.mo |
 | Xu Yang | 0000-0002-7037-3609 | xuyang@mpu.edu.mo |
@@ -915,9 +914,9 @@ A large language model (Anthropic Claude) was used throughout this work as a res
 
 ## CRediT Author Statement
 
-**Yifu Zhao**: [roles]. **Xiaofan Zou**: [roles]. **Junhao Wei**: [roles]. **Yanxiao Li**: [roles]. **Haochen Li**: [roles]. **Sio-Kei Im**: [roles]. **Yapeng Wang**: [roles]. **Xu Yang**: [roles]. All authors read and approved the final manuscript.
+**Yifu Zhao**: Conceptualization, Methodology, Software, Validation, Formal analysis, Investigation, Data curation, Visualization, Writing — original draft. **Xiaofan Zou**: Methodology, Validation, Writing — review & editing. **Junhao Wei**: Investigation, Data curation, Writing — review & editing. **Yanxiao Li**: Investigation, Validation, Visualization. **Sio-Kei Im**: Resources, Funding acquisition, Supervision. **Yapeng Wang**: Conceptualization, Supervision, Project administration, Funding acquisition, Writing — review & editing. **Xu Yang**: Methodology, Supervision, Writing — review & editing. All authors read and approved the final manuscript.
 
-*To be completed by the authors before submission. The contribution taxonomy is CRediT (Conceptualization, Methodology, Software, Validation, Formal analysis, Investigation, Resources, Data curation, Writing — original draft, Writing — review & editing, Visualization, Supervision, Project administration, Funding acquisition). We have not assigned roles on the authors' behalf.*
+*The contribution taxonomy is CRediT (Conceptualization, Methodology, Software, Validation, Formal analysis, Investigation, Resources, Data curation, Writing — original draft, Writing — review & editing, Visualization, Supervision, Project administration, Funding acquisition). All listed authors' roles are stated above.*
 
 ## Funding
 

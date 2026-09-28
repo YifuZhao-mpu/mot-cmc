@@ -47,7 +47,7 @@ c49458fb30d2ad9001164f41740de7cc06ad3addec81fa9c93687c6ddea0b28c  03_code/rac/bu
 
 # code — paper build and verification  (4 files)
 8bae0c905e9b2877c778278f9d45dd9f296d01e69e2a978fe066a9e173672b12  03_code/rac/make_figures.py
-227a41e393a857b0368c29df7db698deabdee2eaf06ef940a5c2850ce43d57de  03_code/rac/build_latex.py
+16a485f28d4366bff976a0540a0abe23957644643943b3d230a6f9df6c861d47  03_code/rac/build_latex.py
 4c0cf788d58d15804accaf58685b8b7927dc80e9c1f579c1be323c2016b9abe3  03_code/rac/verify_numbers.py
 3ea8995ba22ee037bed93916cdf24393826e43394d7be7a69936eaf24578f3fe  03_code/rac/make_release.py
 
@@ -318,7 +318,7 @@ a2733ffdf2e0663352349f4edfbc6699cef13b9a5a30b288b0261091d5d4401f  05_figures/F3_
 39adc3eabf9cca842d1e068a195fea34c6d535551db195f436f203242dabcd82  05_figures/F8_signal_selection.pdf
 
 # manuscript  (4 files)
-6db2fc73297ff79f537a502396fc532565db688dede308e1ce900a148121dae3  02_paper/manuscript.md
-934c40d4ffc70e6a5c267f27d61550b2b71a1ff203b3cb3571e2b17d67eefb2c  02_paper/latex/manuscript.tex
+86f556f6e0aa8f3b2db2aca3795b07f1f38dd64d5bbaff4e802ce3c92cbdb8fa  02_paper/manuscript.md
+8489b4c03a2950a0ebf2728b57910e36e4da869372e2034b3ea888aff338e086  02_paper/latex/manuscript.tex
 dba7999155279035f451263d3317ac15e0ee8724dac82e5791584a1162c6513f  02_paper/REPRODUCE.md
 d64a7377a4cca42698cf58fb47ceaf0ff7914919a229c4dfc9193e27b0db1a9e  02_paper/supplementary.md

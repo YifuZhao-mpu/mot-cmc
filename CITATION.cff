@@ -34,10 +34,6 @@ authors:
     given-names: Yanxiao
     orcid: "https://orcid.org/0009-0008-3389-1619"
     affiliation: "Faculty of Applied Sciences, Macao Polytechnic University"
-  - family-names: Li
-    given-names: Haochen
-    orcid: "https://orcid.org/0009-0000-8213-5854"
-    affiliation: "Faculty of Applied Sciences, Macao Polytechnic University"
   - family-names: Im
     given-names: Sio-Kei
     orcid: "https://orcid.org/0000-0002-5599-4300"
@@ -66,8 +62,6 @@ preferred-citation:
       given-names: Junhao
     - family-names: Li
       given-names: Yanxiao
-    - family-names: Li
-      given-names: Haochen
     - family-names: Im
       given-names: Sio-Kei
     - family-names: Wang

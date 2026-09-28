@@ -5,14 +5,41 @@
   "license": "MIT",
   "access_right": "open",
   "creators": [
-    {"name": "Zhao, Yifu", "orcid": "0009-0004-2363-9269", "affiliation": "Faculty of Applied Sciences, Macao Polytechnic University, Macao, China"},
-    {"name": "Zou, Xiaofan", "orcid": "0009-0005-5995-3150", "affiliation": "School of Mechanical and Electrical Engineering and Automation, Shanghai University, Shanghai, China"},
-    {"name": "Wei, Junhao", "orcid": "0009-0006-0553-2032", "affiliation": "Faculty of Applied Sciences, Macao Polytechnic University, Macao, China"},
-    {"name": "Li, Yanxiao", "orcid": "0009-0008-3389-1619", "affiliation": "Faculty of Applied Sciences, Macao Polytechnic University, Macao, China"},
-    {"name": "Li, Haochen", "orcid": "0009-0000-8213-5854", "affiliation": "Faculty of Applied Sciences, Macao Polytechnic University, Macao, China"},
-    {"name": "Im, Sio-Kei", "orcid": "0000-0002-5599-4300", "affiliation": "Macao Polytechnic University, Macao, China"},
-    {"name": "Wang, Yapeng", "orcid": "0000-0002-1085-5091", "affiliation": "Faculty of Applied Sciences, Macao Polytechnic University, Macao, China"},
-    {"name": "Yang, Xu", "orcid": "0000-0002-7037-3609", "affiliation": "Faculty of Applied Sciences, Macao Polytechnic University, Macao, China"}
+    {
+      "name": "Zhao, Yifu",
+      "orcid": "0009-0004-2363-9269",
+      "affiliation": "Faculty of Applied Sciences, Macao Polytechnic University, Macao, China"
+    },
+    {
+      "name": "Zou, Xiaofan",
+      "orcid": "0009-0005-5995-3150",
+      "affiliation": "School of Mechanical and Electrical Engineering and Automation, Shanghai University, Shanghai, China"
+    },
+    {
+      "name": "Wei, Junhao",
+      "orcid": "0009-0006-0553-2032",
+      "affiliation": "Faculty of Applied Sciences, Macao Polytechnic University, Macao, China"
+    },
+    {
+      "name": "Li, Yanxiao",
+      "orcid": "0009-0008-3389-1619",
+      "affiliation": "Faculty of Applied Sciences, Macao Polytechnic University, Macao, China"
+    },
+    {
+      "name": "Im, Sio-Kei",
+      "orcid": "0000-0002-5599-4300",
+      "affiliation": "Macao Polytechnic University, Macao, China"
+    },
+    {
+      "name": "Wang, Yapeng",
+      "orcid": "0000-0002-1085-5091",
+      "affiliation": "Faculty of Applied Sciences, Macao Polytechnic University, Macao, China"
+    },
+    {
+      "name": "Yang, Xu",
+      "orcid": "0000-0002-7037-3609",
+      "affiliation": "Faculty of Applied Sciences, Macao Polytechnic University, Macao, China"
+    }
   ],
   "keywords": [
     "multi-object tracking",
