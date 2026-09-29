@@ -93,6 +93,7 @@ PREAMBLE = r"""\documentclass[sn-basic,iicol]{sn-jnl}
 \usepackage[T1]{fontenc}
 \usepackage{longtable}
 \usepackage{array}
+\usepackage{tabularx}
 % Float placement. With LaTeX's defaults (topnumber 2, totalnumber 3,
 % topfraction 0.7) and 28 full-width table floats competing for page tops, every
 % one of the eight figures was deferred to the last two pages of the paper.
@@ -182,8 +183,8 @@ CAPTION_PARA = re.compile(r"\n\\textbf\{Table (\d+)\}\s*(.*?)\n\s*\n", re.S)
 
 PT_PER_CHAR = 4.5   # \footnotesize, calibrated from the compiler's overfull reports
 TABCOLSEP_PT = 4.0  # tightened from the 6 pt default for these data tables
-COL_PT = 230.0      # one column, with a little margin
-FULL_PT = 480.0     # both columns, with a little margin
+COL_PT = 216.0      # \columnwidth, measured, not assumed      # one column, with a little margin
+FULL_PT = 455.0     # \textwidth, measured     # both columns, with a little margin
 
 
 def _col_chars(inner: str, ncol: int) -> list[int]:
@@ -203,13 +204,16 @@ def _col_chars(inner: str, ncol: int) -> list[int]:
     return w
 
 
-def _fit(inner: str, ncol: int) -> tuple[str, str]:
-    """Choose the float environment and column specification for a table.
+def _fit(inner: str, ncol: int) -> tuple[str, str, str]:
+    """Choose the float environment and the tabular for a table.
 
-    Returns (environment, column spec). A table that fits one column stays in one;
-    one that fits the full width spans both; one that fits neither spans both and
-    gives its widest column the leftover space as a wrapping p-column, so the text
-    breaks instead of the page.
+    Returns (float environment, tabular opening, tabular closing). A table that
+    fits one column stays in one. One that does not spans both columns as a
+    `tabular*` set to \textwidth, so that \extracolsep distributes the slack
+    between its columns: measured, these tables occupy 44 to 89 % of the width, so
+    left as plain tabulars they stranded up to half the block empty. A table too
+    wide even for that gives its widest column the leftover space as a wrapping
+    p-column, so the text breaks instead of the page.
     """
     w = _col_chars(inner, ncol)
     # \tabcolsep is inserted on both sides of every column and is not free: at
@@ -217,17 +221,23 @@ def _fit(inner: str, ncol: int) -> tuple[str, str]:
     # column. Ignoring it is what put a 37-character table past its column by 120.
     total = sum(w) * PT_PER_CHAR + 2 * TABCOLSEP_PT * ncol
     if total <= COL_PT:
-        return "table", "@{}" + "l" * ncol + "@{}"
+        return ("table", "\\begin{tabular}{@{}" + "l" * ncol + "@{}}",
+                "\\end{tabular}")
     if total <= FULL_PT:
-        return "table*", "@{}" + "l" * ncol + "@{}"
+        return ("table*",
+                "\\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}}"
+                + "l" * ncol + "@{}}",
+                "\\end{tabular*}")
+    # Too wide even for the full block: the widest column wraps and absorbs
+    # whatever the others leave. tabularx computes that width from LaTeX's own
+    # measurement of the other columns; estimating it here from character counts
+    # left the column too narrow and the text collapsed into a ragged tower.
     j = max(range(ncol), key=lambda i: w[i])
-    # what is left for the wrapping column once the other columns and every
-    # column separator have taken their share
-    others = (sum(w) - w[j]) * PT_PER_CHAR + 2 * TABCOLSEP_PT * ncol
     cols = ["l"] * ncol
-    cols[j] = (r">{\raggedright\arraybackslash}p{\dimexpr 0.98\textwidth - "
-               rf"{others:.0f}pt\relax}}")
-    return "table*", "@{}" + "".join(cols) + "@{}"
+    cols[j] = r">{\raggedright\arraybackslash}X"
+    return ("table*",
+            "\\begin{tabularx}{\\textwidth}{@{}" + "".join(cols) + "@{}}",
+            "\\end{tabularx}")
 
 
 def _aspect(pdf: str) -> float:
@@ -265,6 +275,65 @@ def place_figures(body: str, blocks: list[str]) -> str:
     return out
 
 
+# pandoc wraps each table in "{\def\LTcaptype{none} ... }", so consecutive
+# panels are separated by a stray closing brace and that group's opening line.
+LTCAP = r"(?:\{\\def\\LTcaptype\{none\}[^\n]*\n)?"
+EMPH_PARA = re.compile(r"\A\s*\}?\s*\\emph\{([^{}]{1,40})\}\s*\n\s*\n\s*" + LTCAP)
+
+
+def _clean_panel(inner: str) -> str:
+    """Strip pandoc's longtable machinery and its per-cell minipages."""
+    for junk in (r"\\endfirsthead", r"\\endhead", r"\\endlastfoot", r"\\endfoot"):
+        inner = re.sub(junk, "", inner)
+    inner = re.sub(r"\\noalign\{\}", "", inner)
+    # pandoc wraps every header cell in a minipage of \linewidth. Inside a
+    # tabular, \linewidth is the width of the enclosing column or page, not of the
+    # cell, so an n-column header is set n times too wide -- up to 3,271 pt past a
+    # 216 pt column before this was removed. The cells are short labels; they want
+    # to be plain text.
+    inner = re.sub(r"\\begin\{minipage\}\[[a-z]\]\{[^}]*\}"
+                   r"(?:\\raggedright|\\raggedleft|\\centering)?\s*", "", inner)
+    inner = re.sub(r"\s*\\end\{minipage\}", "", inner)
+    # pandoc repeats the header block for \endfirsthead and \endhead; keep one
+    parts = inner.split("\\midrule")
+    if len(parts) > 2:
+        inner = parts[0] + "\\midrule" + parts[-1]
+    return re.sub(r"\n{3,}", "\n\n", inner).strip()
+
+
+def _panel_label(out: list) -> str:
+    """Pull a one-word italic paragraph off the end of the text emitted so far.
+
+    A table split into "*Pedestrian*" and "*Car*" panels puts those labels in the
+    running text. Left there they are orphaned: the tables float away and the
+    reader is left with two stray words in the middle of a paragraph.
+    """
+    head = "".join(out)
+    m = re.search(r"\n\s*\\emph\{([^{}]{1,40})\}\s*\n\s*" + LTCAP + r"\s*\Z", head)
+    if m is None:
+        return ""
+    out[:] = [head[:m.start()] + "\n\n"]
+    return m.group(1)
+
+
+def _next_panel(tex: str, pos: int, OPEN: str):
+    """The next "*Label*  <table>" pair, if one follows immediately."""
+    m = EMPH_PARA.match(tex[pos:])
+    if m is None:
+        return None
+    start = pos + m.end()
+    if not tex.startswith(OPEN, start):
+        return None
+    spec, j = _balanced(tex, start + len(OPEN))
+    k = tex.index("\\end{longtable}", j)
+    end = k + len("\\end{longtable}")
+    # swallow the closing brace of pandoc's \LTcaptype group, if it is there
+    m2 = re.match(r"\s*\}", tex[end:])
+    if m2:
+        end += m2.end()
+    return m.group(1), tex[j:k], spec, end
+
+
 def detable(tex: str) -> str:
     """sn-jnl in two-column mode cannot use longtable; convert to table* floats.
 
@@ -297,38 +366,43 @@ def detable(tex: str) -> str:
             head = head[:m2.start()] + "\n\n" + head[m2.end():]
             out = [head]
 
-        # column count from the header row: pandoc's spec uses one >{...} per
-        # column, but a cell containing braces can perturb that count
-        hdr = next((ln for ln in inner.split("\n") if "&" in ln), "")
-        ncol = max(spec.count(">{"), hdr.count("&") + 1, 2)
-        for junk in (r"\\endfirsthead", r"\\endhead", r"\\endlastfoot", r"\\endfoot"):
-            inner = re.sub(junk, "", inner)
-        inner = re.sub(r"\\noalign\{\}", "", inner)
-        # pandoc wraps every header cell in a minipage of \linewidth. Inside a
-        # tabular, \linewidth is the width of the enclosing column or page, not of
-        # the cell, so an n-column header is set n times too wide -- up to 3,271 pt
-        # past a 240 pt column before this was removed. The cells are short labels;
-        # they want to be plain text.
-        inner = re.sub(r"\\begin\{minipage\}\[[a-z]\]\{[^}]*\}(?:\\raggedright|\\raggedleft|\\centering)?\s*",
-                       "", inner)
-        inner = re.sub(r"\s*\\end\{minipage\}", "", inner)
-        # pandoc repeats the header block for \endfirsthead and \endhead; keep one
-        parts = inner.split("\\midrule")
-        if len(parts) > 2:
-            inner = parts[0] + "\\midrule" + parts[-1]
-        inner = re.sub(r"\n{3,}", "\n\n", inner).strip()
+        # a table may be several labelled panels under one caption
+        panels = [(_panel_label(out), inner, spec)]
+        while True:
+            nxt = _next_panel(tex, pos, OPEN)
+            if nxt is None:
+                break
+            label, inner2, spec2, pos = nxt
+            panels.append((label, inner2, spec2))
+
+        ncol = 0
+        cleaned = []
+        for label, body, sp in panels:
+            body = _clean_panel(body)
+            hdr = next((ln for ln in body.split("\n") if "&" in ln), "")
+            n = max(sp.count(">{"), hdr.count("&") + 1, 2)
+            ncol = max(ncol, n)
+            cleaned.append((label, body, n))
+        inner = cleaned[0][1]
         # How wide a table spans is decided by its CONTENT, not its column count.
         # Keying on the column count put every table with fewer than six columns
         # into a single column, and all 21 of them ran past it -- the widest by
         # 469 pt. Calibrated against the compiler's own overfull reports, a
         # character at \footnotesize is about 4.5 pt, a column about 240 pt and the
         # full width about 500 pt.
-        env, spec = _fit(inner, ncol)
+        # One float per caption, however many panels it has: the widest panel
+        # decides the width so that the panels line up under one another.
+        widest = max(cleaned, key=lambda c: len(_clean_panel(c[1])))
+        env, tab_open, tab_close = _fit(widest[1], ncol)
+        body = []
+        for label, panel, _n in cleaned:
+            if label:
+                body.append(f"\\smallskip\\noindent\\emph{{{label}}}\\par\\smallskip")
+            body.append(tab_open + "\n" + panel + "\n" + tab_close)
         out.append(f"\\begin{{{env}}}[t]\n\\centering\n"
                    + (f"\\caption{{{cap}}}\\label{{tab:{num}}}\n" if cap else "")
                    + "\\footnotesize\n\\setlength{\\tabcolsep}{4pt}\n"
-                   + "\\begin{tabular}{" + spec + "}\n"
-                   + inner + f"\n\\end{{tabular}}\n\\end{{{env}}}\n")
+                   + "\n".join(body) + f"\n\\end{{{env}}}\n")
     return "".join(out)
 
 

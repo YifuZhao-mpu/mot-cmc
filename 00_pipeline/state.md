@@ -420,3 +420,24 @@ the template needed no adoption; the two reported problems were real and both ar
 **Verifier**: 710 → **714**, 0 problems; the new check was mutation-tested. **35 pages**, up from 31:
 the figures now occupy body space at a legible size instead of being crammed onto two pages at the
 end. Reverting that is one threshold in `build_latex.py` if page count ever matters more.
+
+## Table layout: measured, not estimated (2026-09-29, second pass)
+
+The authors reported that the tables and the two-column page looked sparse. Rendering the pages and
+measuring showed they were right, and that my character-count width estimator was the wrong
+instrument. A probe document that boxes every tabular and reports `\the\wd` gave the real numbers:
+**`\columnwidth` is 216.2 pt and `\textwidth` 455.2 pt**, against the 230 and 480 the estimator had
+assumed, and of the 31 tabulars **30 exceed one column while all 31 fit the full width, occupying
+44 % to 89 % of it**.
+
+| F# | Finding |
+|---|---|
+| F73 | **Spanning tables left up to half the block empty.** A `table*` float whose tabular is narrower than `\textwidth` is simply centred in it, so a 70 %-wide table sat in a full-width float with a 30 % void. `\extracolsep{\fill}` was the fix but does nothing in a plain `tabular`, which has no target width — spanning tables are now `tabular*{\textwidth}`, which fills the block exactly. |
+| F74 | **The wrapping column was sized by estimate and collapsed.** Table 7's description column was computed as `\textwidth` minus a character-count estimate of the other columns; the estimate was too generous, the column came out too narrow, and its text fell into a six-line ragged tower. Replaced with `tabularx`, where LaTeX measures the other columns itself and the `X` column takes exactly what is left. The table is now a third of its former height. |
+| F75 | **Multi-panel tables were split, and their labels orphaned.** Tables 8 and 12 are one table each with a *Pedestrian* and a *Car* panel. The converter made a separate float per panel, so the two italic labels stayed behind in the running text as stray one-word lines while the tables floated elsewhere. Panels under one caption are now collected into one float with their labels inside it. 31 floats became 28. |
+
+Single column was tested as the alternative reading of "the two-column layout looks sparse" and is
+**not** a drop-in: `sn-basic` without `iicol` gives 48 pages and 128 overfull boxes, because every
+width decision here targets two columns. It stays an open author choice, not a default.
+
+**34 pages** (from 35), 2 overfull boxes both under 2 pt, verifier 714/714, manifest 343 files.
