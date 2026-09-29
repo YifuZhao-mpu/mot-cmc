@@ -25,7 +25,12 @@ TEX_DIR = f"{ROOT}/02_paper/latex"
 FIGS = f"{ROOT}/05_figures"
 
 # figure placement: (anchor that must already be in the body, file, caption, label)
+# Figures, in the order the text first cites them -- which is what the numbering
+# follows, and which is not the order they were produced in: the signal-selection
+# figure is cited in 4.4, before any other.
 FIGURES = [
+    ("F8", "F8_signal_selection",
+     "Held-out AUC by reliability-signal subset size on real MOT17 data.", "fig:signals"),
     ("F1", "F1_value_axis",
      "MOT17 validation-half. Left: HOTA across the compensation-value axis, with and "
      "without the appearance channel. Right: identity switches. The oracle warp is worse "
@@ -50,8 +55,6 @@ FIGURES = [
     ("F7", "F7_depth_noise",
      "Tolerance of the pedestrian gain to depth error, with the real monocular model marked.",
      "fig:depth"),
-    ("F8", "F8_signal_selection",
-     "Held-out AUC by reliability-signal subset size on real MOT17 data.", "fig:signals"),
 ]
 
 # Author block. `\author*` marks the corresponding author in sn-jnl; ORCIDs use
@@ -90,6 +93,22 @@ PREAMBLE = r"""\documentclass[sn-basic,iicol]{sn-jnl}
 \usepackage[T1]{fontenc}
 \usepackage{longtable}
 \usepackage{array}
+% Float placement. With LaTeX's defaults (topnumber 2, totalnumber 3,
+% topfraction 0.7) and 28 full-width table floats competing for page tops, every
+% one of the eight figures was deferred to the last two pages of the paper.
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{5}
+\setcounter{dbltopnumber}{3}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.6}
+\renewcommand{\textfraction}{0.07}
+\renewcommand{\floatpagefraction}{0.7}
+\renewcommand{\dbltopfraction}{0.9}
+\renewcommand{\dblfloatpagefraction}{0.7}
+% verbatim in a two-column layout has one column to live in; the default
+% \small is too wide for a 58-character line and ran 242 pt past the column.
+\makeatletter\def\verbatim@font{\ttfamily\scriptsize}\makeatother
 \usepackage{calc}
 \usepackage{listings}
 % T1/Latin Modern silently drops Greek and several maths symbols under XeTeX,
@@ -161,6 +180,91 @@ def _balanced(tex: str, i: int) -> tuple[str, int]:
 CAPTION_PARA = re.compile(r"\n\\textbf\{Table (\d+)\}\s*(.*?)\n\s*\n", re.S)
 
 
+PT_PER_CHAR = 4.5   # \footnotesize, calibrated from the compiler's overfull reports
+TABCOLSEP_PT = 4.0  # tightened from the 6 pt default for these data tables
+COL_PT = 230.0      # one column, with a little margin
+FULL_PT = 480.0     # both columns, with a little margin
+
+
+def _col_chars(inner: str, ncol: int) -> list[int]:
+    """Widest plain-text cell in each column, in characters."""
+    w = [0] * ncol
+    for ln in inner.split("\n"):
+        if "&" not in ln:
+            continue
+        # the header row begins with \toprule and the body rows with nothing;
+        # skipping every line that starts with a control sequence would skip the
+        # header, which is usually the widest row in the table.
+        ln = re.sub(r"^\s*\\(?:top|mid|bottom)rule\s*", "", ln)
+        cells = re.sub(r"\\\\\s*$", "", ln).split("&")
+        for i, c in enumerate(cells[:ncol]):
+            plain = re.sub(r"\\[a-zA-Z]+\s?|[{}$]", "", c).strip()
+            w[i] = max(w[i], len(plain))
+    return w
+
+
+def _fit(inner: str, ncol: int) -> tuple[str, str]:
+    """Choose the float environment and column specification for a table.
+
+    Returns (environment, column spec). A table that fits one column stays in one;
+    one that fits the full width spans both; one that fits neither spans both and
+    gives its widest column the leftover space as a wrapping p-column, so the text
+    breaks instead of the page.
+    """
+    w = _col_chars(inner, ncol)
+    # \tabcolsep is inserted on both sides of every column and is not free: at
+    # seven columns it is worth more than eighty points, which is a third of a
+    # column. Ignoring it is what put a 37-character table past its column by 120.
+    total = sum(w) * PT_PER_CHAR + 2 * TABCOLSEP_PT * ncol
+    if total <= COL_PT:
+        return "table", "@{}" + "l" * ncol + "@{}"
+    if total <= FULL_PT:
+        return "table*", "@{}" + "l" * ncol + "@{}"
+    j = max(range(ncol), key=lambda i: w[i])
+    # what is left for the wrapping column once the other columns and every
+    # column separator have taken their share
+    others = (sum(w) - w[j]) * PT_PER_CHAR + 2 * TABCOLSEP_PT * ncol
+    cols = ["l"] * ncol
+    cols[j] = (r">{\raggedright\arraybackslash}p{\dimexpr 0.98\textwidth - "
+               rf"{others:.0f}pt\relax}}")
+    return "table*", "@{}" + "".join(cols) + "@{}"
+
+
+def _aspect(pdf: str) -> float:
+    """Width over height of a PDF figure, from its MediaBox."""
+    try:
+        m = re.findall(rb"/MediaBox\s*\[([^]]*)\]", open(pdf, "rb").read())
+        x0, y0, x1, y1 = (float(v) for v in m[0].split())
+        return (x1 - x0) / (y1 - y0)
+    except Exception:
+        return 1.0
+
+
+def place_figures(body: str, blocks: list[str]) -> str:
+    """Put each figure float beside the paragraph that discusses it.
+
+    The floats used to be concatenated after the whole body, so LaTeX had nowhere
+    to put them but the end: all eight landed on the last three pages of a
+    thirty-three page paper, twenty-odd pages after the text that refers to them.
+    Each figure is mentioned once, as "Figure n"; the float is inserted after the
+    paragraph containing that mention, and LaTeX floats it to the top of that page
+    or the next. A figure nothing mentions stays at the end, where it is visible.
+    """
+    points = []
+    for i, blk in enumerate(blocks, start=1):
+        m = re.search(rf"\bFigure[~ ]{i}\b", body)
+        if m is None:
+            points.append((len(body), blk))
+            continue
+        end = body.find("\n\n", m.end())
+        points.append((len(body) if end < 0 else end, blk))
+    out = body
+    # last first, so that earlier insertion points keep their offsets
+    for pos, blk in sorted(points, key=lambda t: -t[0]):
+        out = out[:pos] + "\n\n" + blk + out[pos:]
+    return out
+
+
 def detable(tex: str) -> str:
     """sn-jnl in two-column mode cannot use longtable; convert to table* floats.
 
@@ -200,16 +304,30 @@ def detable(tex: str) -> str:
         for junk in (r"\\endfirsthead", r"\\endhead", r"\\endlastfoot", r"\\endfoot"):
             inner = re.sub(junk, "", inner)
         inner = re.sub(r"\\noalign\{\}", "", inner)
+        # pandoc wraps every header cell in a minipage of \linewidth. Inside a
+        # tabular, \linewidth is the width of the enclosing column or page, not of
+        # the cell, so an n-column header is set n times too wide -- up to 3,271 pt
+        # past a 240 pt column before this was removed. The cells are short labels;
+        # they want to be plain text.
+        inner = re.sub(r"\\begin\{minipage\}\[[a-z]\]\{[^}]*\}(?:\\raggedright|\\raggedleft|\\centering)?\s*",
+                       "", inner)
+        inner = re.sub(r"\s*\\end\{minipage\}", "", inner)
         # pandoc repeats the header block for \endfirsthead and \endhead; keep one
         parts = inner.split("\\midrule")
         if len(parts) > 2:
             inner = parts[0] + "\\midrule" + parts[-1]
         inner = re.sub(r"\n{3,}", "\n\n", inner).strip()
-        # a wide table spans both columns; a narrow unnumbered one stays inline
-        env = "table*" if ncol >= 6 else "table"
+        # How wide a table spans is decided by its CONTENT, not its column count.
+        # Keying on the column count put every table with fewer than six columns
+        # into a single column, and all 21 of them ran past it -- the widest by
+        # 469 pt. Calibrated against the compiler's own overfull reports, a
+        # character at \footnotesize is about 4.5 pt, a column about 240 pt and the
+        # full width about 500 pt.
+        env, spec = _fit(inner, ncol)
         out.append(f"\\begin{{{env}}}[t]\n\\centering\n"
                    + (f"\\caption{{{cap}}}\\label{{tab:{num}}}\n" if cap else "")
-                   + "\\footnotesize\n\\begin{tabular}{@{}" + "l" * ncol + "@{}}\n"
+                   + "\\footnotesize\n\\setlength{\\tabcolsep}{4pt}\n"
+                   + "\\begin{tabular}{" + spec + "}\n"
                    + inner + f"\n\\end{{tabular}}\n\\end{{{env}}}\n")
     return "".join(out)
 
@@ -251,13 +369,17 @@ def main() -> None:
     body_tex = detable(pandoc(body))
     abs_tex = pandoc(abstract).strip()
 
-    # figures: insert a float after the first paragraph of the section that discusses it
+    # figures: each float goes next to the paragraph that discusses it
     figs = []
     for _, f, cap, lab in FIGURES:
+        # A panel plot wider than it is tall is illegible at 240 pt. Anything at
+        # or past 1.8:1 spans both columns; the rest stay in one.
+        env = "figure*" if _aspect(f"{FIGS}/{f}.pdf") >= 1.8 else "figure"
+        where = "[tp]" if env == "figure*" else "[tbp]"
         figs.append(
-            "\\begin{figure}[t]\n\\centering\n"
+            f"\\begin{{{env}}}{where}\n\\centering\n"
             f"\\includegraphics[width=\\linewidth]{{figs/{f}.pdf}}\n"
-            f"\\caption{{{cap}}}\\label{{{lab}}}\n\\end{{figure}}\n")
+            f"\\caption{{{cap}}}\\label{{{lab}}}\n\\end{{{env}}}\n")
 
     # references as a manual thebibliography (author-year, already formatted)
     items = [r.strip() for r in refs_md.split("\n\n") if r.strip()]
@@ -286,8 +408,7 @@ def main() -> None:
         "\\abstract{" + abs_tex + "}",
         "\\keywords{" + keywords.replace(" · ", ", ") + "}",
         "\\maketitle",
-        body_tex,
-        "\n".join(figs),
+        place_figures(body_tex, figs),
         "\n".join(bib),
         "\\end{document}",
     ])

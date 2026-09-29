@@ -772,6 +772,37 @@ def check_reproduce_map():
         globals()["OKS"] = OKS + 1
 
 
+def check_figure_order():
+    """Figures must be numbered in the order the text first cites them.
+
+    Springer requires it, and it was violated silently for as long as every figure
+    float sat at the end of the document in list order: the first figure the text
+    cites, in 4.4, was numbered 8. Placing each float beside its citation made the
+    numbering visibly wrong, which is how it was found.
+    """
+    text = open(MD).read()
+    body = text[text.index("## 1 Introduction"):text.index("## References")]
+    cited = [int(m.group(1)) for m in re.finditer(r"\bFigure (\d+)\b", body)]
+    if cited != sorted(set(cited)):
+        FAILS.append(f"ORDER       figures are cited in the order {cited}; they must be "
+                     f"numbered in citation order, i.e. {sorted(set(cited))}")
+    else:
+        globals()["OKS"] = OKS + 1
+    check("figures cited", len(FIG_ORDER), len(cited), 0.5)
+    # the build's list must be in the same order, since LaTeX numbers by position
+    src = open(f"{ROOT}/03_code/rac/build_latex.py").read()
+    listed = re.findall(r'\(\s*"(F\d)"', src[src.index("FIGURES = ["):])
+    check("figure list length", len(FIG_ORDER), len(listed), 0.5)
+    if listed[:len(FIG_ORDER)] != FIG_ORDER:
+        FAILS.append(f"ORDER       build_latex.py lists figures as {listed}, "
+                     f"expected {FIG_ORDER}")
+    else:
+        globals()["OKS"] = OKS + 1
+
+
+FIG_ORDER = ["F8", "F1", "F2", "F3", "F4", "F5", "F6", "F7"]
+
+
 def check_availability_counts():
     """Every count the Data and Code Availability statement gives, from the tree.
 
@@ -1001,7 +1032,7 @@ def main() -> None:
                check_permutation, check_depth_ratio_and_failures, check_ess_and_strata,
                check_placebo, check_provenance, check_manuscript_tables, check_manuscript_intervals,
                check_homography_robustness, check_homography_intervals,
-               check_background_point_counts, check_reproduce_map, check_release_doc_refs, check_availability_counts,
+               check_background_point_counts, check_reproduce_map, check_release_doc_refs, check_availability_counts, check_figure_order,
                check_estimator_convention, check_causal_link_homography):
         try:
             fn()

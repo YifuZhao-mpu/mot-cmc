@@ -35,11 +35,16 @@ One line in a widely used tracker motivated this work.
 In BoT-SORT's association step (Aharon et al., 2022), after every track's Kalman prediction has been warped by the estimated camera motion, the appearance cost is admitted only when the motion cost agrees:
 
 ```python
-ious_dists      = matching.iou_distance(strack_pool, detections)   # after the CMC warp
-ious_dists_mask = (ious_dists > self.proximity_thresh)             # 0.5
-emb_dists[emb_dists > self.appearance_thresh] = 1.0
-emb_dists[ious_dists_mask] = 1.0        # appearance rejected because motion disagreed
-dists           = np.minimum(ious_dists, emb_dists)
+# distances are computed after the CMC warp
+ious_dists = matching.iou_distance(
+    strack_pool, detections)
+ious_dists_mask = (
+    ious_dists > self.proximity_thresh)
+emb_dists[
+    emb_dists > self.appearance_thresh] = 1.0
+# appearance rejected because motion disagreed
+emb_dists[ious_dists_mask] = 1.0
+dists = np.minimum(ious_dists, emb_dists)
 ```
 
 If the warp is wrong, the warped prediction moves away from the true detection, `ious_dists` rises above the threshold, and the appearance term is set to 1 — rejected. The appearance channel is disabled in exactly the frames where it would be the only surviving evidence. Meanwhile the solver that produced the warp, `cv2.estimateAffinePartial2D(..., cv2.RANSAC)`, returns an inlier mask that the code discards: the information needed to judge whether the warp deserves to gate anything is computed and thrown away.
@@ -169,7 +174,8 @@ A quarter of MOT17-05 — the worst sequence, and the source of 12 of the 34 har
 Whether compensation error changes an *outcome* is not the same as whether it is large. For every ground-truth object present in consecutive frames we warp its previous box by the online warp and by the reference warp, compute IoU against its true current box, and count pairs whose gate decision differs:
 
 ```
-gate flip  ⟺  (1 − IoU_online > θ_iou)  XOR  (1 − IoU_reference > θ_iou)
+gate flip  ⟺  (1 − IoU_online    > θ_iou)
+          XOR  (1 − IoU_reference > θ_iou)
 ```
 
 A flip in the harmful direction — a correct pair gated out by compensation error — is the event the coupling defect of §1 predicts. Because ground-truth identity is used, detector quality and appearance-embedding behaviour are excluded entirely; what remains is geometry.
@@ -264,7 +270,7 @@ Before touching real data we built a synthetic study: 234 frames with known grou
 
 On real MOT17 data it lost. We searched all 63 non-empty subsets under leave-one-sequence-out:
 
-Figure 8 plots all 63 subsets and Table S1 gives the best at each size. Held-out performance degrades monotonically with every signal added: the best single signal, the median transfer residual, reaches a held-out AUC of 0.866 against 0.774 for all six together. Dropping from six to one gains +0.092 AUC. The diagnosis, from per-signal statistics over the same 5,088 frames:
+Figure 1 plots all 63 subsets and Table S1 gives the best at each size. Held-out performance degrades monotonically with every signal added: the best single signal, the median transfer residual, reaches a held-out AUC of 0.866 against 0.774 for all six together. Dropping from six to one gains +0.092 AUC. The diagnosis, from per-signal statistics over the same 5,088 frames:
 
 - **The inlier count is degenerate on MOT17** — 99.94 % of frames sit at the ceiling, because the keypoint detector's cap is saturated. It carried real information in the synthetic low-texture mode, where inliers collapsed to zero. That mode does not occur in MOT17.
 - **Temporal consistency τ is the largest single loss** (0.854 → 0.774 when added at k = 6). It was designed to catch sporadic single-frame failures. But real camera motion is not smooth — panning accelerates, vehicles turn — so a constant-velocity prediction of the warp is violated by *legitimate* motion, which τ reports as unreliability. On real data it is a false-alarm generator.
@@ -331,7 +337,7 @@ The bounds above are geometric. The direct test, in Table 3, substitutes the ref
 | Precomputed file GMC (published default) | 69.120 | 71.570 | 67.239 | 81.499 | 78.445 | 140 |
 | **Reference (oracle) warp, strict** | **69.093** | **71.510** | **67.245** | **81.500** | **78.488** | **147** |
 
-Figure 1 plots both axes. Reading Table 3 from the bottom:
+Figure 2 plots both axes. Reading Table 3 from the bottom:
 
 - **Having compensation is worth +0.888 HOTA and −198 identity switches.** Compensation matters.
 - **Perfecting it is worth +0.087 HOTA and +8 identity switches.** Perfecting it makes identity switches *worse*.
@@ -409,7 +415,7 @@ MOT17 and MOT20 are pedestrian benchmarks with modest camera motion, so the null
 
 Its compensation estimates are the cleanest of the three image benchmarks (Table 1): median residual 0.295 px, median temporal inconsistency 0.166 px. High-altitude nadir-ish viewing puts almost the entire scene at nearly uniform depth, which is the condition under which a single global warp is exactly right.
 
-Figure 2 shows how its reliability distributions compare with the pedestrian benchmarks'. Running the same motion-only tracker over the 20 UAVDT sequences that ship with published FRCNN detections, fixed across both configurations:
+Figure 3 shows how its reliability distributions compare with the pedestrian benchmarks'. Running the same motion-only tracker over the 20 UAVDT sequences that ship with published FRCNN detections, fixed across both configurations:
 
 | Configuration | HOTA | AssA | DetA | IDF1 | MOTA | IDSW | Frag |
 |---|---|---|---|---|---|---|---|
@@ -461,7 +467,7 @@ For each object present in consecutive frames we compute its exact image displac
 
 The four-degree-of-freedom similarity that BoT-SORT's GMC estimates fits KITTI better than the geometry suggests, because forward translation produces approximately radial expansion and a uniform-scale term absorbs most of it. The rotation-only homography, by contrast, is nearly useless here: on a car, rotation is the small component.
 
-The information is not in the median. It is in the spread, plotted in Figure 3. Here is the within-frame spread of the residual *after* the best possible global compensation, over moving frames:
+The information is not in the median. It is in the spread, plotted in Figure 4. Here is the within-frame spread of the residual *after* the best possible global compensation, over moving frames:
 
 | | Median | p75 | p90 | p95 | p99 | Max |
 |---|---|---|---|---|---|---|
@@ -507,7 +513,7 @@ The exactly-zero residual is the tell: eight degrees of freedom interpolate five
 
 **The measurement.** A compensator can have depth — a monocular network supplies it, and §7 already runs one. We refitted both families to background points carrying their **own** depths: a grid over the lower image, points inside the tracker's own **detections** masked out (not annotations — a compensator cannot read labels), a median of 437 background samples per frame, back-projected at each point's estimated depth, transformed by the true camera motion and re-projected. The ground plane is present rather than flattened away. Measured at object centres against their true induced displacement, on the same 4,318 frames as §6.2:
 
-Figure 4 plots the distributions and sets them against what each warp produces in tracking.
+Figure 5 plots the distributions and sets them against what each warp produces in tracking.
 
 **Table 6** Global compensation models on KITTI, measured at object centres against true displacement. The similarity and homography rows are fitted to the same depth-varying background points; the oracle row is fitted to the objects themselves and is an upper bound, not a method.
 
@@ -592,7 +598,7 @@ Two specification errors were found and corrected before these numbers were prod
 | depth-aware homography, contact point (deployable) | 66.044 | 71.659 | 61.664 | **115** |
 | per-target similarity (oracle, reads annotations) | 66.414 | 72.618 | 61.457 | 117 |
 
-Table 9 and Figure 5 give the intervals.
+Table 9 and Figure 6 give the intervals.
 
 **Table 9** Bootstrap 95 % confidence intervals over the 21 sequences, 20,000 resamples, HOTA averaged over TrackEval's alpha grid, sequences weighted by ground-truth detections. ΔIDSW is the same weighted difference, **not** a per-sequence rate.
 
@@ -653,7 +659,7 @@ This rules out the alternative explanation. It does not rule out every alternati
 
 We defined exposure per (sequence, frame, class) as the median absolute difference, at box centres, between an object's own depth-derived warp and the shared depth-blind one — the disagreement that depth information removes. Improvement is the per-frame identity-switch difference between the two configurations. Neither quantity was used to build either tracker.
 
-The result is Table 11, plotted in Figure 6.
+The result is Table 11, plotted in Figure 7.
 
 **Table 11** Pedestrian identity switches by exposure quartile, 2,377 frames.
 
@@ -723,7 +729,7 @@ So the remedy §6 arrives at needs one estimated quantity, depth, and an ego-mot
 
 Monocular depth error is approximately multiplicative, so we inject `z' = z · exp(N(0, σ))` and re-run. The second column of each sweep table converts σ to the relative depth error at one standard deviation, `exp(σ) − 1`. This sweep was built for the per-target arm and we report it for that arm; §7.4 explains why the conclusion it supports is narrower than it was.
 
-Table 13 and Figure 7 give the sweep.
+Table 13 and Figure 8 give the sweep.
 
 **Table 13** Pedestrian sensitivity to injected depth noise, per-target arm. Reference: global-similarity oracle, HOTA 46.775.
 

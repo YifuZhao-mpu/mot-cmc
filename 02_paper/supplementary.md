@@ -17,7 +17,7 @@ Section 4.4 reports that held-out performance degrades monotonically as reliabil
 | 5 | ρ + n + ε + κ + φ | 0.854 | 0.770 |
 | 6 | all | 0.774 | 0.614 |
 
-Figure 8 plots every subset.
+Figure 1 plots every subset.
 
 All 63 non-empty subsets are in `04_experiments/signal_subset_search.csv`.
 

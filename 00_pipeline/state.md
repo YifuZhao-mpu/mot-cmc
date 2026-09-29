@@ -402,3 +402,21 @@ both checkers pass *inside* the folder, so a bundle that exists is a bundle that
 
 **Verifier**: 693 → **710** checks, 0 problems. In a bundle without the raw dumps it is 700, because
 the ten optional raw-dump checks correctly do not run rather than failing.
+
+## Typesetting against the official template (2026-09-29)
+
+The authors supplied the official Springer Nature package (`sn-article-template`, December 2024).
+The `sn-jnl.cls` and all nine `.bst` files we had been building with are **byte-identical** to it, so
+the template needed no adoption; the two reported problems were real and both are fixed.
+
+| F# | Finding |
+|---|---|
+| F68 | **Every table ran off the page, by up to 3,271 pt.** pandoc wraps each header cell in `\begin{minipage}{\linewidth}`, and inside a `tabular` `\linewidth` is the width of the enclosing column, not of the cell — so an eight-column header was set eight times too wide. The converter had been dropping pandoc's width specification and keeping its minipages. Unwrapping them took the worst overflow from 3,271 pt to 469 pt. |
+| F69 | **The remaining overflow was a heuristic keyed on the wrong thing.** `detable` spanned a table across both columns when it had six or more columns; width follows content, not column count, and all 21 single-column tables overflowed — the narrowest, at 37 characters, by 120 pt. Replaced with a width estimate calibrated against the compiler's own overfull reports: 4.5 pt per character at `\footnotesize`, plus `\tabcolsep` on both sides of every column, which at seven columns is worth a third of a column and had been ignored entirely. A table that fits neither width now gives its widest column the leftover space as a wrapping `p`-column. `\tabcolsep` tightened to 4 pt. **35 overfull boxes → 2, worst 3,271 pt → 1.7 pt.** |
+| F70 | **The code excerpts overflowed too**, by 242 pt: `verbatim` in a two-column layout has one column, and the longest line was 87 characters. Set in `\scriptsize` and reflowed to 46. |
+| F71 | **All eight figures were on pages 30–33 of a 33-page paper**, up to twenty pages after the text discussing them. The build appended every float after the whole body — the comment claimed they were inserted at their discussion, but the code concatenated them — so LaTeX had nowhere else to put them. Each float is now spliced after the paragraph that cites it, and the eight land on pages 10, 12, 16, 17, 19, 22, 23 and 26. Float parameters were relaxed (the defaults allow two top floats and 70 % of a page, against 28 full-width table floats competing), and a figure wider than 1.8:1 now spans both columns: all eight are panel plots between 1.65:1 and 2.35:1, illegible at 240 pt. |
+| F72 | **The figures were not numbered in citation order.** Springer requires it. It was invisible while every float sat at the end in list order — the text said "Figure 8" and the eighth float was indeed that figure — but the first figure the text cites, in §4.4, was numbered 8. Placing floats at their citations made the numbering visibly wrong, which is how it surfaced. Renumbered so citation order is 1–8, in the manuscript and the supplementary, and `check_figure_order` now verifies both the manuscript's citation sequence and the build's figure list. |
+
+**Verifier**: 710 → **714**, 0 problems; the new check was mutation-tested. **35 pages**, up from 31:
+the figures now occupy body space at a legible size instead of being crammed onto two pages at the
+end. Reverting that is one threshold in `build_latex.py` if page count ever matters more.
