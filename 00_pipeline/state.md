@@ -459,3 +459,35 @@ gains a **do-not-redistribute** notice, and the `EXCLUDED.md` that the repositor
 from the copy. The benchmarks, the weights and the third-party trees are not ours; the copy to share
 remains the one built without `--with-data`, which is what the public repository and the archived
 release contain.
+
+## Defensive writing removed from the load-bearing positions (2026-09-30)
+
+The authors asked for a pass against defensive writing: no self-indictment, no summarising the
+paper's weaknesses on the referee's behalf, no process narrative in the places that carry the
+argument. Fifteen edits, all minimal, **no measured quantity touched** — the verifier stayed at
+714/714 through every one.
+
+The line drawn: **disclosure keeps its designated sections, and stops being the opening and closing
+note.** §9.4 (changes from earlier analysis), Supplementary S2, §9.2 (what we could not measure) and
+every "interval crosses zero" statement in the tables are untouched, because they are what makes a
+null result credible. What changed is where that material was being replayed.
+
+| Where | Was | Now |
+|---|---|---|
+| §9.5 opening | the conclusion began with the refuted hypothesis and three refuted replacements | begins with the two results; the record is a pointer to §9.4 and S2 |
+| §9.5 closing | ended on "our own `verify_numbers.py` passed 526 of 526 while three of those four defects were live" (also a stale count) | ends on what a null claim requires, with the four failure modes named as failure modes rather than as our tally |
+| Abstract | entered the pedestrian HOTA comparison to concede it | reports the pedestrian identity-switch result, which is the paper's own metric; the HOTA interval stays in Table 9 and §6.6 |
+| §1 | "A second observation that we initially built on does not survive inspection" | "One further coupling is worth ruling out" — same scoping argument, no discarded belief in the introduction |
+| §1.1 | "though that figure is biased downward by a frame filter" | "a conservative figure: it is depressed by a frame filter" — the same fact, which is a strength |
+| §4.4 title | "A reversal we report rather than hide" | "Real data selects a simpler estimator" |
+| §5.3 | pre-emptive "we do not claim…" plus an in-text withdrawal | states what survives; the withdrawal is already recorded in §9.4 |
+| §6.4 | "First error: fitting to the answer" / "Second error: flattening the scene" | named by the role each control plays: a family fitted to the answer cannot be tested by it; depth variation is the operative variable |
+| §7 opener | "an earlier version of our own analysis treated them as if they were" | removed; the section's job is stated positively |
+| §7.4, §8 | "we cannot explain it", "we did not look for a third", "the single largest gap in the paper" | the asymmetry is not explained by either candidate; the class difference is reported as unexplained, without ranking the paper's gaps |
+| §8 title | "What We Could Not Explain" | "The Class Difference" |
+| §9.2 | "the sharpest limit on the paper's scope and we tried twice to remove it", "both substitutes we built fail" | scope stated; two substitutes tested, neither separates object motion from camera motion |
+
+`02_paper/00_CONFIG_AND_OUTLINE.md` still carries the original outline's section titles. It is the
+Phase 0 planning record and is left as written, like the rest of the pipeline record.
+
+34 pages, verifier 714/714, manifest 343 files.
