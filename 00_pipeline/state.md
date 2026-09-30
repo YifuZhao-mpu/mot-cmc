@@ -441,3 +441,21 @@ Single column was tested as the alternative reading of "the two-column layout lo
 width decision here targets two columns. It stays an open author choice, not a default.
 
 **34 pages** (from 35), 2 overfull boxes both under 2 pt, verifier 714/714, manifest 343 files.
+
+## The handover folder, with the data (2026-09-30)
+
+`make_bundle.py --with-data` adds to the project's own output everything needed to rerun it from the
+images up: the four benchmarks (63.6 GB), the model weights (2.4 GB), the raw per-frame tracker
+output, every warp bundle including the depth-noise sweeps, and the four vendored source trees.
+**112,288 files, 67.9 GB**, and the verifier and manifest check still pass inside it.
+
+Almost all of it is **hard-linked** rather than copied: 111,764 of 112,288 files, so the folder holds
+real files, costs no additional disk while it sits on the same filesystem as the working copy — free
+space was unchanged at 475 GB — and expands into independent copies if it is moved elsewhere.
+
+Two documents adapt to the mode, because a folder that says it excludes the datasets while holding
+them is worse than no document: with `--with-data` the bundle carries `CONTENTS.md` and the guide
+gains a **do-not-redistribute** notice, and the `EXCLUDED.md` that the repository tracks is removed
+from the copy. The benchmarks, the weights and the third-party trees are not ours; the copy to share
+remains the one built without `--with-data`, which is what the public repository and the archived
+release contain.
