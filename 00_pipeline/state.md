@@ -491,3 +491,20 @@ null result credible. What changed is where that material was being replayed.
 Phase 0 planning record and is left as written, like the rest of the pipeline record.
 
 34 pages, verifier 714/714, manifest 343 files.
+
+## The Chinese version, same pass — and a drift it exposed (2026-09-30)
+
+`02_paper/03_ABSTRACT_ZH.md` was brought to the same standard as the English text: the
+one-paragraph version no longer opens on the refuted hypothesis and its three refuted replacements
+but on the two results, with the revision record left as a pointer to §9.4 and S2; the pedestrian
+HOTA comparison is out of the summary, as in the English abstract, and the identity-switch figure
+stands in its place; and the two experiments that were "wrong by construction" are replaced by the
+mechanism they actually establish — that a static grid at a single depth induces an exact planar
+homography, so an 8-DOF model carries as much depth information as a 4-DOF one, namely one depth.
+A duplicated cost sentence left by an earlier edit was removed.
+
+| F# | Finding |
+|---|---|
+| F76 | **The Chinese abstract carried two intervals from before the estimator correction.** It gave the per-target-minus-homography comparison as car −0.01 [−0.53, +0.45] and pedestrian +0.42 [−0.03, +1.00]; the refitted values are −0.073 [−0.624, +0.392] and +0.366 [−0.035, +0.986]. Nothing pointed at it because the file is not submitted and nothing checked it. Corrected, and `check_chinese_abstract` now requires every figure in it to be the manuscript's own value or a rounding of it — the file rounds to two decimals where the paper gives three. Mutation-tested. |
+
+**Verifier**: 714 → **715**.

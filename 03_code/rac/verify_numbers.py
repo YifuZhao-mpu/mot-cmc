@@ -772,6 +772,34 @@ def check_reproduce_map():
         globals()["OKS"] = OKS + 1
 
 
+def check_chinese_abstract():
+    """Every figure in the Chinese abstract must be traceable to the manuscript.
+
+    It is a separate file, it is not submitted, and it drifted: two intervals in it
+    still held values from before the similarity estimator was corrected. It rounds
+    to two decimals where the paper gives three, so a match is exact or a rounding.
+    """
+    fp = f"{ROOT}/02_paper/03_ABSTRACT_ZH.md"
+    if not os.path.exists(fp):
+        FAILS.append("MISSING     02_paper/03_ABSTRACT_ZH.md")
+        return
+    zh = open(fp).read().replace("\u2212", "-")
+    en = open(MD).read().replace("\u2212", "-")
+    en_nums = {float(x) for x in re.findall(r"[+-]?\d+\.\d+", en)}
+    stale = []
+    for tok in sorted({t for t in re.findall(r"[+-]?\d+\.\d+", zh)}):
+        v = float(tok)
+        if any(abs(v - e) < 5e-9 or abs(v - round(e, len(tok.split(".")[1]))) < 5e-9
+               for e in en_nums):
+            continue
+        stale.append(tok)
+    if stale:
+        FAILS.append(f"DRIFT       Chinese abstract has {len(stale)} figures the "
+                     f"manuscript does not support: {stale}")
+    else:
+        globals()["OKS"] = OKS + 1
+
+
 def check_figure_order():
     """Figures must be numbered in the order the text first cites them.
 
@@ -1032,7 +1060,7 @@ def main() -> None:
                check_permutation, check_depth_ratio_and_failures, check_ess_and_strata,
                check_placebo, check_provenance, check_manuscript_tables, check_manuscript_intervals,
                check_homography_robustness, check_homography_intervals,
-               check_background_point_counts, check_reproduce_map, check_release_doc_refs, check_availability_counts, check_figure_order,
+               check_background_point_counts, check_reproduce_map, check_release_doc_refs, check_availability_counts, check_figure_order, check_chinese_abstract,
                check_estimator_convention, check_causal_link_homography):
         try:
             fn()
