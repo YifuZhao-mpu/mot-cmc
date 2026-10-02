@@ -30,9 +30,7 @@ Tracking-by-detection trackers compensate camera motion with a single two-dimens
 
 ## 1 Introduction
 
-One line in a widely used tracker motivated this work.
-
-In BoT-SORT's association step (Aharon et al., 2022), after every track's Kalman prediction has been warped by the estimated camera motion, the appearance cost is admitted only when the motion cost agrees:
+One line in a widely used tracker motivated this work. In BoT-SORT's association step (Aharon et al., 2022), after every track's Kalman prediction has been warped by the estimated camera motion, the appearance cost is admitted only when the motion cost agrees:
 
 ```python
 # distances are computed after the CMC warp
@@ -51,9 +49,7 @@ If the warp is wrong, the warped prediction moves away from the true detection, 
 
 That suggests a clean hypothesis. Camera-motion compensation fails; those failures suppress the appearance channel; identity switches follow. The prescription follows too — estimate the reliability of the warp and let it modulate the association.
 
-The hypothesis is testable, and we tested it. It is wrong, and the way it is wrong turns out to be more useful than the method would have been.
-
-One further coupling is worth ruling out, because it is a natural thing to expect. BoT-SORT's warp application rotates each track's covariance and never inflates it, so the filter is no less confident after a possibly-wrong warp than before. That is true as written, but it cannot reach the association gate: in the released tracker the Mahalanobis path `matching.fuse_motion` is commented out, and the cost matrix is built from IoU, a score fusion and the appearance embedding only. Inflating the covariance would change the Kalman gain, and hence the *next* frame's prediction, not this frame's gate. Trackers whose association does read the covariance — DeepSORT and its descendants, UCMCTrack, StrongSORT's motion-cost term — would behave differently, and the family already has a confidence-adaptive idiom for it in NSA-Kalman (Du et al., 2021). The coupling in the code block above is the real one, and it is the only one we build on.
+The hypothesis is testable, and we tested it. It is wrong, and the way it is wrong turns out to be more useful than the method would have been. One further coupling is worth ruling out, because it is a natural thing to expect. BoT-SORT's warp application rotates each track's covariance and never inflates it, so the filter is no less confident after a possibly-wrong warp than before. That is true as written, but it cannot reach the association gate: in the released tracker the Mahalanobis path `matching.fuse_motion` is commented out, and the cost matrix is built from IoU, a score fusion and the appearance embedding only. Inflating the covariance would change the Kalman gain, and hence the *next* frame's prediction, not this frame's gate. Trackers whose association does read the covariance — DeepSORT and its descendants, UCMCTrack, StrongSORT's motion-cost term — would behave differently, and the family already has a confidence-adaptive idiom for it in NSA-Kalman (Du et al., 2021). The coupling in the code block above is the real one, and it is the only one we build on.
 
 ### 1.1 What we found
 
@@ -116,7 +112,7 @@ That is the qualitative form of our MOT20 result, published in 2023. Our contrib
 
 This is a plausibility guard rather than a reliability measurement: no inlier or residual statistic is used, no formula or threshold is published, the decision is binary and global per frame, and it never enters the cost matrix. Its domain is sports broadcast footage.
 
-**IMM-JHSE** (Claasen & de Villiers, 2026) places the homography and its dynamics inside the track state and uses an interacting-multiple-model filter to mix static and dynamic camera-motion models. This is model-*selection* uncertainty — is the camera moving? — rather than estimate-*quality* uncertainty.
+**IMM-JHSE** (Claasen & de Villiers, 2026) places the homography and its dynamics inside the track state and uses an interacting-multiple-model filter to mix static and dynamic camera-motion models. This is model-*selection* uncertainty: whether the camera is moving. — rather than estimate-*quality* uncertainty.
 
 **NSA-Kalman** (Du et al., 2021), adopted by StrongSORT and Deep OC-SORT, scales the observation noise by detection confidence. It is the family's existing confidence-adaptive idiom, and it is the reason §1 does not present covariance inflation as an unexploited gap.
 
@@ -180,7 +176,7 @@ gate flip  ⟺  (1 − IoU_online    > θ_iou)
 
 A flip in the harmful direction — a correct pair gated out by compensation error — is the event the coupling defect of §1 predicts. Because ground-truth identity is used, detector quality and appearance-embedding behaviour are excluded entirely; what remains is geometry.
 
-An earlier version of this analysis asked instead whether compensation error alone pushes IoU below θ, using per-frame median box sizes. That produced a misleadingly clean 0 % and answered the wrong question: what matters is not whether the error crosses the threshold unaided but whether it changes the outcome for pairs already near it.
+What matters is not whether the error crosses the threshold unaided, which it almost never does, but whether it changes the outcome for pairs already near it.
 
 ### 3.4 Ground truth where it exists
 
@@ -199,7 +195,7 @@ All evaluation uses the official TrackEval implementation (Luiten & Hoffhues, 20
 Two estimators of the same contrast appear in this paper and they are not interchangeable. The HOTA figure in every results table is TrackEval's `COMBINED` output, which pools all sequences' detections into one computation. The point estimate attached to every confidence interval is the detection-weighted mean of the per-sequence HOTA figures, because that is the quantity the bootstrap resamples. The two weight sequences differently and do not agree exactly: across the ten KITTI contrasts of Table 9 they differ by a median of 0.026 HOTA and at most 0.198 (the pedestrian contact-point row). So a point estimate quoted with an interval may differ in the second decimal from the table cell for the same pair of runs, and where the difference is large enough to matter — the pedestrian rows — it is the interval that should be read, since it is the one that carries the uncertainty.
 
 ---
-## 4 How Accurate Is Compensation?
+## 4 Compensation Is Accurate
 
 ### 4.1 Four benchmarks, 61,337 frames
 
@@ -287,7 +283,7 @@ The figures that survive this are the within-sequence ones: per-sequence correla
 
 ---
 
-## 5 Does That Accuracy Matter?
+## 5 What That Accuracy Is Worth
 
 Section 4 establishes that compensation error is real, small, and predictable. This section asks whether predicting it would change anything. It bounds the answer three ways on MOT17 — two of them large-sample functionals of a single dataset, the third a tracking experiment that is separate evidence but has the least resolution — and then tests the most severe available camera motion.
 
@@ -424,7 +420,7 @@ Figure 3 shows how its reliability distributions compare with the pedestrian ben
 
 Turning compensation on is worth +0.163 HOTA and changes identity switches by 5 out of 3,342 — in the wrong direction. On UAVDT compensation barely registers at all, let alone its failures.
 
-We state the limitation that goes with this: UAVDT has no ground-truth ego-motion, so no oracle warp is possible there and we can compare only `none` against `online`. That answers "does compensation matter here?" and not "would a perfect one matter more?". Given that `none` and `online` already differ by 0.163 HOTA, the second question has little room left in it.
+We state the limitation that goes with this: UAVDT has no ground-truth ego-motion, so no oracle warp is possible there and we can compare only `none` against `online`. That answers whether compensation matters here, and not whether a perfect one would matter more. Given that `none` and `online` already differ by 0.163 HOTA, the second question has little room left in it.
 
 ### 5.7 What follows for the benchmarks
 
@@ -507,9 +503,9 @@ Section 6.2 shows that one similarity cannot serve a frame's targets. The obviou
 | Affine | 6 | 1.140 px | 2.100 px | 18.04 % |
 | Homography | 8 | **0.000 px** | 0.746 px | 14.40 % |
 
-The exactly-zero residual is the tell: eight degrees of freedom interpolate five or more correspondences. This measures how expressive each family is, not what a compensator could achieve, because a compensator never sees these correspondences. We briefly read it as evidence that the family was the whole problem.
+The exactly-zero residual is the tell: eight degrees of freedom interpolate five or more correspondences. This measures how expressive each family is, not what a compensator could achieve, because a compensator never sees these correspondences.
 
-**Depth variation is the operative variable.** Fitting both families to a grid of *static scene* points, as a compensator must, but placing the grid at a single depth settles the question by construction. The mapping induced between two views of a plane **is** a homography, so `findHomography` recovers it to 6.2 × 10⁻⁶ px and the 8-DOF model carries exactly as much depth information as the 4-DOF one: one depth. On that construction a homography reduced the within-frame spread by **0.45 %** (7.451 → 7.418 px), and we read that as evidence that the family was *not* the problem. It was evidence about our grid. The two errors point in opposite directions and neither answered the question.
+**Depth variation is the operative variable.** Fitting both families to a grid of *static scene* points, as a compensator must, but placing the grid at a single depth settles the question by construction. The mapping induced between two views of a plane **is** a homography, so `findHomography` recovers it to 6.2 × 10⁻⁶ px and the 8-DOF model carries exactly as much depth information as the 4-DOF one: one depth. On that construction a homography reduces the within-frame spread by **0.45 %** (7.451 → 7.418 px) — a statement about the grid rather than about the family. Neither control settles the question, and together they locate it: what separates the families is whether the points they are fitted to vary in depth.
 
 **The measurement.** A compensator can have depth — a monocular network supplies it, and §7 already runs one. We refitted both families to background points carrying their **own** depths: a grid over the lower image, points inside the tracker's own **detections** masked out (not annotations — a compensator cannot read labels), a median of 437 background samples per frame, back-projected at each point's estimated depth, transformed by the true camera motion and re-projected. The ground plane is present rather than flattened away. Measured at object centres against their true induced displacement, on the same 4,318 frames as §6.2:
 
@@ -679,7 +675,7 @@ The same counter is *not* reliable for cars and we do not use it there. The same
 
 ### 6.8 Where the homography's gain comes from, per frame
 
-Section 6.7 localises the per-target arm, which §6.6 supersedes. The same instrument aimed at the comparison the paper actually recommends asks: in which frames does the depth-aware homography move the targets most differently from the compensator the tracker ships, and are those the frames where it removes identity switches? Exposure is now the median disagreement, at box centres, between the deployed warp and the homography; improvement is the per-frame identity-switch difference between those two trackers.
+Section 6.7 localises the per-target arm, which §6.6 supersedes. The same instrument aimed at the comparison the paper actually recommends identifies the frames in which the depth-aware homography moves the targets most differently from the compensator the tracker ships, and tests whether those are the frames where it removes identity switches. Exposure is now the median disagreement, at box centres, between the deployed warp and the homography; improvement is the per-frame identity-switch difference between those two trackers.
 
 The result is Table 12.
 
@@ -948,9 +944,9 @@ Claasen, P. J., & de Villiers, J. P. (2026). One homography is all you need: IMM
 
 Dendorfer, P., Rezatofighi, H., Milan, A., Shi, J., Cremers, D., Reid, I., Roth, S., Schindler, K., & Leal-Taixé, L. (2020). MOT20: A benchmark for multi object tracking in crowded scenes. *arXiv preprint* arXiv:2003.09003. https://doi.org/10.48550/arXiv.2003.09003
 
-Du, Y., Zhao, Z., Song, Y., Zhao, Y., Su, F., Gong, T., & Meng, H. (2023). StrongSORT: Make DeepSORT great again. *IEEE Transactions on Multimedia*, 25, 8725–8737. https://doi.org/10.1109/TMM.2023.3240881
-
 Du, Y., Wan, J., Zhao, Y., Zhang, B., Tong, Z., & Dong, J. (2021). GIAOTracker: A comprehensive framework for MCMOT with global information and optimizing strategies in VisDrone 2021. In *Proceedings of the IEEE/CVF International Conference on Computer Vision Workshops* (pp. 2809–2819). https://doi.org/10.1109/ICCVW54120.2021.00315
+
+Du, Y., Zhao, Z., Song, Y., Zhao, Y., Su, F., Gong, T., & Meng, H. (2023). StrongSORT: Make DeepSORT great again. *IEEE Transactions on Multimedia*, 25, 8725–8737. https://doi.org/10.1109/TMM.2023.3240881
 
 Evangelidis, G. D., & Psarakis, E. Z. (2008). Parametric image alignment using enhanced correlation coefficient maximization. *IEEE Transactions on Pattern Analysis and Machine Intelligence*, 30(10), 1858–1865. https://doi.org/10.1109/TPAMI.2008.113
 

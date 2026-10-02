@@ -610,3 +610,25 @@ like it should spread them and does the opposite — it lets a third float join 
 Tables stay top-or-float-page.
 
 34 pages, 2 overfull boxes both under 2 pt, verifier 715/715, manifest 343 files.
+
+## Six presentation requirements (2026-10-02)
+
+| Requirement | Found | Done |
+|---|---|---|
+| No interrogative sentences | 2 section titles and 3 sentences | §4 "How Accurate Is Compensation?" → "Compensation Is Accurate"; §5 "Does That Accuracy Matter?" → "What That Accuracy Is Worth"; three sentences restated as statements |
+| Fuller paragraphs, fewer fragments | 56 of 181 body paragraphs under 220 characters | the isolated opening sentences of §1 merged into the paragraphs they introduce |
+| No filenames in the text | none in §1–§9 | the two mentions of the verification script are in the Data and Code Availability and AI-assistance statements, where naming it is the point; kept, and flagged |
+| References ascending | **not sorted** — the two Du entries were reversed, StrongSORT (2023) before GIAOTracker (2021) although *Wan* precedes *Zhao* | the whole list re-sorted by author and checked in the generated LaTeX, 36 entries ascending |
+| Before and after mixed with conclusions | §3.2 and §6.4 | see below |
+
+**The before/after material in the argument is gone.** §3.2 opened a methods paragraph by describing
+what an earlier version of the analysis had asked and why it was the wrong question; it now states
+the criterion directly. §6.4's two controls reported their results and then narrated how each had
+been misread — "we briefly read it as evidence that the family was the whole problem", "we read that
+as evidence that the family was *not* the problem… the two errors point in opposite directions". The
+controls keep their evidential role, which is real: together they establish that what separates the
+warp families is whether the points they are fitted to vary in depth. What they no longer carry is
+the account of how the authors read them at the time. §9.4 and Supplementary S2 remain the place
+where earlier versions are recorded.
+
+34 pages, 36 references, verifier 715/715, manifest 343 files.
