@@ -47,7 +47,7 @@ c49458fb30d2ad9001164f41740de7cc06ad3addec81fa9c93687c6ddea0b28c  03_code/rac/bu
 
 # code — paper build and verification  (4 files)
 8bae0c905e9b2877c778278f9d45dd9f296d01e69e2a978fe066a9e173672b12  03_code/rac/make_figures.py
-bcdbc2008a5dcbb3f5694fdc474ccc0d1954199aa92a2433a59e24a43a414ea5  03_code/rac/build_latex.py
+3f526a11968e3f25180a33ed1551be8568c5c3b0956288a871b517d829a24e37  03_code/rac/build_latex.py
 48321c46961b0b24607dc3061b7ea16330789ee003b8d110106b31dc7a4e83df  03_code/rac/verify_numbers.py
 fcb2d314a4e97e9d3eec193accf746f0c168b440b2f1efd952c15255634479c8  03_code/rac/make_release.py
 
@@ -363,6 +363,6 @@ db75c2c35b7afcaa52dc0f6cd1e8f592324c40cd131e1fb82760ae8db2a4fa62  04_experiments
 
 # manuscript  (4 files)
 02e3c51c50591c8c58b8b1fc2db70c2fd1f8f6169aa9f1dd32102650a2db1e55  02_paper/manuscript.md
-555df60bed608e7c0ac78afc132ae12e0f34677d2d9aef58fa1425167cd857bf  02_paper/latex/manuscript.tex
+4a180509cc16f55f158452e9ae7669734b7be3a3e1a5fa60d0fd42e9f15af2b4  02_paper/latex/manuscript.tex
 dba7999155279035f451263d3317ac15e0ee8724dac82e5791584a1162c6513f  02_paper/REPRODUCE.md
 7d104807b06cbc2491fc2944dc0916691d1e13663858cfef7389688c842a372d  02_paper/supplementary.md

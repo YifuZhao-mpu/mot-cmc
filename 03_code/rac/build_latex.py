@@ -94,19 +94,34 @@ PREAMBLE = r"""\documentclass[sn-basic,iicol]{sn-jnl}
 \usepackage{longtable}
 \usepackage{array}
 \usepackage{tabularx}
-% Float placement. With LaTeX's defaults (topnumber 2, totalnumber 3,
-% topfraction 0.7) and 28 full-width table floats competing for page tops, every
-% one of the eight figures was deferred to the last two pages of the paper.
-\setcounter{topnumber}{3}
-\setcounter{bottomnumber}{2}
-\setcounter{totalnumber}{5}
-\setcounter{dbltopnumber}{3}
-\renewcommand{\topfraction}{0.9}
-\renewcommand{\bottomfraction}{0.6}
-\renewcommand{\textfraction}{0.07}
-\renewcommand{\floatpagefraction}{0.7}
-\renewcommand{\dbltopfraction}{0.9}
-\renewcommand{\dblfloatpagefraction}{0.7}
+% Float placement. Two competing failures. Left at the defaults, with every float
+% emitted after the body, all eight figures were deferred to the last two pages;
+% opened up far enough to fix that, three pages ended up carrying three floats
+% each while nineteen carried none. These are the middle: at most two floats to a
+% page, and at least 18 % of any page with floats given to text.
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{1}
+\setcounter{totalnumber}{2}
+\setcounter{dbltopnumber}{2}
+\renewcommand{\topfraction}{0.75}
+\renewcommand{\bottomfraction}{0.35}
+\renewcommand{\textfraction}{0.18}
+\renewcommand{\dbltopfraction}{0.75}
+% A float page is only worth making when it is nearly full. Left at 0.65 LaTeX
+% collected tables and figures onto pages of their own with no running text and
+% large gaps between them, which is the opposite of spreading them out.
+\renewcommand{\floatpagefraction}{0.9}
+\renewcommand{\dblfloatpagefraction}{0.9}
+% And if one is made anyway, pack it from the top rather than distributing the
+% floats down the page with stretch between them.
+\makeatletter
+\setlength{\@fptop}{0pt}
+\setlength{\@fpsep}{10pt plus 1fil}
+\setlength{\@fpbot}{0pt plus 1fil}
+\setlength{\@dblfptop}{0pt}
+\setlength{\@dblfpsep}{10pt plus 1fil}
+\setlength{\@dblfpbot}{0pt plus 1fil}
+\makeatother
 % verbatim in a two-column layout has one column to live in; the default
 % \small is too wide for a 58-character line and ran 242 pt past the column.
 \makeatletter\def\verbatim@font{\ttfamily\scriptsize}\makeatother
@@ -420,7 +435,11 @@ def detable(tex: str) -> str:
                 panel = (f"\\multicolumn{{{n}}}{{@{{}}l@{{}}}}{{\\emph{{{label}}}}}\\\\\n"
                          + panel)
             body.append(tab_open + "\n" + panel + "\n" + tab_close)
-        out.append(f"\\begin{{{env}}}[t]\n\\centering\n"
+        # Top of a page or a page of its own. Allowing the foot as well was
+        # measured and made the crowding worse, not better: it lets a third float
+        # join two that are already at the top.
+        where = "[tp]"
+        out.append(f"\\begin{{{env}}}{where}\n\\centering\n"
                    + (f"\\caption{{{cap}}}\\label{{tab:{num}}}\n" if cap else "")
                    + "\\footnotesize\n\\setlength{\\tabcolsep}{3pt}\n"
                    + "\n".join(body) + f"\n\\end{{{env}}}\n")

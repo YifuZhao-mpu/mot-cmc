@@ -586,3 +586,27 @@ under 2 pt.
 | F77 | **Panel labels rendered above their caption.** sn-jnl pins table captions to the top of the float, so a label emitted as a paragraph between the caption and the tabular was lifted above it: Table 8 read "*Pedestrian*" then "Table 8 KITTI tracking…". The label is now a `\multicolumn` row inside the tabular, where its position cannot be reordered. |
 
 `\tabcolsep` is 3 pt, which at seven columns returns 42 pt to the content.
+
+## Floats spread through the text (2026-10-02)
+
+The authors reported the tables and figures bunching up. Counting floats per page said three pages
+carried three each, but the count was the wrong instrument: rendering the worst of them showed
+**page 12 was a float page with no running text at all** — Table 2, Table 3 and Figure 2 with large
+gaps between them, while the text that discusses them ran elsewhere. That is what "bunched" meant.
+
+Two causes, both in settings I had loosened earlier to rescue the figures from the end of the paper.
+
+| F# | Finding |
+|---|---|
+| F78 | **The float parameters were open far enough to let a page be almost all float.** `totalnumber` 5, `topfraction` 0.9 and `textfraction` 0.07 permit five floats and 93 % of a page. Tightened to 2, 0.75 and 0.18: at most two floats to a page, and any page carrying one must still give 18 % to text. |
+| F79 | **`floatpagefraction` 0.65 invited LaTeX to build float pages.** A page of floats was worth making as soon as they filled 65 % of it, and with 21 full-width floats that happened readily. Raised to 0.9 for both the single- and double-column variants, so a float page is only built when it is nearly full, and `\@fptop`/`\@fpsep`/`\@fpbot` now pack any such page from the top instead of distributing its floats down the page with stretch. |
+
+Measured after: **no float-dominated page remains.** Every one of the 14 pages carrying a float also
+carries 2,555 to 3,951 characters of running text. Two pages hold three floats each and both carry
+over 3,500 characters, so they are dense rather than bunched.
+
+Also measured and rejected: allowing single-column tables at the foot of a page (`[tbp]`). It sounds
+like it should spread them and does the opposite — it lets a third float join two already at the top.
+Tables stay top-or-float-page.
+
+34 pages, 2 overfull boxes both under 2 pt, verifier 715/715, manifest 343 files.
