@@ -537,3 +537,27 @@ The authors propose none. The cover letter's placeholder section is removed rath
 a cover letter that says "to be completed by the authors" is worse than no section — and the
 checklist item is closed. The field is optional in Editorial Manager; left empty, reviewer selection
 passes to the editor.
+
+## Submission-ready (2026-10-02)
+
+Two-column confirmed by the authors. The measured basis for that choice is recorded in the checklist:
+the two-column build is 34 pages with 2 overfull boxes, both under 2 pt; single column is 48 pages
+with 128, because every table-width decision targets the two-column geometry (216 pt column, 455 pt
+text block).
+
+**Every item on the submission checklist is now closed.** The six that were open when this question
+was first asked — author order, CRediT roles, repository DOI, suggested reviewers, column format,
+and an unreviewed claim set — are each resolved, and the last of them by a review round that found
+and fixed real defects.
+
+Final pre-upload pass, run from a clean rebuild:
+
+| Check | Result |
+|---|---|
+| LaTeX compile | 0 errors, 0 undefined references |
+| Typeset | 34 pages, 16 tables, 8 figures, 2 overfull boxes (max 1.7 pt) |
+| `verify_numbers.py` | **715 / 715**, 0 problems |
+| `make_release.py --check` | **343 / 343** files by SHA-256 |
+| Placeholder scan over the package | none in the PDF; the 11 hits are `xxx` inside Springer's own `.cls` and `.bst` |
+| PDF spot checks | authors, corresponding author, archive DOI, CRediT, funding and competing-interests statements all present |
+| Package | 13 items, 8 figure PDFs, 423 KB manuscript |
