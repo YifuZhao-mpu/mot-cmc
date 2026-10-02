@@ -561,3 +561,28 @@ Final pre-upload pass, run from a clean rebuild:
 | Placeholder scan over the package | none in the PDF; the 11 hits are `xxx` inside Springer's own `.cls` and `.bst` |
 | PDF spot checks | authors, corresponding author, archive DOI, CRediT, funding and competing-interests statements all present |
 | Package | 13 items, 8 figure PDFs, 423 KB manuscript |
+
+## Tables into a single column where they fit (2026-10-02)
+
+The authors asked for tables in one column wherever possible. Deciding that needed real widths, so
+every one of the 160 table columns was boxed in LaTeX and measured. Two things came out of it.
+
+**The width estimator was 19 % too generous.** Regressing measured width on character count over the
+160 columns gives **3.795 pt per character** at `\footnotesize`, against the 4.5 the code had been
+assuming from overfull reports — which is why it had been sending almost everything to the full
+block. The code now carries the measured mean and, separately, the 95th-percentile figure (5.1) for
+the one decision where guessing low puts a table off the page.
+
+**Most of these tables genuinely cannot fit one column, and the measurement says exactly why.** Their
+numeric columns do not wrap, and for twenty of the thirty-one panels those columns *alone* are wider
+than a 216 pt column — one of them 331 pt. What can be done is to let the single wide text column
+wrap: nine panels become feasible that way, and `tabularx` targeted at `\columnwidth` sizes that
+column from LaTeX's own measurement of the others rather than from an estimate. The result is
+**7 of 28 floats in a single column**, up from 0, at 34 pages and the same 2 overfull boxes, both
+under 2 pt.
+
+| F# | Finding |
+|---|---|
+| F77 | **Panel labels rendered above their caption.** sn-jnl pins table captions to the top of the float, so a label emitted as a paragraph between the caption and the tabular was lifted above it: Table 8 read "*Pedestrian*" then "Table 8 KITTI tracking…". The label is now a `\multicolumn` row inside the tabular, where its position cannot be reordered. |
+
+`\tabcolsep` is 3 pt, which at seven columns returns 42 pt to the content.

@@ -181,10 +181,16 @@ def _balanced(tex: str, i: int) -> tuple[str, int]:
 CAPTION_PARA = re.compile(r"\n\\textbf\{Table (\d+)\}\s*(.*?)\n\s*\n", re.S)
 
 
-PT_PER_CHAR = 4.5   # \footnotesize, calibrated from the compiler's overfull reports
-TABCOLSEP_PT = 4.0  # tightened from the 6 pt default for these data tables
-COL_PT = 216.0      # \columnwidth, measured, not assumed      # one column, with a little margin
-FULL_PT = 455.0     # \textwidth, measured     # both columns, with a little margin
+# Calibrated by boxing all 160 table columns in LaTeX and regressing measured
+# width on character count: 3.795 pt per character at \footnotesize. Where
+# under-estimating a width causes an overflow rather than a missed opportunity,
+# the 95th-percentile figure is used instead.
+PT_PER_CHAR = 3.8
+PT_PER_CHAR_SAFE = 5.1
+TABCOLSEP_PT = 3.0  # tightened from the 6 pt default for these data tables
+COL_PT = 216.0      # \columnwidth, measured, not assumed
+FULL_PT = 455.0     # \textwidth, measured
+MIN_WRAP_PT = 55.0  # a wrapping column narrower than this breaks every other word
 
 
 def _col_chars(inner: str, ncol: int) -> list[int]:
@@ -207,37 +213,48 @@ def _col_chars(inner: str, ncol: int) -> list[int]:
 def _fit(inner: str, ncol: int) -> tuple[str, str, str]:
     """Choose the float environment and the tabular for a table.
 
-    Returns (float environment, tabular opening, tabular closing). A table that
-    fits one column stays in one. One that does not spans both columns as a
-    `tabular*` set to \textwidth, so that \extracolsep distributes the slack
-    between its columns: measured, these tables occupy 44 to 89 % of the width, so
-    left as plain tabulars they stranded up to half the block empty. A table too
-    wide even for that gives its widest column the leftover space as a wrapping
-    p-column, so the text breaks instead of the page.
+    A table belongs in one column whenever it can be made to fit one: a two-column
+    page reads better with its tables in the text than with every one of them
+    spanning the block. Most of these cannot. Their numeric columns do not wrap,
+    and for twenty of the thirty-one panels those columns alone are wider than a
+    column. The ladder is: fit one column as it stands; fit one column by letting
+    the widest column wrap; span both columns, filling the block; span both and
+    wrap. Widths use the conservative calibration, because guessing low here puts
+    a table off the page.
     """
     w = _col_chars(inner, ncol)
-    # \tabcolsep is inserted on both sides of every column and is not free: at
-    # seven columns it is worth more than eighty points, which is a third of a
-    # column. Ignoring it is what put a 37-character table past its column by 120.
-    total = sum(w) * PT_PER_CHAR + 2 * TABCOLSEP_PT * ncol
-    if total <= COL_PT:
-        return ("table", "\\begin{tabular}{@{}" + "l" * ncol + "@{}}",
-                "\\end{tabular}")
-    if total <= FULL_PT:
+    sep = 2 * TABCOLSEP_PT * ncol
+    natural = sum(w) * PT_PER_CHAR_SAFE + sep
+    if natural <= COL_PT:
+        return ("table", "\\begin{tabular}{@{}" + "l" * ncol + "@{}}", "\\end{tabular}")
+
+    # For the wrapping branch the conservative figure is the wrong one to use.
+    # tabularx forces the total to the target width, so under-estimating the other
+    # columns squeezes the wrapping column rather than pushing the table off the
+    # page, and MIN_WRAP_PT guards against squeezing it too far. The measured mean
+    # plus a small margin keeps more tables in one column at no risk of overflow.
+    j = max(range(ncol), key=lambda i: w[i])
+    others = (sum(w) - w[j]) * (PT_PER_CHAR + 0.4) + sep
+    room = COL_PT - others
+    if room >= MIN_WRAP_PT and w[j] * PT_PER_CHAR_SAFE > room:
+        cols = ["l"] * ncol
+        cols[j] = r">{\raggedright\arraybackslash}X"
+        return ("table",
+                "\\begin{tabularx}{\\columnwidth}{@{}" + "".join(cols) + "@{}}",
+                "\\end{tabularx}")
+
+    if natural <= FULL_PT:
         return ("table*",
                 "\\begin{tabular*}{\\textwidth}{@{\\extracolsep{\\fill}}"
                 + "l" * ncol + "@{}}",
                 "\\end{tabular*}")
-    # Too wide even for the full block: the widest column wraps and absorbs
-    # whatever the others leave. tabularx computes that width from LaTeX's own
-    # measurement of the other columns; estimating it here from character counts
-    # left the column too narrow and the text collapsed into a ragged tower.
-    j = max(range(ncol), key=lambda i: w[i])
+
     cols = ["l"] * ncol
     cols[j] = r">{\raggedright\arraybackslash}X"
     return ("table*",
             "\\begin{tabularx}{\\textwidth}{@{}" + "".join(cols) + "@{}}",
             "\\end{tabularx}")
+
 
 
 def _aspect(pdf: str) -> float:
@@ -392,16 +409,20 @@ def detable(tex: str) -> str:
         # full width about 500 pt.
         # One float per caption, however many panels it has: the widest panel
         # decides the width so that the panels line up under one another.
-        widest = max(cleaned, key=lambda c: len(_clean_panel(c[1])))
+        widest = max(cleaned, key=lambda c: sum(_col_chars(c[1], c[2])))
         env, tab_open, tab_close = _fit(widest[1], ncol)
         body = []
-        for label, panel, _n in cleaned:
+        for label, panel, n in cleaned:
             if label:
-                body.append(f"\\smallskip\\noindent\\emph{{{label}}}\\par\\smallskip")
+                # The label goes inside the tabular, as a row above the rule. As a
+                # paragraph between the caption and the table it rendered *above*
+                # the caption: sn-jnl pins table captions to the top of the float.
+                panel = (f"\\multicolumn{{{n}}}{{@{{}}l@{{}}}}{{\\emph{{{label}}}}}\\\\\n"
+                         + panel)
             body.append(tab_open + "\n" + panel + "\n" + tab_close)
         out.append(f"\\begin{{{env}}}[t]\n\\centering\n"
                    + (f"\\caption{{{cap}}}\\label{{tab:{num}}}\n" if cap else "")
-                   + "\\footnotesize\n\\setlength{\\tabcolsep}{4pt}\n"
+                   + "\\footnotesize\n\\setlength{\\tabcolsep}{3pt}\n"
                    + "\n".join(body) + f"\n\\end{{{env}}}\n")
     return "".join(out)
 
