@@ -71,11 +71,6 @@ Macao Polytechnic University, Macao 999078, China · yapengwang@mpu.edu.mo
 
 ---
 
-## Suggested reviewers
-
-[To be completed by the authors. We note that the authors of BoT-SORT, UCMCTrack and EMAP are all
-directly concerned by the results and would be well placed to find any remaining error.]
-
 ## Statements
 
 - **Competing interests**: none.

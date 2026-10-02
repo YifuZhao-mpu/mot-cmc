@@ -530,3 +530,10 @@ the badge, and the submission checklist's DOI item is closed.
 A `v1.0.1` follows immediately, so that the archived snapshot itself contains the DOI rather than the
 placeholder it was tagged with. It lands under the same concept DOI, which is why the paper cites
 that one.
+
+## Suggested reviewers: none (2026-10-02)
+
+The authors propose none. The cover letter's placeholder section is removed rather than left empty —
+a cover letter that says "to be completed by the authors" is worse than no section — and the
+checklist item is closed. The field is optional in Editorial Manager; left empty, reviewer selection
+passes to the editor.
