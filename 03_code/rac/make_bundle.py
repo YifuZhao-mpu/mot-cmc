@@ -315,7 +315,7 @@ moved or renamed freely.
 | CRediT contributions | supplied and set |
 | Funding, ethics, AI-disclosure, competing interests | present |
 | Repository | <https://github.com/YifuZhao-mpu/mot-cmc> |
-| Archived DOI | outstanding -- enable the repository in Zenodo, publish a release, then replace the placeholder in the Data and Code Availability statement |
+| Archived DOI | <https://doi.org/10.5281/zenodo.23092962> (all versions) |
 | Suggested reviewers | outstanding -- the cover letter leaves the list to the authors |
 | Single- vs two-column | outstanding -- the build is two-column; one flag in `build_latex.py` switches it |
 """

@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23092962.svg)](https://doi.org/10.5281/zenodo.23092962)
+
 # Camera-Motion Compensation Is Not the Bottleneck
 
 Measurement code and data for *Camera-Motion Compensation Is Not the Bottleneck: A Measurement

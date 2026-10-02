@@ -9,6 +9,16 @@ abstract: >-
 type: software
 license: MIT
 repository-code: "https://github.com/YifuZhao-mpu/mot-cmc"
+doi: "10.5281/zenodo.23092962"
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.23092962"
+    description: "All versions"
+  - type: doi
+    value: "10.5281/zenodo.23092963"
+    description: "Version 1.0.0"
+version: "1.0.0"
+date-released: "2026-10-02"
 keywords:
   - multi-object tracking
   - camera motion compensation

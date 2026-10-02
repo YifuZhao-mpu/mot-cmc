@@ -508,3 +508,25 @@ A duplicated cost sentence left by an earlier edit was removed.
 | F76 | **The Chinese abstract carried two intervals from before the estimator correction.** It gave the per-target-minus-homography comparison as car −0.01 [−0.53, +0.45] and pedestrian +0.42 [−0.03, +1.00]; the refitted values are −0.073 [−0.624, +0.392] and +0.366 [−0.035, +0.986]. Nothing pointed at it because the file is not submitted and nothing checked it. Corrected, and `check_chinese_abstract` now requires every figure in it to be the manuscript's own value or a rounding of it — the file rounds to two decimals where the paper gives three. Mutation-tested. |
 
 **Verifier**: 714 → **715**.
+
+## Archived, and the DOI is in the paper (2026-10-02)
+
+Zenodo's GitHub switch would not show the repository because its repository list is cached from the
+original authorisation and `mot-cmc` was created afterwards; a sync fixed it. The webhook attached
+(listening on `release`), `v1.0.0` was published, and GitHub's delivery log shows Zenodo accepting it
+(202) before two duplicate deliveries returned 500 and 409 — the record was already made.
+
+| | DOI |
+|---|---|
+| **Concept, all versions** | **10.5281/zenodo.23092962** |
+| Version v1.0.0 | 10.5281/zenodo.23092963 |
+
+Every field came through from `.zenodo.json`: seven creators in the settled order with their ORCIDs
+and affiliations, MIT, open access, keywords. The Data and Code Availability statement now cites the
+**concept** DOI, which resolves to the latest version, and names the version DOI beside it, so the
+citation survives any later release. `CITATION.cff` carries both as identifiers, the README carries
+the badge, and the submission checklist's DOI item is closed.
+
+A `v1.0.1` follows immediately, so that the archived snapshot itself contains the DOI rather than the
+placeholder it was tagged with. It lands under the same concept DOI, which is why the paper cites
+that one.
