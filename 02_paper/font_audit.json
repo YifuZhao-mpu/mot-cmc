@@ -1,0 +1,133 @@
+{
+  "date": "2026-10-03",
+  "guidelines": "https://link.springer.com/journal/11263/submission-guidelines",
+  "table_body_font": "Latin Modern",
+  "table_body_size_tex_pt": 8.5,
+  "table_body_size_pdf_pt": 8.468,
+  "figure_font": "DejaVu Sans",
+  "figure_font_size_pt": [
+    8.5,
+    9.0
+  ],
+  "png_export_dpi": 600,
+  "figures": [
+    {
+      "file": "F8_signal_selection.pdf",
+      "width_pt": 215.19,
+      "font_min_pt": 8.5,
+      "font_max_pt": 9.0,
+      "families": [
+        "DejaVuSans"
+      ],
+      "embedded": true,
+      "figure_number": 1
+    },
+    {
+      "file": "F1_value_axis.pdf",
+      "width_pt": 453.3,
+      "font_min_pt": 8.5,
+      "font_max_pt": 9.0,
+      "families": [
+        "DejaVuSans"
+      ],
+      "embedded": true,
+      "figure_number": 2
+    },
+    {
+      "file": "F2_reliability.pdf",
+      "width_pt": 453.3,
+      "font_min_pt": 8.5,
+      "font_max_pt": 9.0,
+      "families": [
+        "DejaVuSans"
+      ],
+      "embedded": true,
+      "figure_number": 3
+    },
+    {
+      "file": "F3_spread_vs_depth.pdf",
+      "width_pt": 453.3,
+      "font_min_pt": 8.5,
+      "font_max_pt": 9.0,
+      "families": [
+        "DejaVuSans"
+      ],
+      "embedded": true,
+      "figure_number": 4
+    },
+    {
+      "file": "F4_warp_family.pdf",
+      "width_pt": 453.3,
+      "font_min_pt": 8.5,
+      "font_max_pt": 9.0,
+      "families": [
+        "DejaVuSans"
+      ],
+      "embedded": true,
+      "figure_number": 5
+    },
+    {
+      "file": "F5_forest.pdf",
+      "width_pt": 453.3,
+      "font_min_pt": 8.5,
+      "font_max_pt": 9.0,
+      "families": [
+        "DejaVuSans"
+      ],
+      "embedded": true,
+      "figure_number": 6
+    },
+    {
+      "file": "F6_mechanism.pdf",
+      "width_pt": 215.19,
+      "font_min_pt": 8.5,
+      "font_max_pt": 9.0,
+      "families": [
+        "DejaVuSans"
+      ],
+      "embedded": true,
+      "figure_number": 7
+    },
+    {
+      "file": "F7_depth_noise.pdf",
+      "width_pt": 453.3,
+      "font_min_pt": 8.5,
+      "font_max_pt": 9.0,
+      "families": [
+        "DejaVuSans"
+      ],
+      "embedded": true,
+      "figure_number": 8
+    }
+  ],
+  "documents": {
+    "manuscript": {
+      "pages": 25,
+      "font_programs": 31,
+      "all_fonts_embedded": true,
+      "blank_pages": 0,
+      "table_blocks": 26,
+      "table_font_declarations": 26,
+      "overflow": 0,
+      "missing_glyphs": 0,
+      "undefined_citations": 0,
+      "headings": 59,
+      "placed_figure_font_range_pdf_pt": [
+        8.505,
+        9.011
+      ]
+    },
+    "supplementary": {
+      "pages": 2,
+      "font_programs": 11,
+      "all_fonts_embedded": true,
+      "blank_pages": 0,
+      "table_blocks": 2,
+      "table_font_declarations": 2,
+      "overflow": 0,
+      "missing_glyphs": 0,
+      "undefined_citations": 0,
+      "headings": 3
+    }
+  }
+}

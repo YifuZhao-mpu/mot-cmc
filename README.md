@@ -1,29 +1,21 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23092962.svg)](https://doi.org/10.5281/zenodo.23092962)
 
-# Camera-Motion Compensation Is Not the Bottleneck
+# Camera-Motion Compensation in Tracking-by-Detection
 
-Measurement code and data for *Camera-Motion Compensation Is Not the Bottleneck: A Measurement
-Study of Shared Warps in Tracking-by-Detection*.
+Measurement code and data for *Camera-Motion Compensation in Tracking-by-Detection: Accuracy Headroom and Depth-Aware Shared Warps*.
 
-The paper proposes no new tracker. It measures a quantity the field has not measured — what a
-**perfect** camera-motion warp would be worth once a working compensator is already in place — and
-reports what follows from measuring it.
+The study measures compensation-accuracy headroom through reference-warp substitution and evaluates depth-aware shared correction under camera translation. Its experiments connect geometric residuals, association-gate changes and tracking outcomes.
 
-## What it found
+## Main Findings
 
 - On the MOT17 sequences that actually have camera motion, replacing the online estimate with a
-  non-causal oracle warp is worth **−0.04 HOTA** (95 % CI [−0.20, +0.05]) without an appearance
+  non-causal reference warp is worth **−0.04 HOTA** (95 % CI [−0.20, +0.05]) without an appearance
   channel and **+0.19** [+0.05, +0.52] with one, against **+3.43** [+1.01, +5.52] for having a
   working compensator at all.
-- The error a perfect warp removes changes the association gate's decision for **34 of 109,955**
+- The reference substitution changes the association gate's decision for **34 of 109,955**
   ground-truth pairs, harmfully.
-- On KITTI, where the camera translates, a shared 4-DOF warp is genuinely inadequate — but the
-  missing ingredient is **depth**, not per-object treatment. A global homography fitted to
-  background points at their monocularly estimated depths cuts the within-frame residual spread
-  from **8.67 px to 1.37 px**, beats the compensator BoT-SORT ships by **+1.19 HOTA** [+0.26, +1.92]
-  on cars, and reduces pedestrian identity switches from **126 to 85**.
-- A per-target correction given ground-truth depth *and* ground-truth association adds nothing on
-  top of it.
+- On KITTI, a depth-aware global homography uses sensor ego-motion and estimated background depths on moving frames, with the near-static fallback specified in the paper. It reduces within-frame residual spread from **8.67 px to 1.37 px** and improves car HOTA by **+1.19** [+0.26, +1.92] over online compensation. Pedestrian identity switches fall from **126 to 97**, or **85** with contact-point application.
+- The shared model provides spatially varying correction without per-object association. The annotation-assisted per-target HOTA contrast against the homography is **−0.073 [−0.624, +0.392]** on cars and **+0.366 [−0.035, +0.986]** on pedestrians.
 
 ## Verifying the paper's numbers
 
@@ -34,16 +26,7 @@ mismatch:
 python 03_code/rac/verify_numbers.py
 ```
 
-It checks **710 values and provenance properties** from a fresh clone — the provenance checks read
-the released TrackEval output rather than the raw per-frame dumps, which are not redistributed, so
-this command works for you and not only for us. Every cell of every table and every confidence
-interval is parsed out of the manuscript itself and recomputed, so the paper cannot drift from its
-own evidence; the provenance checks cover which run feeds which table, whether any configuration is
-silently switched off, and whether the reproduction page still maps every table and names only
-commands that exist. The provenance checks exist because the two most serious
-defects found in review were of that kind: a warp bundle that was the identity on 36 % of moving
-frames, and an oracle configuration that reverted to the online estimate on 18 % of the hardest
-sequence. A value-only checker passed both.
+The verifier checks numerical values and source provenance against the released CSVs, warp bundles and TrackEval output. It directly reads printed tracking, reliability and geometry tables, confidence intervals, timing samples and class-exposure percentages from the manuscript and supplementary material. It also checks which runs support the comparisons, sequence coverage and the reproduction commands. `--list` identifies three instrument and reproducibility checks handled separately.
 
 ```bash
 python 03_code/rac/make_release.py --check   # SHA-256 of every released file
@@ -60,8 +43,8 @@ tree out anywhere.
 | Path | Contents |
 |---|---|
 | `02_paper/` | the manuscript in Markdown, supplementary material, cover letter, and the review and integrity records |
-| `03_code/rac/` | 40 analysis scripts and 4 shell drivers — the whole measurement stack |
-| `04_experiments/` | 21 result CSVs, detection manifests with per-file SHA-256, TrackEval summaries for all 61 tracker runs |
+| `03_code/rac/` | 43 analysis scripts and 4 shell drivers — the whole measurement stack |
+| `04_experiments/` | 22 result CSVs, detection manifests with per-file SHA-256, TrackEval summaries for all 63 tracker runs |
 | `05_figures/` | the eight figures, PDF and PNG |
 | `99_artifacts/RELEASE/` | SHA-256 manifest, per-artefact reproduction commands, and what is not redistributed |
 | `00_pipeline/` | the running record of the work, including every claim withdrawn and why |
@@ -79,7 +62,7 @@ id in the manuscript.
 
 ## A note on the record
 
-`00_pipeline/state.md` and §9.4 of the manuscript record eight claims withdrawn over the course of
+`00_pipeline/state.md` records eight claims withdrawn over the course of
 this work, four of them our own replacements for earlier withdrawn claims. Three were artefacts of
 how an experiment was constructed rather than of the quantity being measured, and two of those were
 found by a reviewer *executing* this code rather than reading the paper. The record is kept because

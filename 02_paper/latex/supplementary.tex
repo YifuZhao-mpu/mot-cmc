@@ -1,0 +1,171 @@
+\documentclass[sn-basic,Numbered]{sn-jnl}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{booktabs}
+\usepackage[T1]{fontenc}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{xurl}
+\urlstyle{same}
+% Float placement. Two competing failures. Left at the defaults, with every float
+% emitted after the body, all eight figures were deferred to the last two pages;
+% opened up far enough to fix that, three pages ended up carrying three floats
+% each while nineteen carried none. These are the middle: at most two floats to a
+% page, and at least 18 % of any page with floats given to text.
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{1}
+\setcounter{totalnumber}{2}
+\setcounter{dbltopnumber}{2}
+\renewcommand{\topfraction}{0.75}
+\renewcommand{\bottomfraction}{0.35}
+\renewcommand{\textfraction}{0.18}
+\renewcommand{\dbltopfraction}{0.75}
+% A float page is only worth making when it is nearly full. Left at 0.65 LaTeX
+% collected tables and figures onto pages of their own with no running text and
+% large gaps between them, which is the opposite of spreading them out.
+\renewcommand{\floatpagefraction}{0.9}
+\renewcommand{\dblfloatpagefraction}{0.9}
+% And if one is made anyway, pack it from the top rather than distributing the
+% floats down the page with stretch between them.
+\makeatletter
+\setlength{\@fptop}{0pt}
+\setlength{\@fpsep}{10pt plus 1fil}
+\setlength{\@fpbot}{0pt plus 1fil}
+\setlength{\@dblfptop}{0pt}
+\setlength{\@dblfpsep}{10pt plus 1fil}
+\setlength{\@dblfpbot}{0pt plus 1fil}
+\makeatother
+% verbatim in a two-column layout has one column to live in; the default
+% \small is too wide for a 58-character line and ran 242 pt past the column.
+\makeatletter\def\verbatim@font{\ttfamily\scriptsize}\makeatother
+\usepackage{calc}
+\usepackage{listings}
+% T1/Latin Modern silently drops Greek and several maths symbols under XeTeX,
+% which matters here because the reliability signals are named by Greek letters.
+\usepackage{newunicodechar}
+\newunicodechar{α}{\ensuremath{\alpha}}
+\newunicodechar{ε}{\ensuremath{\varepsilon}}
+\newunicodechar{θ}{\ensuremath{\theta}}
+\newunicodechar{ρ}{\ensuremath{\rho}}
+\newunicodechar{φ}{\ensuremath{\varphi}}
+\newunicodechar{σ}{\ensuremath{\sigma}}
+\newunicodechar{τ}{\ensuremath{\tau}}
+\newunicodechar{κ}{\ensuremath{\kappa}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{−}{\ensuremath{-}}
+\newunicodechar{×}{\ensuremath{\times}}
+\newunicodechar{±}{\ensuremath{\pm}}
+\newunicodechar{≥}{\ensuremath{\geq}}
+\newunicodechar{≤}{\ensuremath{\leq}}
+\newunicodechar{≈}{\ensuremath{\approx}}
+\newunicodechar{→}{\ensuremath{\rightarrow}}
+\newunicodechar{⟺}{\ensuremath{\Longleftrightarrow}}
+\newunicodechar{⁻}{\ensuremath{^{-}}}
+\newunicodechar{¹}{\ensuremath{^{1}}}
+\newunicodechar{·}{\ensuremath{\cdot}}
+\newunicodechar{§}{\S}
+\newunicodechar{…}{\dots}
+\newunicodechar{ć}{\'{c}}
+\newunicodechar{š}{\v{s}}
+\lstset{basicstyle=\ttfamily\scriptsize,breaklines=true,frame=none,columns=fullflexible}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+% sn-jnl loads breakurl, which emits dvips PostScript specials and breaks under
+% XeTeX/tectonic. Neutralise it; URLs still typeset, they just do not line-break.
+\makeatletter
+\providecommand\headerps@out[1]{}
+\let\headerps@out\@gobble
+% breakurl also replaces \url with a dvips-only implementation (\pdf@box);
+% hyperref's \nolinkurl typesets the same text and works under XeTeX.
+\AtBeginDocument{\let\url\nolinkurl}
+\makeatother
+% sn-jnl's \orcidlogo hard-codes Orcidlogo.eps, which XeTeX cannot read.
+% Point it at the PDF shipped alongside; the mark renders identically.
+\makeatletter
+\def\orcidlogo{\raisebox{-0.5pt}{\includegraphics[height=7.5pt]{Orcidlogo-eps-converted-to.pdf}}}
+\makeatother
+\theoremstyle{thmstyleone}
+\newtheorem{theorem}{Theorem}
+
+\begin{document}
+\title{Supplementary Material}
+\author[1]{\fnm{Yifu}\sur{Zhao}\orcid{https://orcid.org/0009-0004-2363-9269}}\email{p2523269@mpu.edu.mo}
+\author[2]{\fnm{Xiaofan}\sur{Zou}\orcid{https://orcid.org/0009-0005-5995-3150}}\email{xiaofanz@shu.edu.cn}
+\author[1]{\fnm{Yanxiao}\sur{Li}\orcid{https://orcid.org/0009-0008-3389-1619}}\email{p2525981@mpu.edu.mo}
+\author[1]{\fnm{Junhao}\sur{Wei}\orcid{https://orcid.org/0009-0006-0553-2032}}\email{p2312195@mpu.edu.mo}
+\author[3]{\fnm{Sio-Kei}\sur{Im}\orcid{https://orcid.org/0000-0002-5599-4300}}\email{marcusim@mpu.edu.mo}
+\author*[1]{\fnm{Yapeng}\sur{Wang}\orcid{https://orcid.org/0000-0002-1085-5091}}\email{yapengwang@mpu.edu.mo}
+\author[1]{\fnm{Xu}\sur{Yang}\orcid{https://orcid.org/0000-0002-7037-3609}}\email{xuyang@mpu.edu.mo}
+\affil*[1]{\orgdiv{Faculty of Applied Sciences}, \orgname{Macao Polytechnic University}, \city{Macao}, \postcode{999078}, \country{China}}
+\affil[2]{\orgdiv{School of Mechanical and Electrical Engineering and Automation}, \orgname{Shanghai University}, \city{Shanghai}, \postcode{200444}, \country{China}}
+\affil[3]{\orgname{Macao Polytechnic University}, \city{Macao}, \postcode{999078}, \country{China}}
+\maketitle
+\raggedbottom
+\begin{center}\textit{International Journal of Computer Vision}\end{center}
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\thetable}{S\arabic{table}}
+\emph{Camera-Motion Compensation in Tracking-by-Detection: Accuracy Headroom and Depth-Aware Shared Warps} The released measurements and evaluation summaries provide the numerical sources for the supplementary tables and main-text results.
+
+\section{Reliability-Signal Subsets on MOT17}\label{reliability-signal-subsets-on-mot17}
+
+Section 4.4 identifies the median transfer residual as a compact reliability signal: its AUC of 0.866 matches the best two-signal subset. Table S1 gives the best subset at each size under leave-one-sequence-out over the seven MOT17 sequences.
+
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{table*}[tp]
+\centering
+\caption{Reliability-signal subsets and held-out AUC.}\label{tab:1}
+\fontsize{8.5}{10.5}\selectfont
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}llll@{}}
+\toprule
+Subset size & Best subset & Held-out AUC & Worst sequence \\
+\midrule
+
+\bottomrule
+
+\textbf{1} & \textbf{ε} & \textbf{0.866} & 0.779 \\
+2 & n + ε & 0.866 & 0.779 \\
+3 & ρ + n + ε & 0.864 & 0.780 \\
+4 & ρ + n + ε + κ & 0.860 & 0.766 \\
+5 & ρ + n + ε + κ + φ & 0.854 & 0.770 \\
+6 & all & 0.774 & 0.614 \\
+\end{tabular*}
+\end{table*}
+
+}
+
+Figure 1 plots every subset. The release includes measurements for all 63 non-empty subsets.
+
+\section{Measurement Conventions}\label{measurement-conventions}
+
+The target-fitted similarity uses least squares over camera-induced correspondences derived from sensor ego-motion and annotated object depths. Background-fitted models use robust estimation over monocular-depth correspondences. The per-target reference uses annotated association; the global homography uses estimated background depth on moving frames and the annotation-anchored near-static fallback defined in the main text. All reported MOT17 oracle comparisons use strict reference substitution.
+
+
+{\def\LTcaptype{none} % do not increment counter
+\begin{table}[tp]
+\centering
+\caption{Within-frame residual spread after target-fitted similarity over 4,318 moving frames.}\label{tab:2}
+\fontsize{8.5}{10.5}\selectfont
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabularx}{\columnwidth}{@{}>{\raggedright\arraybackslash}Xllll@{}}
+\toprule
+Estimator & Median & p90 & Max & \textgreater{} 5 px \\
+\midrule
+
+\bottomrule
+
+Least squares & \textbf{2.431 px} & \textbf{10.114} & \textbf{67.7} & \textbf{27.12 \%} \\
+\end{tabularx}
+\end{table}
+
+}
+
+\section{Controls for Class-Specific Outcomes}\label{controls-for-class-specific-outcomes}
+
+Both are measured over the 31,470 object-frames that lie in moving frames with at least two annotated objects --- 23,348 car and 8,122 pedestrian or cyclist. \textbf{Depth-Offset Control.} The median of \textbar log(z\_object / z\_frame-median)\textbar{} is \textbf{0.325 for cars} and \textbf{0.246 for pedestrians and cyclists}; a one-sided Mann--Whitney test for larger pedestrian/cyclist depth offsets returns p = 1.000. These measurements separate depth offset from the class-level tracking outcome. \textbf{Width-Normalised Exposure.} The disagreement between an object's own warp and the shared warp exceeds one third of the object's box width --- roughly where a pure translation drops IoU below the gate --- in \textbf{3.28 \%} of car object-frames and \textbf{3.23 \%} of pedestrian ones. The two classes have similar width-normalised exposure. These controls distinguish class-level tracking outcomes from depth offset and width-normalised exposure alone.
+
+\end{document}

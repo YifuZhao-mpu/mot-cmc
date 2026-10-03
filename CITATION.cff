@@ -1,10 +1,9 @@
 cff-version: 1.2.0
 message: "If you use this software or data, please cite the paper."
-title: "Camera-Motion Compensation Is Not the Bottleneck: measurement code and data"
+title: "Camera-Motion Compensation in Tracking-by-Detection: measurement code and data"
 abstract: >-
   Measurement code, frozen-detection manifests, per-sequence TrackEval output and
-  figures for the paper "Camera-Motion Compensation Is Not the Bottleneck: A
-  Measurement Study of Shared Warps in Tracking-by-Detection", including a script
+  figures for the paper "Camera-Motion Compensation in Tracking-by-Detection: Accuracy Headroom and Depth-Aware Shared Warps", including a script
   that recomputes every number the paper prints from source.
 type: software
 license: MIT
@@ -59,7 +58,7 @@ authors:
     affiliation: "Faculty of Applied Sciences, Macao Polytechnic University"
 preferred-citation:
   type: article
-  title: "Camera-Motion Compensation Is Not the Bottleneck: A Measurement Study of Shared Warps in Tracking-by-Detection"
+  title: "Camera-Motion Compensation in Tracking-by-Detection: Accuracy Headroom and Depth-Aware Shared Warps"
   journal: "International Journal of Computer Vision"
   year: 2026
   status: submitted

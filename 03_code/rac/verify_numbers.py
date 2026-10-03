@@ -233,6 +233,30 @@ def check_kitti_geometry() -> None:
 
     p = pd.read_csv(f"{E}/kitti_parallax.csv")
     check("6.2 parallax frames", 6416, len(p), tol=0.5)
+    # Parse the printed cells: a source-only constant check cannot catch an old
+    # fit's residuals left in the manuscript after the least-squares refit.
+    text = _P(MD).read_text()
+    section = text.split("### 6.2 ", 1)[1].split("### 6.3 ", 1)[0]
+    tables = md_tables(section)
+    expected = ("No compensation", "Rotation homography", "Least-squares similarity")
+    models = ("identity", "rotH", "bestsim")
+    rows = tables[0][1][1:]
+    if len(rows) != len(models):
+        FAILS.append("PARSE       6.2 needs three compensation-model rows")
+    else:
+        for row, prefix, model in zip(rows, expected, models):
+            if not row[0].replace("**", "").startswith(prefix):
+                FAILS.append(f"PARSE       6.2 unexpected model row: {row[0]}")
+                continue
+            residual = p[f"err_{model}_med"]
+            actual = (residual.median(), residual.quantile(.9), residual.max())
+            for label, cell, value, tol in zip(
+                    ("median", "p90", "max"), row[1:], actual, (5e-4, 5e-4, 5e-2)):
+                claimed = num(cell)
+                if claimed is None:
+                    FAILS.append(f"PARSE       6.2 {model}/{label}: {cell}")
+                else:
+                    check(f"MS 6.2 {model}/{label}", claimed, value, tol)
 
     mc = pd.read_csv(f"{E}/kitti_model_class.csv")
     mc = mc[mc.trans_m > 0.05]
@@ -543,17 +567,17 @@ MANUSCRIPT_TABLES = {
         ("pedestrian", {"| none ": "v3_none", "online sparse-flow": "v3_online",
                         "global similarity (oracle)": "v4_global_oracle",
                         "pedestrian-anchored": "anch_ped",
-                        "depth-aware global homography (deployable)": "planar2_homography",
-                        "contact point (deployable)": "planar2_homography_foot",
+                        "depth-aware global homography (estimated depth)": "planar2_homography",
+                        "contact point (estimated depth)": "planar2_homography_foot",
                         "per-target similarity (oracle": "v4_per_target"}),
         ("car", {"| none ": "v3_none", "online sparse-flow": "v3_online",
                  "global similarity (oracle)": "v4_global_oracle",
                  "car-anchored": "anch_car",
-                 "depth-aware global homography (deployable)": "planar2_homography",
-                 "contact point (deployable)": "planar2_homography_foot",
+                 "depth-aware global homography (estimated depth)": "planar2_homography",
+                 "contact point (estimated depth)": "planar2_homography_foot",
                  "per-target similarity (oracle": "v4_per_target"}),
     ],
-    "The deployable ladder on KITTI": [
+    "Estimated-depth configurations on KITTI": [
         ("pedestrian", {"| none ": "v3_none", "| online GMC": "v3_online",
                         "global similarity, estimated depth": "dep_global_oracle",
                         "per-target, estimated depth": "dep_per_target_depth",
@@ -828,7 +852,7 @@ def check_figure_order():
         globals()["OKS"] = OKS + 1
 
 
-FIG_ORDER = ["F8", "F1", "F2", "F3", "F4", "F5", "F6", "F7"]
+FIG_ORDER = ["F0", "F8", "F1", "F2", "F3", "F4", "F5", "F6", "F7"]
 
 
 def check_availability_counts():
@@ -898,7 +922,7 @@ def check_background_point_counts():
     check("7.3 n_bg median", float(m.group(1)), med, 0.5)
     check("7.3 n_bg q25", float(m.group(2)), q25, 0.5)
     check("7.3 n_bg q75", float(m.group(3)), q75, 0.5)
-    m = re.search(r"of which there is a median of (\d+)", text)
+    m = re.search(r"(?:of which there is a median of|compared with a median of) (\d+)", text)
     check("7.3 n_obj median", float(m.group(1)) if m else -1, d.n_obj.median(), 0.5)
     m = re.search(r"(\d+) against (\d+) at the\s+median", text)
     if m:
@@ -1035,6 +1059,175 @@ def _bci():
     return m
 
 
+def check_printed_measurement_tables():
+    """Compare printed summaries with current sources, including unnumbered tables."""
+    text = _P(MD).read_text()
+    tables = md_tables(text)
+
+    def table(caption):
+        matches = [rows for ctx, rows in tables if ctx.startswith(caption)]
+        if len(matches) != 1:
+            raise ValueError(f"expected one table for {caption}, found {len(matches)}")
+        return matches[0]
+
+    def cell(label, printed, actual):
+        cleaned = printed.replace("**", "").replace(",", "").replace("−", "-")
+        match = re.fullmatch(r"\s*([+-]?\d+(?:\.\d+)?)\s*(?:px|%|ms|fps)?\s*", cleaned)
+        if not match:
+            FAILS.append(f"PARSE       {label}: {printed}")
+            return
+        value = match.group(1)
+        decimals = len(value.split(".")[1]) if "." in value else 0
+        check(label, float(value), actual, 0.5 * 10 ** -decimals + 1e-9)
+
+    # Reliability summaries: counts and percentages are separately checked.
+    rows = table("**Table 1**")
+    for col, dataset in enumerate(rows[0][1:], 1):
+        d = pd.read_csv(f"{E}/{dataset.lower()}_gmc_scan.csv")
+        d = d[~d.first_frame.astype(bool) & d.n_inliers.notna()]
+        values = [len(d), d.inlier_ratio.median(), d.resid_median.median(),
+                  d.resid_median.quantile(.95), d.displacement.median(),
+                  d.temporal_resid.median()]
+        for row, value in zip(rows[1:7], values):
+            cell(f"MS T1 {dataset}/{row[0]}", row[col], value)
+        counts = [(d.n_inliers < 100).sum(), (d.n_inliers < 300).sum(),
+                  (d.resid_median > 2).sum(), (d.inlier_ratio < .7).sum(),
+                  (d.frac_inliers_in_det > .7).sum()]
+        for row, value in zip(rows[7:], counts):
+            if row[col] == "—":
+                continue
+            match = re.fullmatch(r"([\d,]+) \(([\d.]+) %\)", row[col].replace("**", ""))
+            if not match:
+                raise ValueError(f"unparsed count and percentage: {row[col]}")
+            cell(f"MS T1 {dataset}/{row[0]} count", match[1], value)
+            cell(f"MS T1 {dataset}/{row[0]} %", match[2], 100 * value / len(d))
+
+    d = pd.read_csv(f"{E}/oracle_analysis.csv")
+    rows = next(r for _, r in tables if "90th percentile" in r[0])
+    for row, camera in zip(rows[1:], ("static", "moving")):
+        g = d[d.camera == camera]
+        for printed, value in zip(row[1:], [len(g), g.corner_disagreement_px.median(),
+                                             g.corner_disagreement_px.quantile(.9),
+                                             g.box_shift_px.median()]):
+            cell(f"MS 4.2 {camera}", printed, value)
+    d = pd.read_csv(f"{E}/mot20_oracle_analysis.csv")
+    rows = next(r for _, r in tables if r[0][-1] == "Median φ")
+    for row in rows[1:]:
+        g = d[d.sequence == row[0]] if row[0].startswith("MOT20-") else d
+        values = [len(g), g.corner_disagreement_px.median(),
+                  g.corner_disagreement_px.quantile(.9), g.corner_disagreement_px.quantile(.99),
+                  g.corner_disagreement_px.max(), g.frac_inliers_in_det.median()]
+        for printed, value in zip(row[1:], values):
+            if printed != "—":
+                cell(f"MS 4.2 {row[0]}", printed, value)
+
+    d = pd.read_csv(f"{E}/gate_flips.csv")
+    for row in table("**Table 2**")[1:]:
+        seq = row[0].replace("**", "")
+        g = d[d.sequence.str.startswith(seq)] if seq.startswith("MOT17-") else d
+        values = [len(g), g.iou_online.median(), g.harmful_flip.sum(), g.helpful_flip.sum()]
+        for printed, value in zip(row[2:], values):
+            if printed not in ("—", ""):
+                cell(f"MS T2 {seq}", printed, value)
+
+    tracking = [(table("**Table 3**"), "MOT17-val-half",
+                 ["A_noCMC", "A0_frozen", "A0_botsort_baseline", "N2S_oracle_strict"]),
+                (table("**Table 4**"), "MOT17-val-half", ["R_none", "R_online", "R_oracle_strict"]),
+                (md_tables(text.split("### 5.6 ", 1)[1].split("### 5.7 ", 1)[0])[0][1],
+                 "UAVDT/UAVDT-test", ["uavdt_none", "uavdt_online"])]
+    for rows, bench, runs in tracking:
+        if len(rows) - 1 != len(runs):
+            raise ValueError(f"row count changed for {bench}/{runs}")
+        for row, run in zip(rows[1:], runs):
+            metrics = te(run, "pedestrian", bench)
+            for header, printed in zip(rows[0][1:], row[1:]):
+                cell(f"MS {bench}/{run}/{header}", printed, metrics[header])
+
+    d = pd.read_csv(f"{E}/kitti_global_family_v2.csv")
+    for row, model in zip(table("**Table 6**")[1:], ("online", "oracle", "sim", "hom")):
+        values = [d[model + "_med"].median(), d[model + "_spread"].median(),
+                  100 * (d[model + "_spread"] > 5).mean()]
+        for printed, value in zip(row[1:], values):
+            cell(f"MS T6 {model}", printed, value)
+
+    for row, run in zip(table("**Table 10**")[1:],
+                        ("v4_global_oracle", "placebo_shuffled", "v4_per_target")):
+        p, c = te(run, "pedestrian"), te(run, "car")
+        for printed, value in zip(row[1:], [p["HOTA"], p["IDSW"], c["HOTA"], c["IDSW"]]):
+            cell(f"MS T10 {run}", printed, value)
+    d = pd.read_csv(f"{E}/kitti_causal_link.csv")
+    d = d[d.cls == "pedestrian"]
+    quartile = pd.qcut(d.exposure, 4, labels=False, duplicates="drop")
+    for k, row in enumerate(table("**Table 11**")[1:]):
+        g = d[quartile == k] if k < 4 else d
+        change = g.idsw_global.sum() - g.idsw_per.sum()
+        values = [g.exposure.median(), g.idsw_global.sum(), g.idsw_per.sum(), change,
+                  1000 * change / len(g)]
+        for printed, value in zip(row[1:], values):
+            if printed:
+                cell(f"MS T11 row {k+1}", printed, value)
+
+    for row, run in zip(table("**Table 13**")[1:],
+                        ("v3_per_target", "dn005_per_target", "dn010_per_target",
+                         "dn020_per_target", "dn030_per_target", "dn050_per_target")):
+        sigma = float(row[0]); metrics = te(run, "pedestrian")
+        cell(f"MS T13 {sigma} relative error", row[1], 100 * (math.exp(sigma) - 1))
+        cell(f"MS T13 {sigma} contrast", row[3],
+             metrics["HOTA"] - te("v4_global_oracle", "pedestrian")["HOTA"])
+
+    # The MOT17 and estimated-depth interval tables use sequence-weighted contrasts.
+    b = _bci()
+    def interval(printed, base, comp, cls, metric, root=None, moving=False):
+        match = CI_PAT.search(printed.replace("**", ""))
+        if not match:
+            raise ValueError(f"unparsed interval: {printed}")
+        a, bb = b.per_seq(base, cls, root), b.per_seq(comp, cls, root)
+        if moving:
+            a, bb = a.loc[a.index.isin(b.MOT17_MOVING)], bb.loc[bb.index.isin(b.MOT17_MOVING)]
+        idx = a.index.intersection(bb.index)
+        weights = a.loc[idx, "GT_Dets"].values.astype(float)
+        estimate, boots, _ = b.bootstrap(a, bb, metric, weights, n_boot=20000)
+        for value, actual in zip(match.groups(), [estimate, *np.percentile(boots, [2.5, 97.5])]):
+            cell(f"MS CI {base}/{comp}/{cls}/{metric}", value, actual)
+    pairs = [("A_noCMC", "A0_frozen"), ("R_none", "R_online"),
+             ("A0_frozen", "N2S_oracle_strict"), ("R_online", "R_oracle_strict"),
+             ("A0_frozen", "A0_botsort_baseline")]
+    for row, (base, comp) in zip(table("**Table 5**")[1:], pairs):
+        for printed, moving in zip(row[2:], (False, True)):
+            interval(printed, base, comp, "pedestrian", "HOTA", b.TR_MOT, moving)
+    rows = next(r for ctx, r in tables if ctx == "With bootstrap intervals:")
+    for row in rows[1:]:
+        base = "dep_global_oracle" if "both estimated depth" in row[0] else "v3_online"
+        cls = "pedestrian" if row[1] == "ped" else "car"
+        for printed, metric in zip(row[2:], ("HOTA", "IDSW")):
+            interval(printed, base, "dep_per_target_depth", cls, metric)
+
+    d = pd.read_csv(f"{E}/runtime_cost.csv")
+    for row, record in zip(table("**Table 16**")[1:], d.itertuples()):
+        cell(f"MS T16 {record.dataset} milliseconds", row[2], record.ms_median)
+        cell(f"MS T16 {record.dataset} throughput", row[3], record.fps_of_this_step)
+    caption = next(ctx for ctx, _ in tables if ctx.startswith("**Table 16**"))
+    counts = re.search(r"(\d+) GMC calls and (\d+) depth inferences", caption)
+    if not counts:
+        raise ValueError("Table 16 measurement counts not found")
+    cell("MS T16 GMC sample count", counts[1], d.iloc[0].n)
+    cell("MS T16 depth sample count", counts[2], d.iloc[2].n)
+
+    d = pd.read_csv(f"{E}/kitti_class_split.csv")
+    body = text.split("## 8 Class-Specific", 1)[1].split("## 9 ", 1)[0]
+    m = re.search(r"([\d.]+) % of pedestrian/cyclist object-frames and ([\d.]+) % of car", body)
+    if not m:
+        raise ValueError("Section 8 exposure percentages not found")
+    for cls, value in zip(("ped", "car"), m.groups()):
+        cell(f"MS 8 {cls} exposure", value, 100 * d[d.cls == cls].exposed.mean())
+    supp = _P(f"{ROOT}/02_paper/supplementary.md").read_text()
+    m = re.search(r"in \*\*([\d.]+) %\*\* of car object-frames and \*\*([\d.]+) %\*\* of pedestrian", supp)
+    if not m:
+        raise ValueError("Supplement S3 exposure percentages not found")
+    for cls, value in zip(("car", "ped"), m.groups()):
+        cell(f"MS S3 {cls} exposure", value, 100 * d[d.cls == cls].exposed.mean())
+
+
 UNCHECKED = [
     "3.1 bit-identity of the instrumented GMC -- asserted by instrumented_gmc.py itself",
     "4.3 confound stratification and placebo figures -- printed by confound_placebo.py",
@@ -1061,7 +1254,8 @@ def main() -> None:
                check_placebo, check_provenance, check_manuscript_tables, check_manuscript_intervals,
                check_homography_robustness, check_homography_intervals,
                check_background_point_counts, check_reproduce_map, check_release_doc_refs, check_availability_counts, check_figure_order, check_chinese_abstract,
-               check_estimator_convention, check_causal_link_homography):
+               check_estimator_convention, check_causal_link_homography,
+               check_printed_measurement_tables):
         try:
             fn()
         except Exception as e:

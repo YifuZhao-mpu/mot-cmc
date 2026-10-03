@@ -29,31 +29,37 @@ FIGS = f"{ROOT}/05_figures"
 # follows, and which is not the order they were produced in: the signal-selection
 # figure is cited in 4.4, before any other.
 FIGURES = [
+    ("F0", "F0_framework",
+     "The measurement pipeline. One detector pass supplies byte-identical detections to every "
+     "configuration. Three warps are produced for the same frame pair --- the deployed online "
+     "estimator, re-implemented so that its inlier statistics are recorded without changing what it "
+     "returns; a non-causal reference warp fitted at full resolution with the foreground masked; and "
+     "a global homography fitted to background points carried at their monocularly estimated depths "
+     "--- and one of the three is substituted into an otherwise fixed BoT-SORT pipeline. Only the "
+     "warp changes between configurations.", "fig:framework"),
     ("F8", "F8_signal_selection",
      "Held-out AUC by reliability-signal subset size on real MOT17 data.", "fig:signals"),
     ("F1", "F1_value_axis",
-     "MOT17 validation-half. Left: HOTA across the compensation-value axis, with and "
-     "without the appearance channel. Right: identity switches. The oracle warp is worse "
-     "than the deployable estimator on identity switches in both configurations.", "fig:axis"),
+     "MOT17 validation-half. (a) HOTA across the compensation-value axis, with and "
+     "without the appearance channel. (b) identity switches under the same fixed detections. "
+     "The reference rows use strict substitution.", "fig:axis"),
     ("F2", "F2_reliability",
-     "Compensation-reliability distributions across the three image benchmarks.", "fig:reliability"),
+     "Compensation-reliability distributions across the three image benchmarks: (a) inlier ratio; (b) transfer residual; (c) inter-frame displacement.", "fig:reliability"),
     ("F3", "F3_spread_vs_depth",
-     "KITTI: within-frame residual spread after the best possible \\emph{global} correction, "
-     "against the frame's depth ratio (left) and as a function of threshold (right).", "fig:spread"),
+     "KITTI: within-frame residual spread after a target-fitted least-squares similarity, "
+     "(a) against the frame's depth ratio and (b) as a function of threshold.", "fig:spread"),
     ("F4", "F4_warp_family",
-     "Left: the fraction of KITTI moving frames whose targets need corrections differing by more "
-     "than the threshold, for four global warps fitted to the static scene. Right: the same warps' "
-     "median within-frame residual spread against the pedestrian HOTA they produce. A global "
-     "homography with access to depth removes most of the spread; the deployed estimator has the "
-     "most spread of the four.", "fig:family"),
+     "(a) KITTI moving-frame residual-spread distributions for the four models in Table 6. "
+     "(b) pooled car HOTA for online GMC and the depth-aware homography, plotted against "
+     "their median residual spread. Both tracking scores use the final configurations in Table 8.",
+     "fig:family"),
     ("F5", "F5_forest",
      "Percentile bootstrap 95\\% confidence intervals over the 21 KITTI sequences, "
-     "20{,}000 resamples, weighted by ground-truth detections.", "fig:forest"),
+     "20{,}000 resamples, weighted by ground-truth detections; the comparisons match Table 9. (a) Pedestrians; (b) cars. Filled markers indicate intervals excluding zero; hollow markers indicate intervals containing zero.", "fig:forest"),
     ("F6", "F6_mechanism",
-     "KITTI pedestrians: identity switches avoided by exposure quartile. All of the improvement "
-     "is in the top quartile.", "fig:mechanism"),
+     "KITTI pedestrians: identity switches avoided by exposure quartile. The labels give median exposure in pixels. The net improvement is concentrated in the top quartile.", "fig:mechanism"),
     ("F7", "F7_depth_noise",
-     "Tolerance of the pedestrian gain to depth error, with the real monocular model marked.",
+     "Independent multiplicative depth-noise sweeps. (a) pedestrian per-target correction relative to the global-similarity reference (Table 13). (b) car depth-aware homography relative to online GMC (Table 14).",
      "fig:depth"),
 ]
 
@@ -83,17 +89,17 @@ AFFILS = "\n".join([
 ])
 
 
-PREAMBLE = r"""\documentclass[sn-basic,iicol]{sn-jnl}
+PREAMBLE = r"""\documentclass[sn-basic,Numbered,iicol]{sn-jnl}
 \usepackage{graphicx}
 \usepackage{multirow}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{booktabs}
-\usepackage{algorithm}
-\usepackage{algorithmicx}
 \usepackage[T1]{fontenc}
 \usepackage{longtable}
 \usepackage{array}
 \usepackage{tabularx}
+\usepackage{xurl}
+\urlstyle{same}
 % Float placement. Two competing failures. Left at the defaults, with every float
 % emitted after the body, all eight figures were deferred to the last two pages;
 % opened up far enough to fix that, three pages ended up carrying three floats
@@ -152,6 +158,8 @@ PREAMBLE = r"""\documentclass[sn-basic,iicol]{sn-jnl}
 \newunicodechar{·}{\ensuremath{\cdot}}
 \newunicodechar{§}{\S}
 \newunicodechar{…}{\dots}
+\newunicodechar{ć}{\'{c}}
+\newunicodechar{š}{\v{s}}
 \lstset{basicstyle=\ttfamily\scriptsize,breaklines=true,frame=none,columns=fullflexible}
 \providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 % sn-jnl loads breakurl, which emits dvips PostScript specials and breaks under
@@ -200,8 +208,8 @@ CAPTION_PARA = re.compile(r"\n\\textbf\{Table (\d+)\}\s*(.*?)\n\s*\n", re.S)
 # width on character count: 3.795 pt per character at \footnotesize. Where
 # under-estimating a width causes an overflow rather than a missed opportunity,
 # the 95th-percentile figure is used instead.
-PT_PER_CHAR = 3.8
-PT_PER_CHAR_SAFE = 5.1
+PT_PER_CHAR = 4.2
+PT_PER_CHAR_SAFE = 6.0
 TABCOLSEP_PT = 3.0  # tightened from the 6 pt default for these data tables
 COL_PT = 216.0      # \columnwidth, measured, not assumed
 FULL_PT = 455.0     # \textwidth, measured
@@ -251,7 +259,8 @@ def _fit(inner: str, ncol: int) -> tuple[str, str, str]:
     j = max(range(ncol), key=lambda i: w[i])
     others = (sum(w) - w[j]) * (PT_PER_CHAR + 0.4) + sep
     room = COL_PT - others
-    if room >= MIN_WRAP_PT and w[j] * PT_PER_CHAR_SAFE > room:
+    if (room >= MIN_WRAP_PT and w[j] * PT_PER_CHAR_SAFE > room
+            and w[j] * PT_PER_CHAR / room <= 2.5):
         cols = ["l"] * ncol
         cols[j] = r">{\raggedright\arraybackslash}X"
         return ("table",
@@ -441,7 +450,7 @@ def detable(tex: str) -> str:
         where = "[tp]"
         out.append(f"\\begin{{{env}}}{where}\n\\centering\n"
                    + (f"\\caption{{{cap}}}\\label{{tab:{num}}}\n" if cap else "")
-                   + "\\footnotesize\n\\setlength{\\tabcolsep}{3pt}\n"
+                   + "\\fontsize{8.5}{10.5}\\selectfont\n\\setlength{\\tabcolsep}{3pt}\n\\renewcommand{\\arraystretch}{1.12}\n"
                    + "\n".join(body) + f"\n\\end{{{env}}}\n")
     return "".join(out)
 
@@ -475,11 +484,37 @@ def pandoc(md: str) -> str:
         input=md, capture_output=True, text=True, check=True).stdout
 
 
+
+def build_supplementary() -> None:
+    """Typeset supplementary tables with the same family and readable table size."""
+    source = open(f"{ROOT}/02_paper/supplementary.md").read()
+    source = re.sub(r"^# Supplementary Material\s*", "", source)
+    source = re.sub(r"^## S\d+\s+", "## ", source, flags=re.M)
+    source = re.sub(r"\*\*Table S(\d+)\*\*", r"**Table \1**", source)
+    body = detable(pandoc(source))
+    out = "\n".join([
+        PREAMBLE.replace("[sn-basic,Numbered,iicol]", "[sn-basic,Numbered]"),
+        r"\begin{document}",
+        r"\title{Supplementary Material}", AUTHORS, AFFILS,
+        r"\maketitle", r"\raggedbottom",
+        r"\begin{center}\textit{International Journal of Computer Vision}\end{center}",
+        r"\renewcommand{\thesection}{S\arabic{section}}",
+        r"\renewcommand{\thetable}{S\arabic{table}}",
+        body, r"\end{document}",
+    ])
+    open(f"{TEX_DIR}/supplementary.tex", "w").write(out)
+
+
 def main() -> None:
     text = open(MD).read()
     abstract, body, keywords = md_body(text)
     refs_md = text[text.index("## References"):].replace("## References", "").strip()
 
+    body = re.sub(
+        r"\[([1-9]\d*(?:,\s*[1-9]\d*)*)\]",
+        lambda m: r"\citep{" + ",".join("ref" + n.strip()
+                                      for n in m.group(1).split(",")) + "}",
+        body)
     body_tex = detable(pandoc(body))
     abs_tex = pandoc(abstract).strip()
 
@@ -488,40 +523,39 @@ def main() -> None:
     for _, f, cap, lab in FIGURES:
         # A panel plot wider than it is tall is illegible at 240 pt. Anything at
         # or past 1.8:1 spans both columns; the rest stay in one.
-        env = "figure*" if _aspect(f"{FIGS}/{f}.pdf") >= 1.8 else "figure"
+        # A panel plot wider than 1.8:1 is illegible in one column; so is a
+        # dense multi-panel diagram at any aspect, which is why the pipeline
+        # figure spans the block although it is taller than it is wide.
+        env = ("figure*" if _aspect(f"{FIGS}/{f}.pdf") >= 1.8 or f.startswith("F0_")
+               else "figure")
         where = "[tp]" if env == "figure*" else "[tbp]"
         figs.append(
             f"\\begin{{{env}}}{where}\n\\centering\n"
             f"\\includegraphics[width=\\linewidth]{{figs/{f}.pdf}}\n"
             f"\\caption{{{cap}}}\\label{{{lab}}}\n\\end{{{env}}}\n")
 
-    # references as a manual thebibliography (author-year, already formatted)
-    items = [r.strip() for r in refs_md.split("\n\n") if r.strip()]
-    bib = ["\\begin{thebibliography}{99}"]
-    for i, r in enumerate(items, 1):
-        r = re.sub(r"\*(.+?)\*", r"\\emph{\1}", r)
-        r = r.replace("&", "\\&").replace("_", "\\_")
-        r = re.sub(r"https://doi\.org/(\S+)", r"\\url{https://doi.org/\1}", r)
-        # natbib runs in author-year mode under sn-jnl and rejects a bare
-        # \bibitem, so each entry carries its own (Author, Year) label
-        lab = re.match(r"([^(]+?)\s*\((\d{4})\)", r)
-        who = lab.group(1).rstrip(",. ") if lab else f"Ref{i}"
-        who = who.split(",")[0] + (" et~al." if who.count(",") > 2 else "")
-        yr = lab.group(2) if lab else "n.d."
-        bib.append(f"\\bibitem[{who}({yr})]{{ref{i}}} {r}")
-    bib.append("\\end{thebibliography}")
+    # Entries are ordered and numbered by first citation in the Markdown.
+    items = re.findall(r"^\[(\d+)\]\s+(.+)$", refs_md, flags=re.M)
+    if [int(n) for n, _ in items] != list(range(1, len(items) + 1)):
+        raise ValueError("References must be numbered consecutively from 1")
+    bib = [r"\setlength{\bibsep}{0.6em}", r"\begin{thebibliography}{99}"]
+    for number, entry in items:
+        entry = re.sub(r"https?://\S+", lambda m: "<" + m.group() + ">", entry)
+        bib.append(r"\bibitem{ref" + number + "} " + pandoc_inline(entry))
+    bib.append(r"\end{thebibliography}")
 
     out = "\n".join([
         PREAMBLE,
         "\\begin{document}",
-        "\\title[Camera-Motion Compensation Is Not the Bottleneck]{Camera-Motion "
-        "Compensation Is Not the Bottleneck: A Measurement Study of Shared Warps "
-        "in Tracking-by-Detection}",
+        "\\title{" + pandoc_inline(re.search(r"^#\s+(.+)$", text, re.M).group(1)) + "}",
         AUTHORS,
         AFFILS,
         "\\abstract{" + abs_tex + "}",
         "\\keywords{" + keywords.replace(" · ", ", ") + "}",
+        "\\onecolumn",
         "\\maketitle",
+        "\\twocolumn",
+        "\\raggedbottom",
         place_figures(body_tex, figs),
         "\n".join(bib),
         "\\end{document}",
@@ -533,6 +567,7 @@ def main() -> None:
         if os.path.exists(src):
             subprocess.run(["cp", src, f"{TEX_DIR}/figs/{f}.pdf"], check=True)
     open(f"{TEX_DIR}/manuscript.tex", "w").write(out)
+    build_supplementary()
 
     print(f"-> {TEX_DIR}/manuscript.tex  ({len(out.splitlines())} lines, "
           f"{len(items)} references, {len(FIGURES)} figures)")

@@ -1,66 +1,33 @@
 # Cover Letter
 
 **To**: The Editors, *International Journal of Computer Vision*
-**Re**: *Camera-Motion Compensation Is Not the Bottleneck: A Measurement Study of Shared Warps in Tracking-by-Detection*
+**Re**: *Camera-Motion Compensation in Tracking-by-Detection: Accuracy Headroom and Depth-Aware Shared Warps*
 **Article type**: Original Paper (measurement and evaluation study)
 
 ---
 
 Dear Editors,
 
-We submit a measurement study of camera-motion compensation in tracking-by-detection. It proposes
-no new tracker. Its contribution is a quantity the field has not measured and a diagnosis that
-follows from measuring it, and we would like to be direct about both what it establishes and what
-it does not.
+We submit a measurement study of camera-motion compensation in tracking-by-detection. It quantifies the accuracy headroom of shared warps and evaluates depth-aware global correction under camera translation.
 
-**The question.** A steady stream of work proposes more robust camera-motion compensation. Every
-such proposal implicitly claims that accuracy in the compensator is where the remaining headroom
-is. Published ablations measure *having* compensation against *not* having it — BoT-SORT's own
-Table 1 gives +0.94 HOTA on MOT17, and we reproduce it to within 0.06 — but we could find no
-measurement of what a **perfect** warp would be worth once a working compensator is in place. That
-is the quantity a robustness claim is about, and it is the one we bound.
+**Measurement Objective.** Published ablations measure the benefit of enabling compensation. BoT-SORT's Table 1 gives +0.94 HOTA on MOT17, which our baseline reproduces to within 0.06. We measure the headroom remaining after a working compensator is in place through a stronger reference warp, association-gate changes and matched tracking comparisons.
 
-**What we found.** On the MOT17 sequences that actually have camera motion, substituting a
-non-causal oracle warp is worth −0.04 HOTA with a 95 % upper bound of +0.05 without an appearance
+**Main Findings.** On the MOT17 sequences that actually have camera motion, substituting a
+non-causal oracle warp is worth −0.04 HOTA with a 95 % upper interval endpoint of +0.05 without an appearance
 channel and +0.19 [+0.05, +0.52] with one — against +3.43 [+1.01, +5.52] for having a working
-compensator at all. The error a perfect warp removes changes the association gate's decision for
-34 of 109,955 ground-truth pairs.
+compensator at all. Reference substitution changes the association gate's decision for 55 of 109,955 ground-truth pairs, including 34 harmful changes.
 
-Where a shared warp genuinely does fail — on KITTI, where the camera translates — we show the
-missing ingredient is **depth**, not per-object treatment. A global homography fitted to background
-points at their monocularly estimated depths cuts the within-frame residual spread from 8.67 px to
-1.37 px, beats the compensator BoT-SORT ships by +1.19 HOTA [+0.26, +1.92] on cars, and reduces
-pedestrian identity switches from 126 to 85. A per-target correction given ground-truth depth *and*
-ground-truth association adds nothing on top of it.
+On KITTI, depth-aware global correction addresses camera translation using a shared model. A global homography fitted to background points at their monocularly estimated depths, with sensor ego-motion, cuts the within-frame residual spread from 8.67 px to 1.37 px and improves car HOTA over online compensation by +1.19 [+0.26, +1.92]. It reduces pedestrian identity switches from 126 to 97, and to 85 with contact-point application, without per-object association.
 
-**What it does not establish**, stated here because it is stated in the paper: the homography's
-advantage over the shipped compensator is not significant on pedestrians; the shared-warp
-limitation is measured on KITTI and inferred elsewhere, because two attempts to measure it without
-ground-truth ego-motion failed and we report both; and the remedy costs a depth network at 65× a
-compensation call.
+**Evaluation Conditions.** KITTI comparisons use sensor ego-motion, fixed detections and a motion-only tracker. The homography uses estimated background depth on moving frames and the annotation-anchored near-static fallback defined in the manuscript. Each benchmark supports the measurement associated with its evaluation protocol.
 
-**On priority.** We are not first to observe that compensation can fail — BoT-SORT's own limitations
-section says it. Deep OC-SORT reported in 2023 that compensation does not help on static-camera
-MOT20. EMAP corrects per object using depth on this benchmark with this base tracker. The 2026
-survey we cite runs its own compensation ablation. Section 2 credits all of them, and §2.6 states
-precisely what is left: the bound, the instruments, and the finding that the per-object part is
-unnecessary.
+**Relation to Prior Work.** Section 2 relates the study to compensation ablations, depth-aware tracking and the classical plane-plus-parallax geometry. The distinct contribution is the measurement of accuracy headroom and the controlled comparison of depth-aware shared and per-target corrections.
 
-**On the record of this work.** The paper reports four measurements of our own that replaced earlier
-measurements of our own, two of which reversed a conclusion. Two were experiments whose
-construction guaranteed the answer we had reached — a homography fitted to the displacements it was
-scored against, and a warp bundle that was silently the identity on a third of moving frames. Both
-were found by executing the released code, and §9.4 and Supplementary S2 record what each earlier
-version reported. We would rather submit a paper that shows this than one that does not.
 
-**Reproducibility.** We release 44 scripts, 21 result CSVs, TrackEval output for all 61 tracker runs,
-and `verify_numbers.py`, which recomputes 526 of the paper's numbers from source and exits non-zero
-on any mismatch. It also checks provenance — which run feeds which table, and whether any
-configuration is silently switched off — because both of the defects above were provenance
-failures that a value-only check passes. A referee can run one command.
 
-We believe the bound is worth publishing whether or not the KITTI remedy holds up, and we have
-tried to write the paper so that a reader can tell the two apart.
+**Reproducibility.** We release 43 analysis scripts and 4 shell drivers, 22 result CSVs, and evaluation output for 63 tracker runs. Numerical verification recomputes the reported values and checks the configuration and data sources supporting each comparison.
+
+The study connects compensation accuracy, depth-dependent geometry and tracking outcomes, with particular value for translating platforms with a dominant scene plane.
 
 Yours sincerely,
 
@@ -75,7 +42,7 @@ Macao Polytechnic University, Macao 999078, China · yapengwang@mpu.edu.mo
 
 - **Competing interests**: none.
 - **Funding**: Macao Polytechnic University (RP/FCA-06/2026) and the Macao Science and Technology Development Fund (FDCT-MOST: 0018/2025/AMJ).
-- **Data and code**: fully released; repository DOI to be minted at acceptance.
+- **Data and code**: available at <https://doi.org/10.5281/zenodo.23092962>.
 - **AI assistance**: disclosed in the manuscript. No number in the paper was produced by a language
   model; all were produced by executing the released code.
 - **Prior submission**: this manuscript has not been submitted elsewhere.
